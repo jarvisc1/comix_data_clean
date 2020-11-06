@@ -12,3 +12,10 @@ Rscript.exe ".\r\dm03_create_datatable.R"
 
 echo "Rename the variables"
 Rscript.exe ".\r\dm04_rename_vars.R"
+
+echo "Combine all countries and waves together"
+Rscript.exe ".\r\dm05_combine_data.R"
+
+echo "Clean existing variables"
+
+echo "Add new variables"
