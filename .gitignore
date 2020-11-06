@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+data/~$spss_files.xlsx
+data/spss/*
+data/processing/*
+data/cleaned/*
+
