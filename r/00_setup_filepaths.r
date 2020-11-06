@@ -1,8 +1,14 @@
-## Set use files paths. 
+## Name: 00_setup_filepaths
+## Description: Set filepaths for accessing the data
+## Input file: 
+## Functions: 
+## Output file: 
 
 ## If you are a new user of the data you need to download LSHTM filesharing and get
 ## access to the LSHTM Comix data folders
 
+
+# Setup filepaths ---------------------------------------------------------
 
 ## Filepaths for origin of spss files
 ## CIJ
