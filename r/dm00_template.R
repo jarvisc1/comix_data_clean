@@ -1,16 +1,24 @@
-## dm_data_clean
-library(data.table)
-
+## Name: 
+## Description: 
 ## Input file: cnty_wkN_yyyymmdd_pN_wvN_XX.qs
 ## Functions:
 ## Output file: cnty_wkN_yyyymmdd_pN_wvN_XX.qs
 
-## Source relevant files
+
+# Packages ----------------------------------------------------------------
+library(data.table)
+
+
+# Source user written scripts ---------------------------------------------
 source('r/setup_filepaths.r')
 
-# Pick a country ----------------------------------------------------------
 
+# Countries ---------------------------------------------------------------
 country_codes <- c("UK", "NL", "BE", "NO")
+
+
+
+# Cleaning ----------------------------------------------------------------
 
 for(country in country_codes){
   print(paste0("Start: ", country))

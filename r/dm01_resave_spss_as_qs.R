@@ -1,16 +1,20 @@
-# Load all the spss files and save them as QS files
+## Name: dm01_resave_spss_as_qs
+## Description: Load all the remote spss files and save them as QS files locally
+## Input file: cnty_wkN_yyyymmdd_pN_wvN_XX.qs
+## Functions: save_spss_qs
+## Output file: cnty_wkN_yyyymmdd_pN_wvN_XX.qs
 
-## Input file: various_spss_files.sav
-## functions: save_spss_qs
-## Output file: cnty_wkN_yyyymmdd_pN_wvN_1.qs
 
+# Packages ----------------------------------------------------------------
+
+# Source user written scripts ---------------------------------------------
 source('r/setup_filepaths.r')
 source('r/functions/save_spss_qs.R')
 
-# Define countries --------------------------------------------------------
+# Countries ---------------------------------------------------------------
 country_codes <- c("UK", "NL", "BE", "NO")
 
-
+# Open SPSS and save as QS ------------------------------------------------
 
 for(country in country_codes){
   print(paste0("Start: ", country))
@@ -27,10 +31,4 @@ for(country in country_codes){
     print(paste0("Saved: ", r_names[i]))
   }  
 }
-
-
-
-
-
-
 
