@@ -9,3 +9,6 @@ Rscript.exe ".\r\dm02_add_cnty_panel_wave.R"
 
 echo "Turn from wide data to long data.table"
 Rscript.exe ".\r\dm03_create_datatable.R"
+
+echo "Rename the variables"
+Rscript.exe ".\r\dm04_rename_vars.R"
