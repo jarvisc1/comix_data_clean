@@ -16,8 +16,6 @@ source('r/00_setup_filepaths.r')
 # Countries ---------------------------------------------------------------
 country_codes <- c("UK", "NL", "BE", "NO")
 
-
-
 # Cleaning ----------------------------------------------------------------
 
 for(country in country_codes){
