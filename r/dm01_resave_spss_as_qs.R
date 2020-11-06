@@ -7,7 +7,7 @@
 # Packages ----------------------------------------------------------------
 
 # Source user written scripts ---------------------------------------------
-source('r/setup_filepaths.r')
+source('r/00_setup_filepaths.r')
 source('r/functions/save_spss_qs.R')
 
 # Countries ---------------------------------------------------------------

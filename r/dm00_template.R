@@ -10,7 +10,7 @@ library(data.table)
 
 
 # Source user written scripts ---------------------------------------------
-source('r/setup_filepaths.r')
+source('r/00_setup_filepaths.r')
 
 
 # Countries ---------------------------------------------------------------
