@@ -11,7 +11,7 @@ source('r/00_setup_filepaths.r')
 source('r/functions/save_spss_qs.R')
 
 # Countries ---------------------------------------------------------------
-country_codes <- c("UK", "NL", "BE", "NO")
+country_codes <- c("UK", "NL", "BE", "NO")[4]
 
 # Open SPSS and save as QS ------------------------------------------------
 
@@ -26,7 +26,7 @@ for(country in country_codes){
   for(i in 1:length(spss_names)){
     print(paste0("Opened: ",spss_names[i]))
     ## User written function: read sspss file save as qs
-    save_spss_qs(spss_names[i], r_names[i])
+    save_spss_qs(spss_names[i], r_names[i], country)
     print(paste0("Saved: ", r_names[i]))
   }  
 }
