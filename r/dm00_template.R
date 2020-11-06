@@ -41,7 +41,6 @@ for(country in country_codes){
     ## User written function
     
     ## Save temp data
-    ##---------------
     qs::qsave(dt, file = output_data)
     print(paste0('Saved:' , output_name))
   }
