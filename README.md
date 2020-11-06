@@ -18,7 +18,7 @@ Code for cleaning the data recieved for the CoMix contact survey.
 
 ### Add R to your path variable
 
-This only needs to be done once. Not for step 8 you need to put the path to your R\bin file. 
+This only needs to be done once. Note for step 8 you need to put the path to your R\bin file. 
 
 1. Select Start => Control Panel
 2. Enter ‘environment’ in the search box and press RETURN
