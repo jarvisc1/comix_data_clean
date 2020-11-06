@@ -6,7 +6,7 @@ Code for cleaning the data recieved for the CoMix contact survey.
 
 ## For Mac
 1. Open Rstudio
-2. Go to the terminal in R studio
+2. Go to the terminal in Rstudio
 3. Type `Rscript run_cleaning.sh`
 
 ## For Windows
