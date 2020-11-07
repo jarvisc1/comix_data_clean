@@ -1,0 +1,400 @@
+---
+title: "survey_to_datatable"
+author: "Christopher I Jarvis"
+date: "07/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(magrittr)
+source(here::here('./r/00_setup_filepaths.r'))
+
+kable_tab <- function(x){
+  kableExtra::kable(x) %>% 
+  kableExtra::kable_styling(bootstrap_options =
+                            c("striped", "hover", "condensed", "responsive"))
+}
+
+
+
+```
+
+# Setup environment
+
+We need to source the function `survey_to_datatable` and we will use data.table
+
+```{r }
+library(data.table)
+## Source relevant files
+source(here::here("./r/functions/survey_to_datatable.R"))
+source(here::here("./r/functions/check_table_names.R"))
+```
+
+
+# Create test data
+
+There are four main types of varibales in the SPSS files. 
+1. Single variables - Id variables, locations, single answer questions such as age
+2. Scale variables - A single question with answert multiple answers
+3. Loop variables - A question asked to multiple people, it loops through the people.
+4. Loop scale variables - A variable that loops through multiple people with a scale answer
+
+q100 = single question
+q101 = scale variable
+q102 =  loop scale with no extra question.
+q103 =  loop scale with same extra question.
+q104 =  loop scale with different extra question.
+q105 =  loop with no extra question.
+q106 =  loop with same extra question.
+q107 =  loop with different extra question
+q108 =  loop with different text at end (filter)
+
+But q103 is tied to q104
+and q106 is tied to q107
+
+
+```{r create_dummy_data}
+
+test_data <- data.table(country = "uk", 
+                        panel = "A",
+                        wave = 1,
+                        respondent_id = 101,
+                        q100 = "q100",
+                        ## Scale question
+                        q101_0_scale = 1,
+                        q101_1_scale = 4,
+                        q101_2_scale = 8,
+                        q101_3_scale = 10,
+                        ## Loop scale no second question
+                        q102_loop_0_scale_1 = 1,
+                        q102_loop_0_scale_2 = 2,
+                        q102_loop_0_scale_3 = 3,
+                        q102_loop_1_scale_1 = 4,
+                        q102_loop_1_scale_2 = 5,
+                        q102_loop_1_scale_3 = 6,
+                        q102_loop_2_scale_1 = 7,
+                        q102_loop_2_scale_2 = 8,
+                        q102_loop_2_scale_3 = 9,
+                        # Loop scale same question
+                        q103_loop_0_q103_scale_1 = 1,
+                        q103_loop_0_q103_scale_2 = 2,
+                        q103_loop_0_q103_scale_3 = 3,
+                        q103_loop_1_q103_scale_1 = 4,
+                        q103_loop_1_q103_scale_2 = 5,
+                        q103_loop_1_q103_scale_3 = 6,
+                        q103_loop_2_q103_scale_1 = 7,
+                        q103_loop_2_q103_scale_2 = 8,
+                        q103_loop_2_q103_scale_3 = 9,
+                        # Loop scale different question
+                        q103_loop_0_q104_scale_1 = 1,
+                        q103_loop_0_q104_scale_2 = 2,
+                        q103_loop_0_q104_scale_3 = 3,
+                        q103_loop_1_q104_scale_1 = 4,
+                        q103_loop_1_q104_scale_2 = 5,
+                        q103_loop_1_q104_scale_3 = 6,
+                        q103_loop_2_q104_scale_1 = 7,
+                        q103_loop_2_q104_scale_2 = 8,
+                        q103_loop_2_q104_scale_3 = 9,
+                        
+                        ## Loop question no second question
+                        q105_loop_0 = 1,
+                        q105_loop_1 = 4,
+                        q105_loop_2 = 8,
+                        ## Loop question same question
+                        q106_loop_0_q106 = 1,
+                        q106_loop_1_q106 = 4,
+                        q106_loop_2_q106 = 8,
+                        ## Loop question diff Q
+                        q106_loop_0_q107 = 1,
+                        q106_loop_1_q107 = 4,
+                        q106_loop_2_q107 = 8,
+                        ## Loop oother
+                        q108_loop_0_q108_filter = 1,
+                        q108_loop_1_q108_filter = 4,
+                        q108_loop_2_q108_filter = 8,
+                        region = "Hello",
+                        missing = "",
+                        extra_white_space = "        H ello      "
+                        
+                        )
+
+
+```
+
+
+## Apply the survey_to_datatable function
+
+
+```{r survey_to_datatable}
+test_outcome <- survey_to_datatable(test_data)
+
+## country, panel, id, and wave are consistent,
+## There are four rows, one for participant and three for households
+
+## Q101 becomes a single question
+#kable_tab(test_outcome)
+
+kable_tab(test_outcome[, .(country, 
+                           respondent_id ,
+                           panel ,
+                           wave ,
+                           q102_loop_1_scale_1 ,
+                           q102_loop_1_scale_2, 
+                           q102_loop_1_scale_3,
+                           scale_1, 
+                           scale_2,
+                           scale_3)])
+
+```
+
+
+# 1 Reshape data
+
+First is to reshape so all the quesiton are in a variable column
+
+
+
+```{r reshape_data}
+
+
+df <- test_data
+
+## First 3 steps
+df <- melt(
+  df,
+  id.vars=c("respondent_id","wave", "panel", "country"),
+  variable.factor=FALSE,
+  value.factor=FALSE
+)
+
+
+kable_tab(df)
+
+```
+
+
+# 2 Sort by the id variables
+
+Then we sort by id variables and remove white space and put in missing values for blank text
+
+
+```{r tidy_data}
+## Sort the data by wave and then Id
+setorder(df, country, panel, wave, respondent_id)
+
+## Saving some codes?
+df_codes <- df
+## Trim white space in values
+df[, value := trimws(value)]
+## Replace missing value with NA
+df[value == "", value := NA]
+
+kable_tab(df)
+
+```
+
+# 3. Next is dealing with the loop questions. 
+
+## 3.1 Split out the question name parts
+
+We can see that each part of the question is seperated by an underscore. 
+
+
+```{r split_question_text}
+
+# Sorting loop questions --------------------------------------------------
+
+
+  ## Create a data table of the "loop" variable questions
+  ## Sapply creates a list of loop variables names by splitting where "_" occurs
+
+## Perhaps change to "loop|scale" 
+
+qlists <- sapply(
+    unique(df[grepl("loop|scale", variable), variable]),
+    strsplit, split="_"
+  )
+
+head(qlists)
+```
+
+## 3.2 Create data.table
+
+Here we loop over the names of the questions and use it to create a single data.table with columns representing each question.
+
+
+
+```{r create data.table}
+
+  # Lapply creates a data.table by looping over the sapply and puting the
+  ## Different parts of the varibale names in different columns of the new
+  ## data table
+  qloops <- rbindlist(
+    lapply(qlists,
+           function(x){ as.data.table(t(c(paste0(x,collapse="_"),x))) }
+    ),
+    fill=TRUE
+  )
+
+kable_tab(head(qloops))
+  
+```  
+
+
+## 3.3 Rename the variables
+
+Here we were too simplistic and did not check what was in the columns. We can fix that now. 
+
+```{r rename the variable}
+names(qloops)
+  if (!("V5" %in% names(qloops))) qloops[, V5 := NA_character_]
+  if (!("V6" %in% names(qloops))) qloops[, V6 := NA_character_]
+  if (!("V7" %in% names(qloops))) qloops[, V7 := NA_character_]
+  if (!("V8" %in% names(qloops))) qloops[, V8 := NA_character_]
+  if (!("V9" %in% names(qloops))) qloops[, V9 := NA_character_]
+  
+setnames(qloops, 
+         old = c("V1"   , "V2"   , "V3"       , "V4"   , "V5"   , "V6"   , "V7"      , "V8"    , "V9" ) , 
+         new = c("qname", "q1num", "loopscale", "rowid", "q2num", "extra", "extranum", "empty8", "empty9"),
+         skip_absent = TRUE)
+head(qloops)
+
+
+```
+
+
+Let's look at whether q2num is a scale or not and put those to the side
+
+```{r newcode}
+
+qloops
+qloops[is.na(q2num), q2num := q1num]
+qloops
+
+
+## If q2num is scale then we've lost the question number so shift one to the right
+qloops[q2num == "scale", extranum := extra]
+qloops[q2num == "scale", extra := q2num]
+qloops[q2num == "scale", q2num := q1num]
+
+## For single scales
+qloops[rowid == "scale" & is.na(extra), extra := rowid]
+qloops[rowid == "scale", rowid := loopscale]
+qloops
+# If q2num is bla
+
+
+```
+
+
+```{r create_newvars}
+
+
+  qloops[, newname := paste0(q2num,"_",extra,"_",extranum,"_",empty8)]
+  qloops
+  qloops[, "newname"] <- sapply(
+    strsplit(qloops[, newname], "_"),
+    function(x){
+      paste0(x[which(x != "NA")], collapse="_")
+    }
+  )
+  qloops
+
+  
+``` 
+
+
+This bit I'm really unsure as to whether we actually need it.
+
+```{r create_tab_name}
+  ## Create a tablename variable for each table
+  qloops[, "tablename" := paste0("table_",q1num)]
+
+
+if(FALSE){ ## Need to check why this is the case
+  remove_q52 <- grep("q53", questions_loop$newname, invert = TRUE)
+  questions_loop <- questions_loop[remove_q52]
+  remove_q60 <- grep("q60", questions_loop$newname, invert = TRUE)
+  questions_loop <- questions_loop[remove_q60]
+}
+
+
+```
+
+
+This can be taken out and turned into a seperate function.
+
+```{r unqiue_table}
+  
+  
+  # ## Create a separate table for for loop question
+  for(q in unique(qloops[, q1num])){
+    
+    ## Pick data for relevant question
+    current_q <- qloops[q1num == q]
+    
+    ## Merge on dataframe information for q
+    current_q <- merge(current_q, df, by.x="qname", by.y="variable")
+    
+    ## Remove empty rows
+    current_q <- current_q[!is.na(value)]
+    
+    ## Re-create table to be wide structure instead of very long
+    if(nrow(current_q) > 0){
+      ## Reshape to wide x ~ y where x will be rows, y columns
+      
+      current_q <- dcast(
+        current_q,
+        country+respondent_id+panel+wave+rowid ~ q2num+extra+extranum+empty8, value.var="value"
+      )
+      
+      ## Order table by respondent_id wave and the row (V4)
+      class(current_q$rowid) <- "integer"
+      setorder(current_q, country, respondent_id, panel,  wave, rowid)
+      colnames(current_q)[which(colnames(current_q) == "rowid")] <- "table_row"
+      current_q
+      ## Remove NA's in column names
+      colnames(current_q) <- sapply(
+        strsplit(colnames(current_q), "_"),
+        function(x){
+          paste0(x[which(x != "NA")], collapse="_")
+        }
+      )
+      ## Assign current_q to object table_q
+      assign(paste0("table_",q), current_q)
+    } else {
+      message(paste0("table for ", q, " is empty"))
+      # store empty_tables
+      empty_tables <- c(empty_tables, q)
+      
+    }
+  }
+  
+
+```
+
+
+
+
+```{r}
+e <- environment()
+
+ match_vars <- c("country", "respondent_id", "panel", "wave", "table_row")
+
+tables <- grep("table_", names(e), value = T)
+  tables <- grep("participant_table_questions|check_table_names", tables,
+                 invert = TRUE, value = TRUE)
+  tables
+  table_names <- mget(unlist(tables))
+  table_names
+  combine_dt <- Reduce(function(...) merge(..., by = match_vars, all = T), table_names)
+  
+
+  x_dt <- merge(df, combine_dt, by = match_vars[-5], all = TRUE)
+
+```
+
+
+
