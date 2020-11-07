@@ -209,13 +209,13 @@ We can see that each part of the question is seperated by an underscore.
 
   ## Create a data table of the "loop" variable questions
   ## Sapply creates a list of loop variables names by splitting where "_" occurs
+  qlists <- sapply(
+      unique(df[grepl("loop|scale", variable), variable]),
+      strsplit, split="_"
+    )
 
 ## Perhaps change to "loop|scale" 
 
-qlists <- sapply(
-    unique(df[grepl("loop|scale", variable), variable]),
-    strsplit, split="_"
-  )
 
 head(qlists)
 ```
@@ -384,13 +384,13 @@ e <- environment()
  match_vars <- c("country", "respondent_id", "panel", "wave", "table_row")
 
 tables <- grep("table_", names(e), value = T)
-  tables <- grep("participant_table_questions|check_table_names", tables,
+  tables <- grep("participant_table_questions|check_table_names|survey_to_datatable_temp", tables,
                  invert = TRUE, value = TRUE)
   tables
   table_names <- mget(unlist(tables))
   table_names
   combine_dt <- Reduce(function(...) merge(..., by = match_vars, all = T), table_names)
-  
+  combine_dt
 
   x_dt <- merge(df, combine_dt, by = match_vars[-5], all = TRUE)
 
