@@ -118,6 +118,7 @@ dt[, sniffer_device_type_final := NULL]
 dt[, sniffer_device_type_initial := NULL]
 dt[, survey_boost := NULL]
 dt[, survey_main := NULL]
+dt[, uksg_version := NULL]
 
 # Label values ------------------------------------------------------------
 
@@ -340,9 +341,6 @@ print(paste0("Household vars: ", length(hh_cols)))
 loc_cols <- grep("area|region", names(dt), value = TRUE)
 print(paste0("Location vars: ", length(loc_cols)))
 
-
-
-
 qs::qsave(dt, file = output_data)
 print(paste0('Saved:' , output_name))
 
@@ -355,7 +353,6 @@ print(paste0('Saved:' , output_name))
 # Age ---------------------------------------------------------------------
 
 ## Adults report on behalf of children. Therefore need to swap participant and child age
-
 
 
 # Cleaning ----------------------------------------------------------------
