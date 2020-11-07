@@ -14,7 +14,7 @@
 ## CIJ
 if(Sys.info()["nodename"] == "DESKTOP-OKJFGKO"){
   #dir_data_spss <- "data/spss"
-  dir_data_spss <- '~/../Filr/Net Folders/EPH Shared/Comix_survey/spss_files/spss'
+  dir_data_spss <- '~/../Filr/Net Folders/EPH Shared/Comix_survey/data/spss'
   ## Filepaths for temp processing files
   dir_data_process <- "data/processing"
 }
@@ -22,7 +22,7 @@ if(Sys.info()["nodename"] == "DESKTOP-OKJFGKO"){
 ## AG
 if(Sys.info()["nodename"] == "Amys-MacBook-Pro.local"){
   #dir_data_spss <- "data/spss"
-  dir_data_spss <- "~/../amygimma/Filr/Net Folders/EPH Shared/Comix_survey/spss_files/spss"
+  dir_data_spss <- "~/../amygimma/Filr/Net Folders/EPH Shared/Comix_survey/data/spss"
   ## Filepaths for temp processing files
   dir_data_process <- "data/processing"
 }
@@ -31,7 +31,7 @@ if(Sys.info()["nodename"] == "Amys-MacBook-Pro.local"){
 ## KLM
 if(Sys.info()["nodename"] == "DESKTOP-R36S69R"){
   #dir_data_spss <- "data/spss"
-  dir_data_spss <- 'C:/Users/kw/Filr/Net Folders/EPH Shared/Comix_survey/spss_files/spss'
+  dir_data_spss <- 'C:/Users/kw/Filr/Net Folders/EPH Shared/Comix_survey/data/spss'
   ## Filepaths for temp processing files
   dir_data_process <- "data/processing"
 }
