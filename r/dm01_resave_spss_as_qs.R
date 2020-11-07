@@ -11,7 +11,7 @@ source('r/00_setup_filepaths.r')
 source('r/functions/save_spss_qs.R')
 
 # Countries ---------------------------------------------------------------
-country_codes <- c("UK", "NL", "BE", "NO")[4]
+country_codes <- c("UK", "NL", "BE", "NO")
 
 # Open SPSS and save as QS ------------------------------------------------
 
