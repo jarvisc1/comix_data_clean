@@ -16,7 +16,6 @@ country_codes <- c("UK", "NL", "BE", "NO")
 
 # Cleaning ----------------------------------------------------------------
 
-country_codes <- c("UK", "NL", "BE", "NO")
 
 dt_list <- list()
 for(country in country_codes){
@@ -29,7 +28,7 @@ for(country in country_codes){
   
   for(r_name in r_names){
     input_name <-  paste0(r_name, "_4.qs")
-    output_name <- paste0("dirty_combine.qs")
+    output_name <- paste0("dirty_combine_5.qs")
     input_data <-  file.path(dir_data_process, input_name)
     output_data <- file.path(dir_data_process, output_name)
   
@@ -43,6 +42,6 @@ for(country in country_codes){
 dt_combined <- rbindlist(dt_list, use.names = TRUE, fill = TRUE)
 
 ## Save combined file
-qs::qsave(dt, file = output_data)
+qs::qsave(dt_combined, file = output_data)
 print(paste0('Saved:' , output_name))
   
