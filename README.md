@@ -2,6 +2,11 @@
 
 Code for cleaning the data recieved for the CoMix contact survey.
 
+## To do:
+1. Parrallelise code.
+2. Remove overall cleaning and allow for a single dataset to be updated. 
+
+
 # Run data cleaning. 
 
 ## For Mac
