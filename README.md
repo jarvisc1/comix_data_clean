@@ -54,7 +54,7 @@ This only needs to be done once. Note for step 8 you need to put the path to you
 5. Click Environment Variables…
 6. Under User variables select PATH
 7. Click Edit…
-8. Add ;C:\Program Files\R\R-V.v.0\bin to end of Variable value, taking care to remove trailing spaces
+8. Add C:\Program Files\R\R-V.v.0\bin to end of Variable value, taking care to remove trailing spaces
 9. Click OK
 10. Click OK
 11. Click OK
