@@ -2,33 +2,6 @@
 
 Code for cleaning the data recieved for the CoMix contact survey.
 
-## To do:
-1. Parrallelise code.
-2. Remove overall cleaning and allow for a single dataset to be updated. 
-
-# Folder structure
-
-Folders
-
-* `r` - for R scripts
-* `r/functions` - store user written functions for the cleaning
-* `data` - for the datasets
-* `data/processing` - for interim cleaning datasets
-* `data/clean` - for cleaned datasets
-* `codebooks` - Codebooks used for data cleaning
-* `admin` - For information about the cleaning
-
-# Cleaning steps
- 
-1. Download all SPSS files from shared drive and save them as QS file locally.
-2. Check if country, wave, and panel variables are present.
-3. Reshape the data from wide to long.
-4. Rename variables.
-5. Combine data
-6. Clean existing variables
-7. Add new variables
-8. Split and serve data
- 
 # Run all data cleaning. 
 
 ## For Mac
@@ -60,6 +33,34 @@ This only needs to be done once. Note for step 8 you need to put the path to you
 11. Click OK
 
 Check this has worked by going to powershell and typing `R.exe` a session of R should start. 
+
+## To do:
+1. Parrallelise code.
+2. Remove overall cleaning and allow for a single dataset to be updated. 
+
+# Folder structure
+
+Folders
+
+* `r` - for R scripts
+* `r/functions` - store user written functions for the cleaning
+* `data` - for the datasets
+* `data/processing` - for interim cleaning datasets
+* `data/clean` - for cleaned datasets
+* `codebooks` - Codebooks used for data cleaning
+* `admin` - For information about the cleaning
+
+# Cleaning steps
+ 
+1. Download all SPSS files from shared drive and save them as QS file locally.
+2. Check if country, wave, and panel variables are present.
+3. Reshape the data from wide to long.
+4. Rename variables.
+5. Combine data
+6. Clean existing variables
+7. Add new variables
+8. Split and serve data
+ 
 
 # Actions
 
