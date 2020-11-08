@@ -18,7 +18,7 @@ dt1 [label =  'data_1.qs ']
 dt2 [label =  'data_2.qs' ]
 dt3 [label =  'data_3.qs' ]
 dt4 [label =  'data_4.qs']
-dt5 [label =  'dirty_combined_5.qs' ]
+dt5 [label =  'combined_5.qs' ]
 
 
 	subgraph cluster0 {
@@ -48,11 +48,11 @@ dt5 [label =  'dirty_combined_5.qs' ]
 	dt_input -> dt1
 }")
 
-
+gph
 gph %>%
   export_svg() %>%
   charToRaw %>% 
-  rsvg_png(file = "./admin/cleaning_structure.pdf", width = 25, height = 10)
+  rsvg_pdf(file = "./admin/cleaning_structure.pdf", width = 25, height = 10)
 
 
 ## Can be removed was trying to put in data naming convention as well.
