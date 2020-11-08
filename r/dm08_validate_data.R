@@ -1,5 +1,5 @@
 ## Name: dm_validate_data.R
-## Description: Peform data checks.
+## Description: Perform data checks.
 ## Input file: combined_8.qs
 ## Functions:
 ## Output file: combined_9.qs
