@@ -93,8 +93,8 @@ x1 <- survey_to_datatable_temp(test_data)
 x2 <- survey_to_datatable(test_data)
 x2
 dim(test_data)
-dim(x1)
-dim(x2)
+names(x1)
+names(x2)
 
 place <- grep("q100", names(x1))
 x1[, ..place]
