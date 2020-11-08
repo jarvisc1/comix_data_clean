@@ -233,7 +233,7 @@ spss_date_cols <- c(
           "hhm_work_closure_end_date")
 
 spss_date <- function(x) as.Date(as.numeric(x)/86400, origin = "1582-10-14")
-dt[, (cols) := lapply(.SD, spss_date), .SDcols = cols ]
+dt[, (spss_date_cols) := lapply(.SD, spss_date), .SDcols = spss_date_cols ]
 
 # Work dates --------------------------------------------------------------
 ## The date for the UK for Panel A wave 1 and 2, Panel B wave 1 are in a different
