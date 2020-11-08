@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+*.html
 data/~$spss_files.xlsx
 data/spss/*
 data/processing/*
