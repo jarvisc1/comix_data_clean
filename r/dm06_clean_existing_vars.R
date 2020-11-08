@@ -1,8 +1,8 @@
 ## Name: dm_clean_existing_vars.R
 ## Description: Run checks and proces variables already present in the data.
-## Input file: dirty_combine_5.qs
+## Input file: combined_5.qs
 ## Functions:
-## Output file: checked_combine_6.qs
+## Output file: combined_6.qs
 
 
 # Packages ----------------------------------------------------------------
@@ -16,8 +16,8 @@ source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("dirty_combine_5.qs")
-output_name <- paste0("checked_combine_6.qs")
+input_name <-  paste0("combined_5.qs")
+output_name <- paste0("combined_6.qs")
 input_data <-  file.path(dir_data_process, input_name)
 output_data <- file.path(dir_data_process, output_name)
 
@@ -341,6 +341,8 @@ print(paste0("Household vars: ", length(hh_cols)))
 loc_cols <- grep("area|region", names(dt), value = TRUE)
 print(paste0("Location vars: ", length(loc_cols)))
 
+
+# Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)
 print(paste0('Saved:' , output_name))
 

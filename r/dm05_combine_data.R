@@ -1,8 +1,8 @@
 ## Name: dm05_combine_data.R
 ## Description: Combine all of the temporary cleaning data into one qs file
-## Input file: cnty_wkN_yyyymmdd_pN_wvN_3.qs
+## Input file: cnty_wkN_yyyymmdd_pN_wvN_4.qs
 ## Functions:
-## Output file: dirty_combine_5.qs
+## Output file: combined_5.qs
 
 
 # Packages ----------------------------------------------------------------
@@ -28,7 +28,7 @@ for(country in country_codes){
   
   for(r_name in r_names){
     input_name <-  paste0(r_name, "_4.qs")
-    output_name <- paste0("dirty_combine_5.qs")
+    output_name <- paste0("combined_5.qs")
     input_data <-  file.path(dir_data_process, input_name)
     output_data <- file.path(dir_data_process, output_name)
   
