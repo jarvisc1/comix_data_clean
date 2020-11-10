@@ -14,7 +14,7 @@ source('r/functions/save_spss_qs.R')
 # in case running for certain countries only
 # country_codes <- c("UK", "NL", "BE", "NO")
 country_codes <- readxl::excel_sheets('data/spss_files.xlsx')
-country_codes <- grep("summary", country_codes, ignore.case = T, invert = T, value = T)
+country_codes <- grep("summary", country_codes, ignore.case = TRUE, invert = TRUE, value = TRUE)
 
 # Open SPSS and save as QS ------------------------------------------------
 
