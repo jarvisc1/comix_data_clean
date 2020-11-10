@@ -1,0 +1,63 @@
+# Name: dm07_allocate_multiple_contacts.R
+## Description: Assign each of the multiple contacts to a row
+## Input file: combined_6.qs
+## Functions:
+## Output file: combined_7.qs
+
+
+# Packages ----------------------------------------------------------------
+library(data.table)
+library(lubridate)
+library(stringr)
+
+# Source user written scripts ---------------------------------------------
+source('r/00_setup_filepaths.r')
+
+# I/O Data ----------------------------------------------------------------
+
+input_name <-  paste0("combined_6.qs")
+output_name <- paste0("combined_7.qs")
+input_data <-  file.path(dir_data_process, input_name)
+output_data <- file.path(dir_data_process, output_name)
+
+dt <- qs::qread(input_data)
+print(paste0("Opened: ", input_name)) 
+
+
+
+# Find multi contacts columns ---------------------------------------------
+multi <- grep("^multi", names(dt), value =TRUE)
+multi <- grep("phys", multi, value =TRUE, invert = TRUE)
+multi <- c("country", "part_id", "panel", "wave",  multi)
+
+
+# Reshape to one row per contact per setting type -------------------------------------
+dt_long <- melt(dt[, ..multi], id.vars = c("country", "part_id", "panel", "wave"))
+
+## Remove those without multiple contacts
+dt_long <- dt_long[!is.na(value)]
+
+
+# Set names of variables --------------------------------------------------
+dt_long[, variable := gsub("multiple_contacts_", "",variable)]
+dt_long[variable %like% "older_adult", cnt_age := "65+"]
+dt_long[variable %like% "^adult", cnt_age := "18-64"]
+dt_long[variable %like% "^child", cnt_age := "0-17"]
+dt_long[variable %like% "other", setting := "cnt_other"]
+dt_long[variable %like% "school", setting := "cnt_school"]
+dt_long[variable %like% "work", setting := "cnt_work"]
+dt_long[, value := "Yes"]
+
+
+# Reshape to wide for merging ---------------------------------------------
+dt_cnts <- dcast(dt_long, country+panel+wave+part_id+cnt_age ~ setting, value.var = "value", fill = "No")
+
+
+# Append on to main data --------------------------------------------------
+dt <- rbindlist(list(dt, dt_cnts), use.names = TRUE, fill = TRUE)
+
+
+# Save data ---------------------------------------------------------------
+qs::qsave(dt, file = output_data)
+print(paste0('Saved:' , output_name))
+
