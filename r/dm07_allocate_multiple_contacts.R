@@ -28,11 +28,11 @@ print(paste0("Opened: ", input_name))
 # Find multi contacts columns ---------------------------------------------
 multi <- grep("^multi", names(dt), value =TRUE)
 multi <- grep("phys", multi, value =TRUE, invert = TRUE)
-multi <- c("country", "part_id", "panel", "wave",  multi)
+multi <- c("country", "part_id", "panel", "wave","part_age", "part_gender",  multi)
 
 
 # Reshape to one row per contact per setting type -------------------------------------
-dt_long <- melt(dt[, ..multi], id.vars = c("country", "part_id", "panel", "wave"))
+dt_long <- melt(dt[, ..multi], id.vars = c("country", "part_id", "panel", "wave", "part_age", "part_gender"))
 
 ## Remove those without multiple contacts
 dt_long <- dt_long[!is.na(value)]
@@ -51,7 +51,7 @@ dt_long[, value := "Yes"]
 
 
 # Reshape to wide for merging ---------------------------------------------
-dt_cnts <- dcast(dt_long, country+panel+wave+part_id+cnt_age ~ setting, value.var = "value", fill = "No")
+dt_cnts <- dcast(dt_long, country+panel+wave+part_id+part_age+part_gender+cnt_age ~ setting, value.var = "value", fill = "No")
 
 dt_cnts$cnt_mass <- "mass"
 
