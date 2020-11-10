@@ -49,13 +49,16 @@ dt_long[variable %like% "work", setting := "cnt_work"]
 dt_long[, value := "Yes"]
 
 
+
 # Reshape to wide for merging ---------------------------------------------
 dt_cnts <- dcast(dt_long, country+panel+wave+part_id+cnt_age ~ setting, value.var = "value", fill = "No")
 
+dt_cnts$cnt_mass <- "mass"
 
 # Append on to main data --------------------------------------------------
 dt <- rbindlist(list(dt, dt_cnts), use.names = TRUE, fill = TRUE)
 
+dt[is.na(cnt_mass), cnt_mass := "individual"]
 
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)
