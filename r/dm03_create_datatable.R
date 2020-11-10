@@ -33,6 +33,12 @@ for(country in country_codes){
     dt <- qs::qread(input_data)
     print(paste0("Opened: ", input_name)) 
     
+    ## Remove completely empty columns
+    emptycols_na <- colSums(is.na(dt)) == nrow(dt)
+    emptycols_na <- names(emptycols_na[emptycols_na])
+    set(dt, j = emptycols_na, value = NULL)
+    print(paste0("Removed: ", length(emptycols_na), " empty columns"))
+    
     ## User written function
     dt <- survey_to_datatable(dt)
     
