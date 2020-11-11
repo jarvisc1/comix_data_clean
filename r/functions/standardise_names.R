@@ -1,7 +1,7 @@
 
 ## Take the Ipsos names and standardise the loop and scale varibles
-#var <- unique(allnames)
-standardise_names <- function(var, original_survey = FALSE){
+var <- unique(allnames)
+#standardise_names <- function(var, original_survey = FALSE){
   questions_lists <- sapply(
     var,
     strsplit, split="_"
@@ -120,11 +120,17 @@ standardise_names <- function(var, original_survey = FALSE){
     questions_loop[grepl("q60", oldname) , text1 := p5]
     questions_loop[grepl("q60", oldname) , scalenum := p3]
     questions_loop[grepl("q60", oldname) , loopnum := 0]
-    
+    ## Mass contacts
     questions_loop[grepl("q75_[0-9].*_scale", oldname), newname := paste("q75", p2,p3, sep = "_")]
     questions_loop[grepl("q75", oldname)]
     questions_loop[grepl("q76_[0-9].*_scale", oldname), newname := paste("q76", p2,p3, sep = "_")]
     questions_loop[grepl("q76", oldname)]
+    questions_loop[grepl("q79a_[0-9].*_scale", oldname), newname := paste("q79a", p2,p3, sep = "_")]
+    questions_loop[grepl("q80a_[0-9].*_scale", oldname), newname := paste("q80a", p2,p3, sep = "_")]
+    questions_loop[grepl("q81a_[0-9].*_scale", oldname), newname := paste("q81a", p2,p3, sep = "_")]
+    questions_loop[grepl("q79a", oldname)]
+    questions_loop[grepl("q80a", oldname)]
+    questions_loop[grepl("q81a", oldname)]
     
 
 
