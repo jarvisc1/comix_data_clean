@@ -4,10 +4,14 @@ filenames <- filenames[!is.na(filenames$spss_name),]
 ## This script loads _1.qs files and save them as _2.qs files
 r_names <- filenames$r_name
 <<<<<<< HEAD
+<<<<<<< HEAD
 r_name <- filenames$r_name[35]
 =======
 r_name <- filenames$r_name[1]
 >>>>>>> 6313a80... Exploring changing the survey_to_datatable function
+=======
+r_name <- filenames$r_name[35]
+>>>>>>> d2352f4... Update tests
 print(paste0("Starting: ", r_name)) 
 qs2_name <-  paste0(r_name, "_2.qs")
 qs2_data <-  file.path(dir_data_process, qs2_name)
@@ -30,6 +34,7 @@ dim(dt3)
 dim(dt4)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 grep("q75", names(dt2), value = TRUE)
 grep("q80", names(dt2), value = TRUE)
 
@@ -44,12 +49,26 @@ source('r/functions/survey_to_datatable_temp.R')
 
 
 =======
+=======
+grep("q75", names(dt2), value = TRUE)
+grep("q80", names(dt2), value = TRUE)
+>>>>>>> d2352f4... Update tests
+
+
+table(dt2$q35_1_scale)
+table(dt2$q35_2_scale)
+table(dt2$q35_3_scale)
+# Change in variables -----------------------------------------------------
+
+source('r/functions/survey_to_datatable_temp.R')
 
 
 
-
+<<<<<<< HEAD
 # Change in variables -----------------------------------------------------
 >>>>>>> 6313a80... Exploring changing the survey_to_datatable function
+=======
+>>>>>>> d2352f4... Update tests
 
 ## This is really helpful to see how the variables change from spss
 ## to the R data.table. 
@@ -180,10 +199,14 @@ head(q31_n_vars[!is.na(get(q31_n_names[1]))])
 
 loops <- grep("loop", names(dt), value = TRUE)
 <<<<<<< HEAD
+<<<<<<< HEAD
 scales <- grep("scale", names(dt2), value = TRUE)
 =======
 scales <- grep("scale", names(dt), value = TRUE)
 >>>>>>> 6313a80... Exploring changing the survey_to_datatable function
+=======
+scales <- grep("scale", names(dt2), value = TRUE)
+>>>>>>> d2352f4... Update tests
 scales <- grep("loop", scales, value = TRUE, invert = TRUE)
 loop_vars <- unique(substr(loops, 1,3))
 scale_vars <- unique(substr(scales, 1,3))
@@ -250,9 +273,13 @@ head(q39_n_vars[!is.na(get(q39_n_names[1]))])
 # Check for q31 -----------------------------------------------------------
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 grep("q76", names(dt2), value = TRUE)
 =======
 >>>>>>> 6313a80... Exploring changing the survey_to_datatable function
+=======
+grep("q76", names(dt2), value = TRUE)
+>>>>>>> d2352f4... Update tests
 q31_names <- grep("q31", names(dt), value = TRUE)
 
 q31_names_1 <- grep("q31_loop_[1-9]_q31_1", names(dt), value = TRUE)
