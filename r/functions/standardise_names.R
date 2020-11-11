@@ -1,6 +1,6 @@
 
 ## Take the Ipsos names and standardise the loop and scale varibles
-
+#var <- unique(allnames)
 standardise_names <- function(var){
   questions_lists <- sapply(
     var,
@@ -34,8 +34,8 @@ standardise_names <- function(var){
   ## The row is for the loop is always in part 3
   questions_loop[grepl("loop", p2), loopnum := as.numeric(p3)]
   ## Add the text scale and put 1 for a constant scale number for consistency
-  questions_loop[grepl("loop", p2), scale := "scale"]
-  questions_loop[grepl("loop", p2), scalenum := 1]
+  questions_loop[grepl("loop", p2), scale := NA_character_]
+  questions_loop[grepl("loop", p2), scalenum := p5]
   
   
   ## There is extra text of date, codes, filter in parts 4, 5, and 6
@@ -87,6 +87,8 @@ standardise_names <- function(var){
                                                 scalenum,text1,text2, 
                                                 sep = "_")]
   
+  #table(questions_loop[grepl("q72", p4)]$newname)
+  #table(questions_loop[grepl("q48", p1)]$newname)
   #table(is.na(questions_loop$qnum))
   questions_loop[is.na(newname), newname := oldname]
   
