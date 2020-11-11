@@ -27,7 +27,7 @@ for(country in country_codes){
   filenames <- filenames[!is.na(filenames$spss_name),]
   r_names <- filenames$r_name
   
-  for(r_name in r_names){
+  for(r_name in r_names[8]){
     input_name <-  paste0(r_name, "_2.qs")
     output_name <- paste0(r_name, "_3.qs")
     input_data <-  file.path(dir_data_process, input_name)
@@ -37,17 +37,21 @@ for(country in country_codes){
     print(paste0("Opened: ", input_name)) 
     
     cols_start <- ncol(dt)
-    ## Remove completely empty columns
+    # Remove empty columns -------------------------------------------------
     emptycols_na <- colSums(is.na(dt)) == nrow(dt)
     emptycols_na <- names(emptycols_na[emptycols_na])
     set(dt, j = emptycols_na, value = NULL)
-    
     cols_mid <- ncol(dt)
     ## User written function
     dt <- survey_to_datatable(dt)
+
+    # Remove empty rows again -------------------------------------------------
+    emptycols_na <- colSums(is.na(dt)) == nrow(dt)
+    if(length(emptycols_na) > 0 ){
+      emptycols_na <- names(emptycols_na[emptycols_na])
+      set(dt, j = emptycols_na, value = NULL)
+    }  
     print(paste0("Reduced from ", cols_start, " to ", ncol(dt), " columns"))
-    print(paste0("Removed ", length(emptycols_na), " empty columns"))
-    print(paste0("Reshape reduced from ", cols_mid, " to ", ncol(dt), " columns"))
     
     ## Save _3 data
     qs::qsave(dt, file = output_data)
