@@ -17,7 +17,10 @@ source('r/functions/check_cnty_panel_wave.R')
 source('r/functions/standardise_names.R')
 
 # Countries ---------------------------------------------------------------
-country_codes <- c("UK", "NL", "BE", "NO")
+# in case running for certain countries only
+# country_codes <- c("UK", "NL", "BE", "NO")
+country_codes <- readxl::excel_sheets('data/spss_files.xlsx')
+country_codes <- grep("summary", country_codes, ignore.case = TRUE, invert = TRUE, value = TRUE)
 
 # Cleaning ----------------------------------------------------------------
 
