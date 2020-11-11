@@ -210,10 +210,14 @@ We can see that each part of the question is seperated by an underscore.
   ## Create a data table of the "loop" variable questions
   ## Sapply creates a list of loop variables names by splitting where "_" occurs
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 630e237... Update for more detail
   qlists <- sapply(
       unique(df[grepl("loop|scale", variable), variable]),
       strsplit, split="_"
     )
+<<<<<<< HEAD
 
 ## Perhaps change to "loop|scale" 
 
@@ -226,6 +230,11 @@ qlists <- sapply(
     strsplit, split="_"
   )
 >>>>>>> 6313a80... Exploring changing the survey_to_datatable function
+=======
+
+## Perhaps change to "loop|scale" 
+
+>>>>>>> 630e237... Update for more detail
 
 head(qlists)
 ```
@@ -395,20 +404,28 @@ e <- environment()
 
 tables <- grep("table_", names(e), value = T)
 <<<<<<< HEAD
+<<<<<<< HEAD
   tables <- grep("participant_table_questions|check_table_names|survey_to_datatable_temp", tables,
 =======
   tables <- grep("participant_table_questions|check_table_names", tables,
 >>>>>>> 6313a80... Exploring changing the survey_to_datatable function
+=======
+  tables <- grep("participant_table_questions|check_table_names|survey_to_datatable_temp", tables,
+>>>>>>> 630e237... Update for more detail
                  invert = TRUE, value = TRUE)
   tables
   table_names <- mget(unlist(tables))
   table_names
   combine_dt <- Reduce(function(...) merge(..., by = match_vars, all = T), table_names)
 <<<<<<< HEAD
+<<<<<<< HEAD
   combine_dt
 =======
   
 >>>>>>> 6313a80... Exploring changing the survey_to_datatable function
+=======
+  combine_dt
+>>>>>>> 630e237... Update for more detail
 
   x_dt <- merge(df, combine_dt, by = match_vars[-5], all = TRUE)
 
