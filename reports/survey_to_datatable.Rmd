@@ -211,12 +211,16 @@ We can see that each part of the question is seperated by an underscore.
   ## Sapply creates a list of loop variables names by splitting where "_" occurs
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 630e237... Update for more detail
+=======
+>>>>>>> 648b3d16d3bf0d9c04342c6b5d66d1cd8d7d779d
   qlists <- sapply(
       unique(df[grepl("loop|scale", variable), variable]),
       strsplit, split="_"
     )
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 ## Perhaps change to "loop|scale" 
@@ -235,6 +239,11 @@ qlists <- sapply(
 ## Perhaps change to "loop|scale" 
 
 >>>>>>> 630e237... Update for more detail
+=======
+
+## Perhaps change to "loop|scale" 
+
+>>>>>>> 648b3d16d3bf0d9c04342c6b5d66d1cd8d7d779d
 
 head(qlists)
 ```
@@ -405,6 +414,7 @@ e <- environment()
 tables <- grep("table_", names(e), value = T)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   tables <- grep("participant_table_questions|check_table_names|survey_to_datatable_temp", tables,
 =======
   tables <- grep("participant_table_questions|check_table_names", tables,
@@ -412,11 +422,15 @@ tables <- grep("table_", names(e), value = T)
 =======
   tables <- grep("participant_table_questions|check_table_names|survey_to_datatable_temp", tables,
 >>>>>>> 630e237... Update for more detail
+=======
+  tables <- grep("participant_table_questions|check_table_names|survey_to_datatable_temp", tables,
+>>>>>>> 648b3d16d3bf0d9c04342c6b5d66d1cd8d7d779d
                  invert = TRUE, value = TRUE)
   tables
   table_names <- mget(unlist(tables))
   table_names
   combine_dt <- Reduce(function(...) merge(..., by = match_vars, all = T), table_names)
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
   combine_dt
@@ -426,6 +440,9 @@ tables <- grep("table_", names(e), value = T)
 =======
   combine_dt
 >>>>>>> 630e237... Update for more detail
+=======
+  combine_dt
+>>>>>>> 648b3d16d3bf0d9c04342c6b5d66d1cd8d7d779d
 
   x_dt <- merge(df, combine_dt, by = match_vars[-5], all = TRUE)
 
