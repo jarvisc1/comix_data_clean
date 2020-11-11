@@ -80,12 +80,28 @@ standardise_names <- function(var){
   questions_loop[grepl("scale", p3) & grepl("original", p4), text1 := p4]
   
   #questions_loop[grepl("scale", p3) & !is.na(text1)]
+
+  # Extra variables for contacts and households -----------------------------
+  questions_loop[grepl("contact", oldname), 
+                 loopnum := as.numeric(stringr::str_extract(p1, "[0-9].*"))]
+  questions_loop[grepl("contact", oldname), loop := "loop"]
+  questions_loop[grepl("contact", oldname), qnum := stringr::str_remove(p1, "[0-9].*" )]
+  
+  hhcomps <- "hhcompcon|hhcomprem"
+  questions_loop[grepl(hhcomps, oldname), loop := "loop"]
+  questions_loop[grepl(hhcomps, oldname), loopnum := as.numeric(p2)]
+  questions_loop[grepl(hhcomps, oldname), qnum:= p1]
+  #questions_loop[grepl("contact", oldname)]
   
   ## Get rid of the spaces.
+  
   questions_loop[!is.na(qnum), newname := paste(qnum,loop,
                                                 loopnum,scale, 
                                                 scalenum,text1,text2, 
                                                 sep = "_")]
+  
+  
+  
   
   #table(questions_loop[grepl("q72", p4)]$newname)
   #table(questions_loop[grepl("q48", p1)]$newname)
