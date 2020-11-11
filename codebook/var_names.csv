@@ -216,7 +216,6 @@ q51_7,q51_loop_10_q51_7,table_variable,table_q51,hhm_not_attend_childcare_siblin
 q51_8,q51_loop_10_q51_8,table_variable,table_q51,hhm_not_attend_childcare_grandparent,
 q51_9,q51_loop_10_q51_9,table_variable,table_q51,hhm_not_attend_childcare_sitter_paid,
 q52_1_scale,q52_1_scale,single_variable,,part_visit_pub,
-q52_10_scale,q52_10_scale,single_variable,,part_visit_outdoor_event,
 q52_2_scale,q52_2_scale,single_variable,,part_visit_restaurant,
 q52_3_scale,q52_3_scale,single_variable,,part_visit_cinema,
 q52_4_scale,q52_4_scale,single_variable,,part_visit_concert,
