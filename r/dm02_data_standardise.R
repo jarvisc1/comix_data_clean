@@ -1,7 +1,10 @@
-## Name: dm02_add_cnty_panel_wave.R
-## Description: Check if country, panel, and wave are present, if not add.
+## Name: dm02_data_check_standardise.R
+## Description: Check if country, panel, and wave are present, if noot add.
+##              Make the participant id unique across panels but within countries
+##              Rename child data questions
+##              Standardise loop and scale question names
 ## Input file: cnty_wkN_yyyymmdd_pN_wvN_1.qs
-## Functions: country_checker, wave_checker, panel_checker
+## Functions: country_checker, wave_checker, panel_checker, standardise_names
 ## Output file: cnty_wkN_yyyymmdd_pN_wvN_2.qs
 
 # Packages ----------------------------------------------------------------
@@ -11,6 +14,7 @@ library(stringr)
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
 source('r/functions/check_cnty_panel_wave.R')
+source('r/functions/standardise_names.R')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
@@ -107,7 +111,9 @@ for(country in country_codes){
          dt <- rbindlist(list(dt_child, dt_adult), use.names = TRUE, fill = TRUE)
       }  
       
-      
+
+      # Standardise names -------------------------------------------------------
+      names(dt) <- standardise_names(names(dt))
    
       ## Save _2 file
       qs::qsave(dt, file = output_data)
