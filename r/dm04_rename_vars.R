@@ -13,11 +13,11 @@ source('r/00_setup_filepaths.r')
 source('r/functions/change_names.R')
 
 # Countries ---------------------------------------------------------------
-country_codes <- c("UK", "NL", "BE", "NO")
+# in case running for certain countries only
+# country_codes <- c("UK", "NL", "BE", "NO")
+country_codes <- readxl::excel_sheets('data/spss_files.xlsx')
+country_codes <- grep("summary", country_codes, ignore.case = TRUE, invert = TRUE, value = TRUE)
 
-# Pick a country ----------------------------------------------------------
-
-country_codes <- c("UK", "NL", "BE", "NO")
 
 for(country in country_codes){
   print(paste0("Start: ", country))

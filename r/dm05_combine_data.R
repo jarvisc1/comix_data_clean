@@ -12,11 +12,12 @@ library(data.table)
 source('r/00_setup_filepaths.r')
 
 # Countries ---------------------------------------------------------------
-country_codes <- c("UK", "NL", "BE", "NO")
+# in case running for certain countries only
+# country_codes <- c("UK", "NL", "BE", "NO")
+country_codes <- readxl::excel_sheets('data/spss_files.xlsx')
+country_codes <- grep("summary", country_codes, ignore.case = T, invert = T, value = T)
 
 # Cleaning ----------------------------------------------------------------
-
-
 dt_list <- list()
 for(country in country_codes){
   print(paste0("Start: ", country))
