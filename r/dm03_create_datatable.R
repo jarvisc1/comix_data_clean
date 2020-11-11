@@ -27,7 +27,7 @@ for(country in country_codes){
   filenames <- filenames[!is.na(filenames$spss_name),]
   r_names <- filenames$r_name
   
-  for(r_name in r_names[8]){
+  for(r_name in r_names){
     input_name <-  paste0(r_name, "_2.qs")
     output_name <- paste0(r_name, "_3.qs")
     input_data <-  file.path(dir_data_process, input_name)
@@ -39,9 +39,10 @@ for(country in country_codes){
     cols_start <- ncol(dt)
     # Remove empty columns -------------------------------------------------
     emptycols_na <- colSums(is.na(dt)) == nrow(dt)
+    if(length(emptycols_na) > 0 ){
     emptycols_na <- names(emptycols_na[emptycols_na])
     set(dt, j = emptycols_na, value = NULL)
-    cols_mid <- ncol(dt)
+    }  
     ## User written function
     dt <- survey_to_datatable(dt)
 

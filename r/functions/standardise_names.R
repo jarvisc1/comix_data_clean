@@ -1,7 +1,7 @@
 
 ## Take the Ipsos names and standardise the loop and scale varibles
 #var <- unique(allnames)
-standardise_names <- function(var){
+standardise_names <- function(var, original_survey = FALSE){
   questions_lists <- sapply(
     var,
     strsplit, split="_"
@@ -35,7 +35,7 @@ standardise_names <- function(var){
   questions_loop[grepl("loop", p2), loopnum := as.numeric(p3)]
   ## Add the text scale and put 1 for a constant scale number for consistency
   questions_loop[grepl("loop", p2), scale := NA_character_]
-  questions_loop[grepl("loop", p2), scalenum := p5]
+  questions_loop[grepl("loop", p2) & grepl("^[0-9].*", p5), scalenum := p5]
   
   
   ## There is extra text of date, codes, filter in parts 4, 5, and 6
@@ -93,9 +93,46 @@ standardise_names <- function(var){
   questions_loop[grepl(hhcomps, oldname), qnum:= p1]
   #questions_loop[grepl("contact", oldname)]
   
+  
+  
+    # Exceptions --------------------------------------------------------------
+
+    # Attitude and behaviour questions ----------------------------------------
+    questions_loop[grepl("q35_[0-9].*_scale", oldname), newname := paste("q35_scale", p2, sep = "_")]
+    questions_loop[grepl("q36_[0-9].*_scale", oldname), newname := paste("q36_scale", p2, sep = "_")]
+    questions_loop[grepl("q37_[0-9].*_scale", oldname), newname := paste("q37_scale", p2, sep = "_")]
+    questions_loop[grepl("q38_[0-9].*_scale", oldname), newname := paste("q38_scale", p2, sep = "_")]
+    questions_loop[grepl("q35", oldname),]
+
+    # Visiting places ---------------------------------------------------------
+    questions_loop[grepl("q52_[0-9].*_scale", oldname), newname := paste("q52",p3, p2, sep = "_")]
+    questions_loop[grepl("q52", oldname)]
+    
+    questions_loop[grepl("q53_loop_[0-9].*", oldname), newname := paste("q53_scale", p3,p5,p6, sep = "_")]
+    questions_loop[grepl("q53", oldname)]
+    questions_loop[grepl("q55_[0-9].*_scale", oldname), newname := paste("q55_scale", p2, sep = "_")]
+    questions_loop[grepl("q55", oldname)]
+    
+    
+    questions_loop[grepl("q60_loop_[0-9].*", oldname), newname := paste("q60", p6, p3,p5, sep = "_")]
+    questions_loop[grepl("q60", oldname)]
+
+    questions_loop[grepl("q60", oldname) , text1 := p5]
+    questions_loop[grepl("q60", oldname) , scalenum := p3]
+    questions_loop[grepl("q60", oldname) , loopnum := 0]
+    
+    questions_loop[grepl("q75_[0-9].*_scale", oldname), newname := paste("q75", p2,p3, sep = "_")]
+    questions_loop[grepl("q75", oldname)]
+    questions_loop[grepl("q76_[0-9].*_scale", oldname), newname := paste("q76", p2,p3, sep = "_")]
+    questions_loop[grepl("q76", oldname)]
+    
+
+
+  
+  
   ## Get rid of the spaces.
   
-  questions_loop[!is.na(qnum), newname := paste(qnum,loop,
+  questions_loop[!is.na(qnum) & is.na(newname), newname := paste(qnum,loop,
                                                 loopnum,scale, 
                                                 scalenum,text1,text2, 
                                                 sep = "_")]
