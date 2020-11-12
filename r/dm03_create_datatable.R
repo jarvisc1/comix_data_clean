@@ -39,7 +39,7 @@ for(country in country_codes){
     cols_start <- ncol(dt)
     # Remove empty columns -------------------------------------------------
     emptycols_na <- colSums(is.na(dt)) == nrow(dt)
-    if(length(emptycols_na) > 0 ){
+    if(sum(emptycols_na) > 0 ){
     emptycols_na <- names(emptycols_na[emptycols_na])
     set(dt, j = emptycols_na, value = NULL)
     }  
@@ -48,7 +48,7 @@ for(country in country_codes){
 
     # Remove empty rows again -------------------------------------------------
     emptycols_na <- colSums(is.na(dt)) == nrow(dt)
-    if(length(emptycols_na) > 0 ){
+    if(sum(emptycols_na) > 0 ){
       emptycols_na <- names(emptycols_na[emptycols_na])
       set(dt, j = emptycols_na, value = NULL)
     }  
