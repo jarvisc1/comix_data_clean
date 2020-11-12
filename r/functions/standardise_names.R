@@ -1,7 +1,7 @@
 
-## Take the Ipsos names and standardise the loop and scale varibles
-var <- unique(allnames)
-#standardise_names <- function(var, original_survey = FALSE){
+## Take the Ipsos names and standardise the loop and scale variables
+#var <- unique(allnames)
+standardise_names <- function(var, original_survey = FALSE){
   questions_lists <- sapply(
     var,
     strsplit, split="_"

@@ -49,7 +49,7 @@ for(country in country_codes){
       
     }
     
-    #if (is.null(dt$q20)) dt$q20 <- dt$q20_new ## add back later when q20 fixed
+    if (is.null(dt$q20)) dt$q20 <- dt$q20_new 
     ## User written function
     
     
