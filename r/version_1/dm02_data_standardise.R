@@ -12,9 +12,9 @@ library(data.table)
 library(stringr)
 
 # Source user written scripts ---------------------------------------------
-source('r/00_setup_filepaths.r')
-source('r/functions/check_cnty_panel_wave.R')
-source('r/functions/standardise_names.R')
+source('./r/00_setup_filepaths.r')
+source('./r/version_1/functions/check_cnty_panel_wave.R')
+source('./r/version_1/functions/standardise_names.R')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
@@ -29,7 +29,8 @@ for(country in country_codes){
 
    # Setup input and output data and filepaths -------------------------------
    filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
-   filenames <- filenames[!is.na(filenames$spss_name),]
+   filenames <- filenames[!is.na(filenames$spss_name) & 
+                             filenames$survey_version == 1,]
    r_names <- filenames$r_name
    
    ## This script loads _1.qs files and save them as _2.qs files
@@ -69,47 +70,6 @@ for(country in country_codes){
       ## B starts from 20,000
       ## C starts from 30,000
       dt[respondent_id < 10000, respondent_id := respondent_id + 10000*as.numeric(factor(panel, LETTERS))]
-
-      # Parent - Child questions ------------------------------------------------
-      
-      ## Panels E and F have parent questions which are asked on behalf of 
-      ## The children. These question comes as qpNN or pcontacts. 
-      ## Need to rename them to qNN and contact and append back on
-      ## to the main data.
-      
-      # Read in variable names    
-      if ((as.character(dt$panel[1]) %in% c("E", "F"))) {
-         
-         dt_child <- dt[sampletype == "Sampletype=2 Parent sample"]
-         dt_adult <- dt[sampletype == "Sampletype=1 Main sample"]
-         
-         ## qp and pcontacts are child questions.
-         child_qs <- grep("qp", names(dt), value = T)
-         child_cs <- grep("pcontact", names(dt), value = T)
-         child_cols <- c(child_qs, child_cs)
-         # Identify adult questions and remove
-         adult_qs <- grep("^q[0-9]+", names(dt), value = T)
-         adult_cs <- grep("^contact[0-9]+", names(dt), value = T)
-         ## Needed in both
-         adult_qs <- grep("^q23|q20", adult_qs, value = T, invert = T)
-         adult_cols <- c(adult_qs, adult_cs)
-         
-         # Subset data
-         dt_adult <- dt_adult[, -child_cols, with = F]
-         dt_child <- dt_child[, -adult_cols, with = F]
-         
-         ## First should return a value second should be null
-         #grep("qp54", names(dt_child), value = T) # 1
-         #grep("q54", names(dt_child), value = T) # 1
-         
-         ## rename
-         names(dt_child) <- gsub("qp", "q", names(dt_child))
-         names(dt_child) <- gsub("pcontacts", "contact", names(dt_child))
-         
-         # Combine using names
-         dt <- rbindlist(list(dt_child, dt_adult), use.names = TRUE, fill = TRUE)
-      }  
-      
 
       # Standardise names -------------------------------------------------------
       names(dt) <- standardise_names(names(dt))
