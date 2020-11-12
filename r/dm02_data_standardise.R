@@ -69,7 +69,6 @@ for(country in country_codes){
       ## B starts from 20,000
       ## C starts from 30,000
       dt[respondent_id < 10000, respondent_id := respondent_id + 10000*as.numeric(factor(panel, LETTERS))]
-      
 
       # Parent - Child questions ------------------------------------------------
       

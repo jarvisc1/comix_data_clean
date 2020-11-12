@@ -118,7 +118,14 @@ survey_to_datatable <- function(df, export_var_names = FALSE){
   ## Remove all loop variables from the data as they're now replace by one for each loop
   set(df, j = grep("loop", names(df), value = TRUE), value = NULL)
   
-  x_dt <- merge(df, combine_dt, by = match_vars[-5], all = TRUE)
+  resp <- df[, list(country, respondent_id, panel, wave)]
+  resp[,table_row := 0L]
+  combine_dtr <- merge(combine_dt, resp, by = match_vars, all = T)
+  
+  df[, table_row := 0L]
+  
+  x_dt <- merge(df, combine_dt, by = match_vars, all = TRUE)
+  
   
   return(x_dt)
 }
