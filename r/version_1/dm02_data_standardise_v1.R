@@ -13,8 +13,8 @@ library(stringr)
 
 # Source user written scripts ---------------------------------------------
 source('./r/00_setup_filepaths.r')
-source('./r/version_1/functions/check_cnty_panel_wave.R')
-source('./r/version_1/functions/standardise_names.R')
+source('./r/version_1/functions/check_cnty_panel_wave_v1.R')
+source('./r/version_1/functions/standardise_names_v1.R')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only

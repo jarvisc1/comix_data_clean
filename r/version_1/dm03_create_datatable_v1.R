@@ -11,7 +11,7 @@ library(data.table)
 
 # Source user written scripts ---------------------------------------------
 source('./r/00_setup_filepaths.r')
-source('./r/version_1/functions/survey_to_datatable.R')
+source('./r/version_1/functions/survey_to_datatable_v1.R')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only

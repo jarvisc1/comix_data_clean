@@ -10,7 +10,6 @@ library(data.table)
 
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
-source('r/functions/change_names.R')
 
 # Countries ---------------------------------------------------------------
 country_codes <- c("UK", "NL", "BE", "NO")
