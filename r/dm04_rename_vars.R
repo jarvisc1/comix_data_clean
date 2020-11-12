@@ -27,6 +27,11 @@ for(country in country_codes){
   filenames <- filenames[!is.na(filenames$spss_name),]
   r_names <- filenames$r_name
   
+  survey1 <- as.data.table(readxl::read_excel("codebook/var_names.xlsx", sheet = "survey_1"))
+  survey2 <- as.data.table(readxl::read_excel("codebook/var_names.xlsx", sheet = "survey_2"))
+  survey1 <- survey1[!is.na(newname)]
+  survey2 <- survey2[!is.na(newname)]
+  
   for(r_name in r_names){
     input_name <-  paste0(r_name, "_3.qs")
     output_name <- paste0(r_name, "_4.qs")
@@ -36,25 +41,17 @@ for(country in country_codes){
     dt <- qs::qread(input_data)
     print(paste0("Opened: ", input_name)) 
     
-    # Read in variable names    
-    varnames <- as.data.table(read.csv("codebook/var_names.csv"))
-    
     # Different names for panel E and F in UK
     if ((as.character(dt$panel[1]) %in% c("E", "F"))) {
-      varnames <- as.data.table(read.csv("codebook/var_names_v2.csv"))
+      setnames(dt, survey2$oldname, survey2$newname, skip_absent = TRUE)
+    } else {
+      setnames(dt, survey1$oldname, survey1$newname, skip_absent = TRUE)
+      
     }
-    ## Sometime strange unicode in file reading due to mac/windows
-    names(varnames) <- c("var", "ipsos_varname", "type", "tablename", "new_name", "changed")
     
-    ## Rename any vars that aren't present or change names
-    if (is.null(dt$q20)) dt$q20 <- dt$q20_new
+    #if (is.null(dt$q20)) dt$q20 <- dt$q20_new ## add back later when q20 fixed
     ## User written function
     
-    if ((as.character(dt$panel[1]) %in% c("E", "F"))) {
-      dt <- change_namesv2(dt, varnames, tolower(dt$qcountry))
-    } else{
-      dt <- change_names(dt, varnames, tolower(dt$qcountry))
-    }
     
     
     ## Save temp data
