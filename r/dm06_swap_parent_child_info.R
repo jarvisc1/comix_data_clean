@@ -8,8 +8,6 @@
 
 # Packages ----------------------------------------------------------------
 library(data.table)
-library(lubridate)
-library(stringr)
 
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
@@ -32,29 +30,6 @@ map_sample_type <- c(
   "Sampletype=2 Parent sample" = "child"
 )
 
-# Row ids ----------------------------------------------------
-
-## There are issues with the household ID in different versions of the dataset. 
-   
-# ## For Pan
-# 
-# # Re-calculate the hhm added by participants in the children's surveys to assign
-# # hhm_ids to over 1000  (new household members are originally assigned variables
-# # of 150 - 156) to group with the adult participant which is recorded as 999
-# dt[panel %in% LETTERS[1:4], 
-#     table_row :=
-#       ifelse(row_id >= 150 & row_id <= 160, row_id - 150 + 1000, row_id)]
-# 
-# # Handles hhm who are added week to week (the row ids change week to week),
-# # assigns value of over 999, original hhm are under 20
-# # non-hhm contacts start at 20, to remain consistent with past data structure
-# dt[panel %in% LETTERS[5:6] & row_id > 19 & row_id < 900,    
-#    row_id := row_id + 999]
-# dt[panel %in% LETTERS[1:4] & row_id >= 900 & row_id < 999 , 
-#    row_id := row_id - 880]
-
-
-
 # Identify the adult and children samples -------------------------------------------------------------
 
 ## clean sample types text
@@ -65,45 +40,75 @@ dt[ country == "uk" & panel %in% c("A", "B"), sample_type := "adult"]
 ## Panel C, D for UK are children
 dt[ country == "uk" & panel %in% c("C", "D"), sample_type := "child"]
 
-
-# Fill in contact's age -----------------------------------------------------------
-
-## If they're a household contact then their age is in hhm_age_group
-dt[hhm_contact_yn == "Yes", cnt_age := hhm_age_group]
-dt[hhm_contact_yn == "Yes", cnt_gender := hhm_gender]
-
-## If they're a parent then their row id is 999 and info is in the part_age
-# Put in their age and gender if they're a contact
-dt[row_id == 999 & hhm_contact_yn == "Yes", cnt_age := part_age ]
-dt[row_id == 999 & hhm_contact_yn == "Yes", cnt_gender := part_gender]
-# Put in their age and gender as a household member
-dt[row_id == 999, hhm_age_group := part_age]
-dt[row_id == 999, hhm_gender := part_gender]
-## Remove their values from parent samples
-dt[sample_type == "child", part_age := NA]
-dt[sample_type == "child", part_gender := NA]
-dt[row_id == 999, part_gender := NA]
-
+dt[, sample_type := first(sample_type), by = .(country, panel, wave, part_id)]
 
 # Identify child -------------------------------------------------------
 
 hhm_id_pattern <- "^.*\\{_\\s*|\\s*\\}.*$"
 dt[ , child_id := as.numeric(gsub(hhm_id_pattern, "", child_hhm_select_raw))]
+dt[, child_id := first(child_id), by = .(country, panel, wave, part_id)]
 
-# Put in age for children ---------------------------------------------------------------------
-dt[row_id == child_id, part_age := hhm_age_group]
-dt[row_id == child_id, part_gender := hhm_gender]
+# Swap child parent info -----------------------------------------------------------
 
-## Reorder so non-missing age is at the top
-setorder(dt, country, panel, wave, part_id, part_age, na.last = TRUE)
-## Fill in the age group for all missing parts
-dt[sample_type == "child", part_age := zoo::na.locf(part_age), by = .(country, panel, wave, part_id)]
-dt[sample_type == "child", part_gender := zoo::na.locf(part_gender), by = .(country, panel, wave, part_id)]
+## Swap age
 
-## Remove rows of child with row_id = 0 as they are empty
-dt <- dt[!(sample_type == "child" & row_id == 0)]
-## change child row_id to be 0
-dt[child_id == row_id, row_id := 0]
+## Fill in parent's age
+dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
+   part_age := first(part_age),
+   by = .(country, panel, wave, part_id)
+   ]
+## Fill in child's age
+dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
+   hhm_age_group := last(hhm_age_group),
+   by = .(country, panel, wave, part_id)
+   ]
+## Swap parent's with child's
+dt[sample_type == "child" & (row_id == 0),
+   part_age := hhm_age_group,
+   by = .(country, panel, wave, part_id)
+   ]
+## Move parent to household member
+dt[sample_type == "child" & (child_id == row_id),
+   hhm_age_group := part_age,
+   by = .(country, panel, wave, part_id)
+   ]
+## Remove household age for child
+dt[sample_type == "child" & (row_id == 0),
+   hhm_age_group := NA_character_,
+   by = .(country, panel, wave, part_id)
+   ]
+## Remove participant age for parent
+dt[sample_type == "child" & (child_id == row_id),
+   part_age := NA_character_,
+   by = .(country, panel, wave, part_id)
+   ]
+
+
+## Same as above but for gender
+dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
+   part_gender := first(part_gender),
+   by = .(country, panel, wave, part_id)
+   ]
+dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
+   hhm_gender := last(hhm_gender),
+   by = .(country, panel, wave, part_id)
+   ]
+dt[sample_type == "child" & (row_id == 0),
+   part_gender := hhm_gender,
+   by = .(country, panel, wave, part_id)
+   ]
+dt[sample_type == "child" & (child_id == row_id),
+   hhm_gender := part_gender,
+   by = .(country, panel, wave, part_id)
+   ]
+dt[sample_type == "child" & (row_id == 0),
+   hhm_gender := NA_character_,
+   by = .(country, panel, wave, part_id)
+   ]
+dt[sample_type == "child" & (child_id == row_id),
+   part_gender := NA_character_,
+   by = .(country, panel, wave, part_id)
+   ]
 
 
 # Save data ---------------------------------------------------------------
