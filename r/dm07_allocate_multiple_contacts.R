@@ -7,8 +7,6 @@
 
 # Packages ----------------------------------------------------------------
 library(data.table)
-library(lubridate)
-library(stringr)
 
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
@@ -28,15 +26,16 @@ print(paste0("Opened: ", input_name))
 # Find multi contacts columns ---------------------------------------------
 multi <- grep("^multi", names(dt), value =TRUE)
 multi <- grep("phys", multi, value =TRUE, invert = TRUE)
-multi <- c("country", "part_id", "panel", "wave","part_age", "part_gender",  multi)
-
+multi <- c("country", "part_id", "panel", "wave", multi)
 
 # Reshape to one row per contact per setting type -------------------------------------
-dt_long <- melt(dt[, ..multi], id.vars = c("country", "part_id", "panel", "wave", "part_age", "part_gender"))
+dt_long <- melt(dt[, ..multi], id.vars = c("country", "part_id", "panel", "wave"))
 
 ## Remove those without multiple contacts
-dt_long <- dt_long[!is.na(value)]
+dt_long <- dt_long[!is.na(value) & value > 0]
 
+## Expand for one row for each contact
+dt_long <- dt_long[rep(seq(.N), value), !"value"]
 
 # Set names of variables --------------------------------------------------
 dt_long[, variable := gsub("multiple_contacts_", "",variable)]
@@ -48,12 +47,12 @@ dt_long[variable %like% "school", setting := "cnt_school"]
 dt_long[variable %like% "work", setting := "cnt_work"]
 dt_long[, value := "Yes"]
 
-
-
 # Reshape to wide for merging ---------------------------------------------
-dt_cnts <- dcast(dt_long, country+panel+wave+part_id+part_age+part_gender+cnt_age ~ setting, value.var = "value", fill = "No")
+dt_long[, cnt_id := 1:.N, by = .(country, panel, wave, part_id)]
+dt_cnts <- dcast(dt_long, country+panel+wave+part_id+cnt_age+cnt_id ~ setting, value.var = "value", fill = "No")
 
 dt_cnts$cnt_mass <- "mass"
+dt_cnts$cnt_id <- NULL
 
 # Append on to main data --------------------------------------------------
 dt <- rbindlist(list(dt, dt_cnts), use.names = TRUE, fill = TRUE)
