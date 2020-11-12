@@ -57,7 +57,7 @@ dt_cnts$cnt_id <- NULL
 # Append on to main data --------------------------------------------------
 dt <- rbindlist(list(dt, dt_cnts), use.names = TRUE, fill = TRUE)
 
-dt[is.na(cnt_mass), cnt_mass := "individual"]
+dt[is.na(cnt_mass) & (!is.na(cnt_age) | hhm_contact_yn == "Yes"), cnt_mass := "individual"]
 
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)

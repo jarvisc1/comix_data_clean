@@ -1,10 +1,11 @@
-
+#!/bin/bash
 # Data cleaning process
+
 
 echo "Convert from SPSS to QS files"
 Rscript.exe ".\r\dm01_resave_spss_as_qs.R"
 
-echo "Check and add country panel and wave variables"
+echo "Check and add country panel and wave variables $1"
 Rscript.exe ".\r\dm02_data_standardise.R"
 
 echo "Turn from wide data to long data.table"
@@ -16,6 +17,10 @@ Rscript.exe ".\r\dm04_rename_vars.R"
 echo "Combine all countries and waves together"
 Rscript.exe ".\r\dm05_combine_data.R"
 
-echo "Clean existing variables"
-
-echo "Add new variables"
+echo "dm06"
+echo "dm07"
+ 
+# 
+# echo "Clean existing variables"
+# 
+# echo "Add new variables"

@@ -27,6 +27,8 @@ for(country in country_codes){
   filenames <- filenames[!is.na(filenames$spss_name),]
   
   input_names <- paste0(filenames$r_name, "_1.qs")
+  panel <- filenames$panel
+  wave <- filenames$wave
   
   for(i in 1:length(input_names)){
     print(paste0("Opened: ", input_names[i]))
@@ -37,6 +39,8 @@ for(country in country_codes){
     print(paste0("Saved: ", input_names[i]))
     ## Record dimension
     dim_df <- data.table(country  = country,
+                         panel = panel[i],
+                         wave = wave[i],
                          r_name = input_names[i],
                          rows   =  nrow(dt),
                          cols   = ncol(dt))
@@ -46,6 +50,6 @@ for(country in country_codes){
 
 dims_dt <- rbindlist(dims)
 
-qs::qsave(dims, "data/tests/dm01_data_dims.qs")
+qs::qsave(dims_dt, "data/tests/dm01_data_dims.qs")
 
 

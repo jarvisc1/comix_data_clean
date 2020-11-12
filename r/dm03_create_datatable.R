@@ -52,7 +52,14 @@ for(country in country_codes){
       emptycols_na <- names(emptycols_na[emptycols_na])
       set(dt, j = emptycols_na, value = NULL)
     }  
+    
+    vars <- c("respondent_id", "panel", "wave", "country", "table_row")
+    rows_start <- nrow(dt)
+    missing <- rowSums(!is.na(dt[,.SD, .SDcols = !vars]))==1
+    dt <- dt[!missing]
+    
     print(paste0("Reduced from ", cols_start, " to ", ncol(dt), " columns"))
+    print(paste0("Removed ", rows_start-nrow(dt), " empty rows"))
     
     ## Save _3 data
     qs::qsave(dt, file = output_data)
