@@ -21,8 +21,6 @@ output_data <- file.path(dir_data_process, output_name)
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
 
-
-
 # Find multi contacts columns ---------------------------------------------
 multi <- grep("^multi", names(dt), value =TRUE)
 multi <- grep("phys", multi, value =TRUE, invert = TRUE)
@@ -54,6 +52,9 @@ dt_cnts <- dcast(dt_long, country+panel+wave+part_id+cnt_age+cnt_id ~ setting, v
 dt_cnts$cnt_mass <- "mass"
 dt_cnts$cnt_id <- NULL
 
+
+# Add in precautions ------------------------------------------------------
+
 multi_prec <- grep("^cnt_multiple_cont", names(dt), value =TRUE)
 multi_prec <- c("country", "part_id", "panel", "wave", multi_prec)
 dt_prec <- dt[, ..multi_prec]
@@ -65,8 +66,28 @@ dt_prec <- dt_prec[
 
 dt_cnts <- merge(dt_cnts, dt_prec, all.x = TRUE, by = c("country", "panel", "wave", "part_id"))
 
+# Combine into one precaution --------------------------------------------
+
+dt_cnts[,cnt_prec := fifelse(cnt_other == "Yes",
+    cnt_multiple_contacts_other_precautions, NA_character_)]
+
+dt_cnts[is.na(cnt_prec),cnt_prec := fifelse(cnt_work == "Yes",
+    cnt_multiple_contacts_work_precautions, NA_character_)]
+
+dt_cnts[is.na(cnt_prec),cnt_prec := fifelse(cnt_school == "Yes",
+    cnt_multiple_contacts_school_precautions, NA_character_)]
+
+dt[, cnt_multiple_contacts_work_precautions := NULL]
+dt[, cnt_multiple_contacts_school_precautions := NULL]
+dt[, cnt_multiple_contacts_other_precautions := NULL]
+
 # Append on to main data --------------------------------------------------
 dt <- rbindlist(list(dt, dt_cnts), use.names = TRUE, fill = TRUE)
+
+## Remove excess prec for multi contacts
+dt[, cnt_multiple_contacts_work_precautions := NULL]
+dt[, cnt_multiple_contacts_school_precautions := NULL]
+dt[, cnt_multiple_contacts_other_precautions := NULL]
 
 dt[is.na(cnt_mass) & (!is.na(cnt_age) | hhm_contact_yn == "Yes"), cnt_mass := "individual"]
 
