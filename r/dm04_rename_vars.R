@@ -1,16 +1,14 @@
 ## Name: dm04_rename_vars.R
 ## Description: Rename the variables using a csv file
 ## Input file: cnty_wkN_yyyymmdd_pN_wvN_3.qs
-## Functions: change_names changenamesv2
+## Functions: 
 ## Output file: cnty_wkN_yyyymmdd_pN_wvN_4.qs
-## NOTE: !Need to sort out so only one change names function
 
 # Packages ----------------------------------------------------------------
 library(data.table)
 
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
-source('r/functions/change_names.R')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
