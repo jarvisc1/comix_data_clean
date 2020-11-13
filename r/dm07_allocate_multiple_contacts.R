@@ -54,6 +54,17 @@ dt_cnts <- dcast(dt_long, country+panel+wave+part_id+cnt_age+cnt_id ~ setting, v
 dt_cnts$cnt_mass <- "mass"
 dt_cnts$cnt_id <- NULL
 
+multi_prec <- grep("^cnt_multiple_cont", names(dt), value =TRUE)
+multi_prec <- c("country", "part_id", "panel", "wave", multi_prec)
+dt_prec <- dt[, ..multi_prec]
+dt_prec <- dt_prec[
+  !is.na(cnt_multiple_contacts_other_precautions) |
+  !is.na(cnt_multiple_contacts_work_precautions) |
+  !is.na(cnt_multiple_contacts_school_precautions) 
+    ]
+
+dt_cnts <- merge(dt_cnts, dt_prec, all.x = TRUE, by = c("country", "panel", "wave", "part_id"))
+
 # Append on to main data --------------------------------------------------
 dt <- rbindlist(list(dt, dt_cnts), use.names = TRUE, fill = TRUE)
 
