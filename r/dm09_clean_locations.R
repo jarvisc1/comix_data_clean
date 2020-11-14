@@ -8,8 +8,6 @@
 
 # Packages ----------------------------------------------------------------
 library(data.table)
-library(lubridate, warn.conflicts = FALSE)
-library(stringr)
 
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
@@ -18,7 +16,6 @@ source('r/00_setup_filepaths.r')
 
 input_name <-  paste0("combined_8.qs")
 output_name <- paste0("combined_9.qs")
-output_name <- paste0("combined_final.qs")
 input_data <-  file.path(dir_data_process, input_name)
 output_data <- file.path(dir_data_process, output_name)
 
@@ -64,5 +61,5 @@ dt[country == "uk", area_country := map_uk_nations[area_3_name]]
    
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)
-print(paste0('Saved:' , output_name))
+print(paste0('Saved: ' , output_name))
    

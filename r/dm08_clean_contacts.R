@@ -2,7 +2,7 @@
 ## Description: Clean the variables relating to the contact data.
 ## Input file: combined_7.qs
 ## Functions:
-## Output file: combined_8.qs
+## Output file: combined_8.qs clean/contacts.qs
 
 
 # Packages ----------------------------------------------------------------
@@ -16,20 +16,34 @@ source('r/00_setup_filepaths.r')
 # I/O Data ----------------------------------------------------------------
 
 input_name <-  paste0("combined_7.qs")
-output_name <- paste0("combined_8.qs")
-output_name_contacts <- paste0("contacts.qs")
 input_data <-  file.path(dir_data_process, input_name)
+output_name <- paste0("combined_8.qs")
 output_data <- file.path(dir_data_process, output_name)
-output_data_contacts <- file.path("data/clean", output_name)
+
+## Save contact data
+current_date <- Sys.Date()
+output_cnts <- paste0("contacts.qs")
+output_cnts_date <- paste(current_date, output_cnts, sep = "_")
+output_data_cnts <- file.path("data/clean", output_cnts)
+output_data_cnts_date <- file.path("data/clean/archive", output_cnts_date)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
 
 
-# Empty contacts ----------------------------------------------------------
-dt <- dt[contact != "0" | is.na(contact)]
+# Remove variables not needed ---------------------------------------------
+# Such as market sector and extra variables that shouldn't have been added.
 
-## There are excess _i variables from IPSOS which are useful
+v_remove <- readxl::read_excel('codebook/var_names.xlsx', sheet = "remove_vars")
+
+vars_remove <- names(dt)[names(dt) %in% v_remove$remove]
+print(paste0("Removed ", length(vars_remove), " columns"))
+set(dt, j = vars_remove, value = NULL)
+
+
+# Empty contacts ----------------------------------------------------------
+
+## There are excess _i variables from IPSOS which are not useful
 set(dt, j = grep(".*_i$", names(dt), value = TRUE), value = NULL)
 
 setkey(dt, country, panel, wave,part_id)
@@ -85,7 +99,7 @@ map_contacts_error <- c(
    "‘potential household member’" = "poten hhm", 
    "‘suspected multiple contact’"= "sus multi",
    "‘suspected non contact’" = "sus non-contact",
-   "0" = "0", 
+   "0" = "ind identified", 
    "individual identified" = "ind identified",
    "multiple names given" = "sus multi", 
    "no contact" =  "sus non-contact", 
@@ -182,20 +196,22 @@ dt[, survey_start_week := min(week, na.rm = T), by = country]
 dt[row_id == 0, part_flag := TRUE]
 dt[is.na(part_flag), part_flag := FALSE]
 
+## Household members
+## These two lines should achieve the same thing.
+dt[row_id ==0 | !is.na(hhm_age_group), hhm := 1]
+dt[is.na(hhm_age_group), hhm := 0]
+dt[row_id == 0 | hhm_contact_yn == "Yes" | !is.na(hhm_age_group), hhm_flag := TRUE]
+dt[is.na(hhm_flag), hhm_flag := FALSE]
+
+
 ## Contacts are not participants, mass contact have a missing row_id
 ## Contacts are also household member with hhm_contact == "Yes"
 ## Fill in household member contacts to be no for all contacts except household members
 
 dt[is.na(row_id) | (is.na(hhm_contact_yn) & row_id != 0), hhm_contact_yn := "No"]
-dt[is.na(row_id) | (is.na(hhm_contact_yn) & row_id != 0), contact_flag := TRUE]
+dt[is.na(row_id) | (is.na(hhm_age_group) & row_id != 0), contact_flag := TRUE]
 dt[hhm_contact_yn == "Yes", contact_flag := TRUE]
 dt[is.na(contact_flag), contact_flag := FALSE]
-
-## Household members
-## These two lines should acheive the same thing.
-dt[row_id ==0 | !is.na(hhm_age_group), hhm := 1]
-dt[row_id == 0 | contact_flag == 0 | hhm_contact_yn == "Yes" | !is.na(hhm_age_group), hhm_flag := TRUE]
-dt[is.na(hhm_flag), hhm_flag := FALSE]
 
 # Physical contacts -------------------------------------------------------
 
@@ -225,15 +241,15 @@ options(warn = -1)
 dt[, part_age_int := as.numeric(part_age)]
 dt[part_age == "Prefer not to answer", part_age := NA]
 
-dt[, part_est_age_min := part_age_int]
-dt[, part_est_age_max := part_age_int]
-dt[part_age == "Under 1", part_est_age_min := 0]
-dt[part_age == "Under 1", part_est_age_max := 1]
+dt[, part_age_est_min := part_age_int]
+dt[, part_age_est_max := part_age_int]
+dt[part_age == "Under 1", part_age_est_min := 0]
+dt[part_age == "Under 1", part_age_est_max := 1]
 
-dt[is.na(part_est_age_min), part_est_age_min := as.numeric(str_replace_all(part_age, "-.*", ""))]
-dt[is.na(part_est_age_max), part_est_age_max := as.numeric(str_replace_all(part_age, ".*-", ""))]
-dt[is.na(part_est_age_min), part_est_age_min := as.numeric(str_replace_all(part_age, "\\+", ""))]
-dt[is.na(part_est_age_max), part_est_age_max := as.numeric(str_replace_all(part_age, ".*\\+", "120"))]
+dt[is.na(part_age_est_min), part_age_est_min := as.numeric(str_replace_all(part_age, "-.*", ""))]
+dt[is.na(part_age_est_max), part_age_est_max := as.numeric(str_replace_all(part_age, ".*-", ""))]
+dt[is.na(part_age_est_min), part_age_est_min := as.numeric(str_replace_all(part_age, "\\+", ""))]
+dt[is.na(part_age_est_max), part_age_est_max := as.numeric(str_replace_all(part_age, ".*\\+", "120"))]
 
 ## Switch warnings back on
 options(warn = oldw)
@@ -245,38 +261,38 @@ child_age_groups <- c("0-4", "5-11", "12-17")
 
 ## Make sample_type present in all questions
 dt[, sample_type := first(sample_type), by = part_id]
-dt[sample_type == "child" & part_est_age_max == 1,                        part_est_age_max := 4]
-dt[sample_type == "child" & part_est_age_min > 0 &  part_est_age_max <5,  part_est_age_min := 0]
-dt[sample_type == "child" & part_est_age_min > 0 &  part_est_age_max <5,  part_est_age_max := 4]
-dt[sample_type == "child" & part_est_age_min > 4 &  part_est_age_max <12, part_est_age_min := 5]
-dt[sample_type == "child" & part_est_age_min > 4 &  part_est_age_max <12, part_est_age_max := 11]
-dt[sample_type == "child" & part_est_age_min > 11 & part_est_age_max <18, part_est_age_min := 12]
-dt[sample_type == "child" & part_est_age_min > 11 & part_est_age_max <18, part_est_age_max := 17]
+dt[sample_type == "child" & part_age_est_max == 1,                        part_age_est_max := 4]
+dt[sample_type == "child" & part_age_est_min > 0 &  part_age_est_max <5,  part_age_est_min := 0]
+dt[sample_type == "child" & part_age_est_min > 0 &  part_age_est_max <5,  part_age_est_max := 4]
+dt[sample_type == "child" & part_age_est_min > 4 &  part_age_est_max <12, part_age_est_min := 5]
+dt[sample_type == "child" & part_age_est_min > 4 &  part_age_est_max <12, part_age_est_max := 11]
+dt[sample_type == "child" & part_age_est_min > 11 & part_age_est_max <18, part_age_est_min := 12]
+dt[sample_type == "child" & part_age_est_min > 11 & part_age_est_max <18, part_age_est_max := 17]
 
-dt[sample_type == "child" & part_est_age_min > 17,  part_est_age_min := NA_real_]
-dt[sample_type == "child" & part_est_age_max > 17,  part_est_age_max := NA_real_]
+dt[sample_type == "child" & part_age_est_min > 17,  part_age_est_min := NA_real_]
+dt[sample_type == "child" & part_age_est_max > 17,  part_age_est_max := NA_real_]
 
 ## Cut up the age groups into categories
 ## Min
-dt[between(part_est_age_min,  0, 4)   , age_min :=  0 ]
-dt[between(part_est_age_min,  5,11)   , age_min :=  5 ]
-dt[between(part_est_age_min,  12,17)  , age_min :=  12]
-dt[between(part_est_age_min,  18,29)  , age_min :=  18]
-dt[between(part_est_age_min,  30,39)  , age_min :=  30]
-dt[between(part_est_age_min,  40,49)  , age_min :=  40]
-dt[between(part_est_age_min,  50,59)  , age_min :=  50]
-dt[between(part_est_age_min,  60,69)  , age_min :=  60]
-dt[between(part_est_age_min,  70,120) , age_min :=  70]
+dt[between(part_age_est_min,  0, 4)   , age_min :=  0 ]
+dt[between(part_age_est_min,  5,11)   , age_min :=  5 ]
+dt[between(part_age_est_min,  12,17)  , age_min :=  12]
+dt[between(part_age_est_min,  18,29)  , age_min :=  18]
+dt[between(part_age_est_min,  30,39)  , age_min :=  30]
+dt[between(part_age_est_min,  40,49)  , age_min :=  40]
+dt[between(part_age_est_min,  50,59)  , age_min :=  50]
+dt[between(part_age_est_min,  60,69)  , age_min :=  60]
+dt[between(part_age_est_min,  70,120) , age_min :=  70]
 ## Max
-dt[between(part_est_age_max,  0, 4)   , age_max :=  4 ]
-dt[between(part_est_age_max,  5,11)   , age_max :=  11 ]
-dt[between(part_est_age_max,  12,17)  , age_max :=  17]
-dt[between(part_est_age_max,  18,29)  , age_max :=  29]
-dt[between(part_est_age_max,  30,39)  , age_max :=  39]
-dt[between(part_est_age_max,  40,49)  , age_max :=  49]
-dt[between(part_est_age_max,  50,59)  , age_max :=  59]
-dt[between(part_est_age_max,  60,69)  , age_max :=  69]
-dt[between(part_est_age_max,  70,120) , age_max :=  120]
+dt[between(part_age_est_max,  0, 4)   , age_max :=  4 ]
+dt[between(part_age_est_max,  5,11)   , age_max :=  11 ]
+dt[between(part_age_est_max,  12,17)  , age_max :=  17]
+dt[between(part_age_est_max,  18,29)  , age_max :=  29]
+dt[between(part_age_est_max,  30,39)  , age_max :=  39]
+dt[between(part_age_est_max,  40,49)  , age_max :=  49]
+dt[between(part_age_est_max,  50,59)  , age_max :=  59]
+dt[between(part_age_est_max,  60,69)  , age_max :=  69]
+dt[between(part_age_est_max,  70,120) , age_max :=  120]
 
 dt[!is.na(age_min), part_age_group := paste0(age_min, "-", age_max)]
 
@@ -299,7 +315,7 @@ dt[hhm_contact_yn == "Yes", cnt_gender := hhm_gender]
 dt[, contact := map_contacts_error[contact]]
 dt[is.na(contact), contact := map_contacts_error[pcontact]]
 dt <- dt[!contact %in% c("sus multi", "sus non-contact", "poten hhm")]
-dt[, contact := NULL]
+#dt[, contact := NULL]
 
 ## Based on inaccurate age
 ## Remove the repeat contact's that are present in the ages.
@@ -316,43 +332,43 @@ oldw <- getOption("warn")
 options(warn = -1)
 
 
-dt[, cnt_est_age_min := as.numeric(cnt_age)]
-dt[, cnt_est_age_max := as.numeric(cnt_age)]
-dt[cnt_age == "Don’t know", cnt_est_age_min := 0]
-dt[cnt_age == "Don’t know", cnt_est_age_max := 120]
-dt[cnt_age == "Prefer not to answer", cnt_est_age_min := 0]
-dt[cnt_age == "Prefer not to answer", cnt_est_age_max := 120]
-dt[cnt_age == "Under 1", cnt_est_age_min := 0]
-dt[cnt_age == "Under 1", cnt_est_age_max := 1]
-dt[cnt_age %like% "^[0-9]+\\+$", cnt_est_age_min := as.numeric(str_replace_all(cnt_age, "\\+", ""))]
-dt[cnt_age %like% "^[0-9]+\\+$", cnt_est_age_max := 120]
-dt[cnt_age %like% "^[0-9]+-[0-9]+$", cnt_est_age_min := as.numeric(str_replace_all(cnt_age, "-[0-9]+", ""))]
-dt[cnt_age %like% "^[0-9]+-[0-9]+$", cnt_est_age_max := as.numeric(str_replace_all(cnt_age, "[0-9]+-", ""))]
+dt[, cnt_age_est_min := as.numeric(cnt_age)]
+dt[, cnt_age_est_max := as.numeric(cnt_age)]
+dt[cnt_age == "Don’t know", cnt_age_est_min := 0]
+dt[cnt_age == "Don’t know", cnt_age_est_max := 120]
+dt[cnt_age == "Prefer not to answer", cnt_age_est_min := 0]
+dt[cnt_age == "Prefer not to answer", cnt_age_est_max := 120]
+dt[cnt_age == "Under 1", cnt_age_est_min := 0]
+dt[cnt_age == "Under 1", cnt_age_est_max := 1]
+dt[cnt_age %like% "^[0-9]+\\+$", cnt_age_est_min := as.numeric(str_replace_all(cnt_age, "\\+", ""))]
+dt[cnt_age %like% "^[0-9]+\\+$", cnt_age_est_max := 120]
+dt[cnt_age %like% "^[0-9]+-[0-9]+$", cnt_age_est_min := as.numeric(str_replace_all(cnt_age, "-[0-9]+", ""))]
+dt[cnt_age %like% "^[0-9]+-[0-9]+$", cnt_age_est_max := as.numeric(str_replace_all(cnt_age, "[0-9]+-", ""))]
 
 ## Switch warnings back on
 options(warn = oldw)
 
 
 ## Min
-dt[between(cnt_est_age_min,  0, 4)   , age_min :=  0 ]
-dt[between(cnt_est_age_min,  5,11)   , age_min :=  5 ]
-dt[between(cnt_est_age_min,  12,17)  , age_min :=  12]
-dt[between(cnt_est_age_min,  18,29)  , age_min :=  18]
-dt[between(cnt_est_age_min,  30,39)  , age_min :=  30]
-dt[between(cnt_est_age_min,  40,49)  , age_min :=  40]
-dt[between(cnt_est_age_min,  50,59)  , age_min :=  50]
-dt[between(cnt_est_age_min,  60,69)  , age_min :=  60]
-dt[between(cnt_est_age_min,  70,120) , age_min :=  70]
+dt[between(cnt_age_est_min,  0, 4)   , age_min :=  0 ]
+dt[between(cnt_age_est_min,  5,11)   , age_min :=  5 ]
+dt[between(cnt_age_est_min,  12,17)  , age_min :=  12]
+dt[between(cnt_age_est_min,  18,29)  , age_min :=  18]
+dt[between(cnt_age_est_min,  30,39)  , age_min :=  30]
+dt[between(cnt_age_est_min,  40,49)  , age_min :=  40]
+dt[between(cnt_age_est_min,  50,59)  , age_min :=  50]
+dt[between(cnt_age_est_min,  60,69)  , age_min :=  60]
+dt[between(cnt_age_est_min,  70,120) , age_min :=  70]
 ## Max
-dt[between(cnt_est_age_max,  0, 4)   , age_max :=  4 ]
-dt[between(cnt_est_age_max,  5,11)   , age_max :=  11 ]
-dt[between(cnt_est_age_max,  12,17)  , age_max :=  17]
-dt[between(cnt_est_age_max,  18,29)  , age_max :=  29]
-dt[between(cnt_est_age_max,  30,39)  , age_max :=  39]
-dt[between(cnt_est_age_max,  40,49)  , age_max :=  49]
-dt[between(cnt_est_age_max,  50,59)  , age_max :=  59]
-dt[between(cnt_est_age_max,  60,69)  , age_max :=  69]
-dt[between(cnt_est_age_max,  70,120) , age_max :=  120]
+dt[between(cnt_age_est_max,  0, 4)   , age_max :=  4 ]
+dt[between(cnt_age_est_max,  5,11)   , age_max :=  11 ]
+dt[between(cnt_age_est_max,  12,17)  , age_max :=  17]
+dt[between(cnt_age_est_max,  18,29)  , age_max :=  29]
+dt[between(cnt_age_est_max,  30,39)  , age_max :=  39]
+dt[between(cnt_age_est_max,  40,49)  , age_max :=  49]
+dt[between(cnt_age_est_max,  50,59)  , age_max :=  59]
+dt[between(cnt_age_est_max,  60,69)  , age_max :=  69]
+dt[between(cnt_age_est_max,  70,120) , age_max :=  120]
 
 dt[!is.na(age_min), cnt_age_group := paste0(age_min, "-", age_max)]
 dt[,age_min := NULL]
@@ -551,7 +567,7 @@ dt[cnt_other == 1, cnt_main_type := "Other"]
 
 cnt_names <- grep("cnt", names(dt), value = TRUE)
 cnt_names <- cnt_names[cnt_names != "cnt_nickname_masked"]
-cnt_early <- c("cnt_age_group", "cnt_est_age_min","cnt_est_age_max",
+cnt_early <- c("cnt_age_group", "cnt_age_est_min","cnt_age_est_max",
                "cnt_minutes_min","cnt_minutes_max","cnt_household",
                "cnt_mass", "cnt_phys") 
 cnt_names <- cnt_names[!cnt_names %in% cnt_early]
@@ -563,10 +579,8 @@ id_vars <- c("country",
              "part_id",
              "part_uid",
              "part_wave_uid",
-             "hh_type",
-             "hh_size",
-             "hh_size_group",
-             "contact_flag")
+             "contact_flag",
+             "contact")
 cnt_vars <- c(id_vars, cnt_early, cnt_names)
 
 contacts <- dt[contact_flag == TRUE, ..cnt_vars]
@@ -576,11 +590,18 @@ contacts <- dt[contact_flag == TRUE, ..cnt_vars]
 cnt_vars_remove <- c(cnt_early, cnt_names)
 set(dt,  j = cnt_vars_remove, value = NULL)
 
+# Only keep household and participants ------------------------------------
+
+dt <- dt[ hhm_flag == TRUE]
+
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)
-print(paste0('Saved:' , output_name))
+print(paste0('Removed contact only data'))
+print(paste0('Saved: ' , output_name))
 # Save contact data ---------------------------------------------------------------
-qs::qsave(contacts, file = output_data_contacts)
-print(paste0('Saved:' , output_name_contacts))
+qs::qsave(contacts, file = output_data_cnts)
+qs::qsave(contacts, file = output_data_cnts_date)
+print(paste0('Saved: ' , output_cnts))
+print(paste0('Saved: ' , output_cnts_date))
 
 
