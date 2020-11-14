@@ -12,7 +12,7 @@ source('r/functions/save_spss_qs.R')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
-# country_codes <- c("UK", "NL", "BE", "NO")
+#country_codes <- c("UK", "NL", "BE", "NO")[1]
 country_codes <- readxl::excel_sheets('data/spss_files.xlsx')
 country_codes <- grep("summary", country_codes, ignore.case = TRUE, invert = TRUE, value = TRUE)
 
@@ -27,6 +27,8 @@ for(country in country_codes){
   r_names <- paste0(filenames$r_name, "_1.qs")
   
   for(i in 1:length(spss_names)){
+  # for latest data.  
+  #for(i in length(spss_names)){
     print(paste0("Opened: ",spss_names[i]))
     ## User written function: read sspss file save as qs
     save_spss_qs(spss_names[i], r_names[i], country)
