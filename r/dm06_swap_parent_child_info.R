@@ -48,8 +48,6 @@ hhm_id_pattern <- "^.*\\{_\\s*|\\s*\\}.*$"
 dt[ , child_id := as.numeric(gsub(hhm_id_pattern, "", child_hhm_select_raw))]
 dt[, child_id := first(child_id), by = .(country, panel, wave, part_id)]
 
-
-
 # Swap child parent info -----------------------------------------------------------
 
 ## Swap age
@@ -85,7 +83,6 @@ dt[sample_type == "child" & (child_id == row_id),
    by = .(country, panel, wave, part_id)
    ]
 
-
 ## Same as above but for gender
 dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
    part_gender := first(part_gender),
@@ -114,21 +111,30 @@ dt[sample_type == "child" & (child_id == row_id),
 
 # Swap whether household contact ------------------------------------------
 
-
-# Add parent as household member contact for C and D ----------------------
+# Add parent as household member contact for C and D 
 ## This can be removed once CD version_s code has been frozen
+
+
 dt[panel %in% c("C", "D") & sample_type == "child" & (row_id == 0), hhm_contact_yn := "Yes"]
+dt[panel %in% c("C", "D") & sample_type == "child" & (row_id == 0), cnt_home := "Yes"]
+
 
 dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
    hhm_contact_yn := first(hhm_contact_yn),
+   by = .(country, panel, wave, part_id)
+   ]
+dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
+   cnt_home := first(cnt_home),
    by = .(country, panel, wave, part_id)
    ]
 dt[sample_type == "child" & (row_id == 0),
    hhm_contact_yn := NA_character_,
    by = .(country, panel, wave, part_id)
    ]
-
-
+dt[sample_type == "child" & (row_id == 0),
+   cnt_home := NA_character_,
+   by = .(country, panel, wave, part_id)
+   ]
 
 
 # Save data ---------------------------------------------------------------
