@@ -49,6 +49,7 @@ dt_long[, value := "Yes"]
 dt_long[, cnt_id := 1:.N, by = .(country, panel, wave, part_id)]
 dt_cnts <- dcast(dt_long, country+panel+wave+part_id+cnt_age+cnt_id ~ setting, value.var = "value", fill = "No")
 
+dt_cnts$cnt_home <- "No" ## Add in that they are not home contacts.
 dt_cnts$cnt_mass <- "mass"
 dt_cnts$cnt_id <- NULL
 
@@ -77,9 +78,9 @@ dt_cnts[is.na(cnt_prec),cnt_prec := fifelse(cnt_work == "Yes",
 dt_cnts[is.na(cnt_prec),cnt_prec := fifelse(cnt_school == "Yes",
     cnt_multiple_contacts_school_precautions, NA_character_)]
 
-dt[, cnt_multiple_contacts_work_precautions := NULL]
-dt[, cnt_multiple_contacts_school_precautions := NULL]
-dt[, cnt_multiple_contacts_other_precautions := NULL]
+dt_cnts[, cnt_multiple_contacts_work_precautions := NULL]
+dt_cnts[, cnt_multiple_contacts_school_precautions := NULL]
+dt_cnts[, cnt_multiple_contacts_other_precautions := NULL]
 
 # Append on to main data --------------------------------------------------
 dt <- rbindlist(list(dt, dt_cnts), use.names = TRUE, fill = TRUE)

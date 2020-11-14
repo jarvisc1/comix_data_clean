@@ -51,6 +51,12 @@ dt[, child_id := first(child_id), by = .(country, panel, wave, part_id)]
 # Swap child parent info -----------------------------------------------------------
 
 ## Swap age
+dt[sample_type == "child" & (row_id == 0),
+   parent_child := "child",
+   ]
+dt[sample_type == "child" & (child_id == row_id),
+   parent_child := "parent",
+   ]
 
 ## Fill in parent's age
 dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
@@ -114,10 +120,10 @@ dt[sample_type == "child" & (child_id == row_id),
 # Add parent as household member contact for C and D 
 ## This can be removed once CD version_s code has been frozen
 
-
 dt[panel %in% c("C", "D") & sample_type == "child" & (row_id == 0), hhm_contact_yn := "Yes"]
 dt[panel %in% c("C", "D") & sample_type == "child" & (row_id == 0), cnt_home := "Yes"]
-
+dt[panel %in% c("C", "D") & sample_type == "child" & (row_id == 0), cnt_work := "No"]
+dt[panel %in% c("C", "D") & sample_type == "child" & (row_id == 0), cnt_school := "No"]
 
 dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
    hhm_contact_yn := first(hhm_contact_yn),
@@ -125,6 +131,14 @@ dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
    ]
 dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
    cnt_home := first(cnt_home),
+   by = .(country, panel, wave, part_id)
+   ]
+dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
+   cnt_work := first(cnt_work),
+   by = .(country, panel, wave, part_id)
+   ]
+dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
+   cnt_school := first(cnt_school),
    by = .(country, panel, wave, part_id)
    ]
 dt[sample_type == "child" & (row_id == 0),
@@ -135,6 +149,19 @@ dt[sample_type == "child" & (row_id == 0),
    cnt_home := NA_character_,
    by = .(country, panel, wave, part_id)
    ]
+dt[sample_type == "child" & (row_id == 0),
+   cnt_work := NA_character_,
+   by = .(country, panel, wave, part_id)
+   ]
+dt[sample_type == "child" & (row_id == 0),
+   cnt_school := NA_character_,
+   by = .(country, panel, wave, part_id)
+   ]
+
+
+
+## also these hhm_student hhm_student_nursery hhm_student_school hhm_student_college
+## hhm_student_university
 
 
 # Save data ---------------------------------------------------------------

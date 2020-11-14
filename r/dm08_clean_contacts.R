@@ -17,8 +17,10 @@ source('r/00_setup_filepaths.r')
 
 input_name <-  paste0("combined_7.qs")
 output_name <- paste0("combined_8.qs")
+output_name_contacts <- paste0("contacts.qs")
 input_data <-  file.path(dir_data_process, input_name)
 output_data <- file.path(dir_data_process, output_name)
+output_data_contacts <- file.path("data/clean", output_name)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
@@ -51,6 +53,22 @@ map_minutes <- c(
   "15 minutes or more, but less than 1 hour" = "15m-59m",
   "1 hour or more, but less than 4 hours" = "60m-4h",
   "4 hours or more" = "4h+"
+)
+
+map_minutes_min = c(
+   "<5m" = 0,
+   "5m-14m" = 5,
+   "15 minutes or more, but less than 1 hour" = 15,
+   "60m-4h" = 60,
+   "4h+" = 240
+)
+
+map_minutes_max = c(
+   "<5m" = 5,
+   "5m-14m" = 15,
+   "15 minutes or more, but less than 1 hour" = 60,
+   "60m-4h" = 240,
+   "4h+" = 1440
 )
 
 map_gender <- c(
@@ -99,13 +117,33 @@ map_freq <- c(
    "Every day or almost every day" = "1-2 days"
 )
 
+map_report_ind_contacts <- c(
+            "{#child_name.response.value} did not have any contacts" = "No contacts", 
+            "{#Chosen_child} did not have any contacts" = "No contacts", 
+            "I did not have any contacts" = "No contacts", 
+            "I did not individually include every person {#child_name.response.value} had contact with." = "all not reported", 
+            "I did not individually include every person {#Chosen_child} had contact with." = "all not reported", 
+            "I did not individually include every person I had contact with." = "all not reported", 
+            "I individually included every person {#child_name.response.value} had contact with." = "reported all", 
+            "I individually included every person {#Chosen_child} had contact with." = "reported all", 
+            "I individually included every person I had contact with." = "reported all"
+)
 YesNoNA_Ind = function(x)
 {
    ifelse(x == "Yes", 1,
           ifelse(x == "No", 0, NA))
 }
 
+YesNoNA = function(x)
+{
+   ifelse(x == "Yes", TRUE,
+          ifelse(x == "No", FALSE, NA))
+}
+
 # Label values ------------------------------------------------------------
+
+dt[, part_uid := paste0(country,"_", part_id)]
+dt[, part_wave_uid := paste0(country,"_", panel, wave,"_", part_id)]
 
 ## Gender
 dt[, part_gender    := map_gender[part_gender]]
@@ -113,7 +151,18 @@ dt[, part_gender_nb := map_gender[part_gender_nb]]
 dt[, cnt_gender := map_gender[cnt_gender]]
 dt[, hhm_gender := map_gender[hhm_gender]]
 
-# Contact dates -----------------------------------------------------------
+## Did participant have contacts
+dt[, part_report_ind_contacts := map_report_ind_contacts[part_reported_all_contacts]]
+
+## Fill in participant information
+dt[, part_gender := first(part_gender), by = .(part_wave_uid)]
+dt[, part_gender_nb := first(part_gender_nb), by = .(part_wave_uid)]
+dt[, part_age := first(part_age), by = .(part_wave_uid)]
+dt[, currentday := first(currentday), by = .(part_wave_uid)]
+dt[, currentmonth := first(currentmonth), by = .(part_wave_uid)]
+dt[, currentyear := first(currentyear), by = .(part_wave_uid)]
+
+# Clean Contact dates -----------------------------------------------------------
 ## Survey date is given as separate day, month, and year
 dt[, survey_date := as.Date(paste0(currentyear,"-", currentmonth,"-", currentday ))]
 
@@ -126,13 +175,27 @@ dt[, month := month(date)]
 dt[, year := year(date)]
 dt[, survey_start_week := min(week, na.rm = T), by = country]
 
-# Identify household members ----------------------------------------------
+# Identify contacts, participants, household ----------------------------------------------
 
-dt[row_id ==0 | !is.na(hhm_age_group), hhm := "Yes"]
+## Identify contacts, participants, household
+## Participants have row id of zero
+dt[row_id == 0, part_flag := TRUE]
+dt[is.na(part_flag), part_flag := FALSE]
 
-## Identify contacts
+## Contacts are not participants, mass contact have a missing row_id
+## Contacts are also household member with hhm_contact == "Yes"
+## Fill in household member contacts to be no for all contacts except household members
 
-dt[(!is.na(cnt_age) | hhm_contact_yn == "Yes"), cnt := "Yes"]
+dt[is.na(row_id) | (is.na(hhm_contact_yn) & row_id != 0), hhm_contact_yn := "No"]
+dt[is.na(row_id) | (is.na(hhm_contact_yn) & row_id != 0), contact_flag := TRUE]
+dt[hhm_contact_yn == "Yes", contact_flag := TRUE]
+dt[is.na(contact_flag), contact_flag := FALSE]
+
+## Household members
+## These two lines should acheive the same thing.
+dt[row_id ==0 | !is.na(hhm_age_group), hhm := 1]
+dt[row_id == 0 | contact_flag == 0 | hhm_contact_yn == "Yes" | !is.na(hhm_age_group), hhm_flag := TRUE]
+dt[is.na(hhm_flag), hhm_flag := FALSE]
 
 # Physical contacts -------------------------------------------------------
 
@@ -152,6 +215,13 @@ dt[, phys := NULL]
 
 ## Put the min and max of the children's age's into a min and max ver.
 ## Then make participant's age numeric and have missing for kids.
+
+
+## We are changing string to numeric and it drops NA's switch these warnings off
+oldw <- getOption("warn")
+options(warn = -1)
+
+
 dt[, part_age_int := as.numeric(part_age)]
 dt[part_age == "Prefer not to answer", part_age := NA]
 
@@ -165,7 +235,10 @@ dt[is.na(part_est_age_max), part_est_age_max := as.numeric(str_replace_all(part_
 dt[is.na(part_est_age_min), part_est_age_min := as.numeric(str_replace_all(part_age, "\\+", ""))]
 dt[is.na(part_est_age_max), part_est_age_max := as.numeric(str_replace_all(part_age, ".*\\+", "120"))]
 
-# Clean children age groups -----------------------------------------------
+## Switch warnings back on
+options(warn = oldw)
+
+# Children's age groups -----------------------------------------------
 
 ## Acceptable child age groups
 child_age_groups <- c("0-4", "5-11", "12-17")
@@ -184,6 +257,7 @@ dt[sample_type == "child" & part_est_age_min > 17,  part_est_age_min := NA_real_
 dt[sample_type == "child" & part_est_age_max > 17,  part_est_age_max := NA_real_]
 
 ## Cut up the age groups into categories
+## Min
 dt[between(part_est_age_min,  0, 4)   , age_min :=  0 ]
 dt[between(part_est_age_min,  5,11)   , age_min :=  5 ]
 dt[between(part_est_age_min,  12,17)  , age_min :=  12]
@@ -193,6 +267,7 @@ dt[between(part_est_age_min,  40,49)  , age_min :=  40]
 dt[between(part_est_age_min,  50,59)  , age_min :=  50]
 dt[between(part_est_age_min,  60,69)  , age_min :=  60]
 dt[between(part_est_age_min,  70,120) , age_min :=  70]
+## Max
 dt[between(part_est_age_max,  0, 4)   , age_max :=  4 ]
 dt[between(part_est_age_max,  5,11)   , age_max :=  11 ]
 dt[between(part_est_age_max,  12,17)  , age_max :=  17]
@@ -210,14 +285,7 @@ dt[, part_age_int := NULL]
 dt[, age_min := NULL]
 dt[, age_max := NULL]
 
-# Contacts ----------------------------------------------------------------
 
-# Remove non contacts -----------------------------------------------------
-
-dt[, contact := map_contacts_error[contact]]
-dt[is.na(contact), contact := map_contacts_error[pcontact]]
-dt <- dt[!contact %in% c("sus multi", "sus non-contact", "poten hhm")]
-dt[, contact := NULL]
 
 # Contact's age -----------------------------------------------------------
 
@@ -225,13 +293,29 @@ dt[, contact := NULL]
 dt[hhm_contact_yn == "Yes", cnt_age := hhm_age_group]
 dt[hhm_contact_yn == "Yes", cnt_gender := hhm_gender]
 
+# Remove non contacts -----------------------------------------------------
+
+## Base on text from IPSOS
+dt[, contact := map_contacts_error[contact]]
+dt[is.na(contact), contact := map_contacts_error[pcontact]]
+dt <- dt[!contact %in% c("sus multi", "sus non-contact", "poten hhm")]
+dt[, contact := NULL]
+
+## Based on inaccurate age
 ## Remove the repeat contact's that are present in the ages.
 dt[, remove_row := str_replace_all(cnt_age, ".*me.*|.*person.*|.*This.*","not_real")]
 
 ## Remove no contact ages such as "this is me"
 dt <- dt[remove_row != "not_real" | is.na(cnt_age)]
+dt[, remove_row := NULL]
 
 # Create min and max age --------------------------------------------------
+
+## We are changing string to numeric and it drops NA's switch these warnings off
+oldw <- getOption("warn")
+options(warn = -1)
+
+
 dt[, cnt_est_age_min := as.numeric(cnt_age)]
 dt[, cnt_est_age_max := as.numeric(cnt_age)]
 dt[cnt_age == "Don’t know", cnt_est_age_min := 0]
@@ -245,6 +329,11 @@ dt[cnt_age %like% "^[0-9]+\\+$", cnt_est_age_max := 120]
 dt[cnt_age %like% "^[0-9]+-[0-9]+$", cnt_est_age_min := as.numeric(str_replace_all(cnt_age, "-[0-9]+", ""))]
 dt[cnt_age %like% "^[0-9]+-[0-9]+$", cnt_est_age_max := as.numeric(str_replace_all(cnt_age, "[0-9]+-", ""))]
 
+## Switch warnings back on
+options(warn = oldw)
+
+
+## Min
 dt[between(cnt_est_age_min,  0, 4)   , age_min :=  0 ]
 dt[between(cnt_est_age_min,  5,11)   , age_min :=  5 ]
 dt[between(cnt_est_age_min,  12,17)  , age_min :=  12]
@@ -254,6 +343,7 @@ dt[between(cnt_est_age_min,  40,49)  , age_min :=  40]
 dt[between(cnt_est_age_min,  50,59)  , age_min :=  50]
 dt[between(cnt_est_age_min,  60,69)  , age_min :=  60]
 dt[between(cnt_est_age_min,  70,120) , age_min :=  70]
+## Max
 dt[between(cnt_est_age_max,  0, 4)   , age_max :=  4 ]
 dt[between(cnt_est_age_max,  5,11)   , age_max :=  11 ]
 dt[between(cnt_est_age_max,  12,17)  , age_max :=  17]
@@ -273,7 +363,14 @@ dt[,age_max := NULL]
 ## We started by asking for hours and minutes but changed to categories
 ## Harmonise the categories.
 dt[, cnt_total_time := map_minutes[cnt_total_time]]
+
 dt[, temp_times := (60 * as.numeric(cnt_hours)) + as.numeric(cnt_mins)]
+
+## Get min and miax for contact time
+dt[, cnt_minutes_min := temp_times]
+dt[, cnt_minutes_max := temp_times]
+dt[is.na(cnt_minutes_min), cnt_minutes_min := map_minutes_min[cnt_total_time]]
+dt[is.na(cnt_minutes_max), cnt_minutes_min := map_minutes_max[cnt_total_time]]
 dt[, temp_times := cut(temp_times, 
                        breaks = c(0,5,15,60,240, 1000),
                        labels = c("<5m","5m-14m","15m-59m","60m-4h","4h+"),
@@ -377,11 +474,34 @@ dt[hh_type_non_relative == "Yes" &
 
 dt[is.na(hh_type), hh_type := "Other"]
 
-## Removing spaces ---------------------------------------------------------
 
-dt[, part_social_group := gsub("  ", " ", part_social_group)]
 
-# Numeric data ----------------------------------------------------------
+# Household size ----------------------------------------------------------
+
+## We are changing string to numeric and it drops NA's switch these warnings off
+oldw <- getOption("warn")
+options(warn = -1)
+
+dt[, hh_size_int := as.numeric(hh_size) + 1]
+dt[, hh_size_int := as.numeric(hh_size)]
+dt[hh_size == "none", hh_size_int := 1]
+dt[hh_size == "11 or more", hh_size_int := 12]
+dt[hh_size_int == 1, hh_size_group := "1",]
+dt[hh_size_int == 2, hh_size_group := "2",]
+dt[between(hh_size_int,3,5), hh_size_group := "3-5",]
+dt[between(hh_size_int,5,13), hh_size_group := "5+",]
+
+dt[, hh_size := hh_size_int]
+dt[, hh_size_int := NULL]
+
+## Switch warnings back on
+options(warn = oldw)
+
+# Fill in for all observations --------------------------------------------
+dt[, hh_size := first(hh_size), by = .(part_wave_uid)]
+dt[, hh_size_group := first(hh_size_group), by = .(part_wave_uid)]
+
+# Contacts settings ----------------------------------------------------------
 
 dt[, cnt_home := YesNoNA_Ind(cnt_home)]
 dt[, cnt_work := YesNoNA_Ind(cnt_work)]
@@ -411,26 +531,56 @@ dt[, cnt_prec_mask := YesNoNA_Ind(cnt_prec_mask)]
 dt[, cnt_prec_wash_before := YesNoNA_Ind(cnt_prec_wash_before)]
 dt[, cnt_prec_wash_after := YesNoNA_Ind(cnt_prec_wash_after)]
 dt[, cnt_prec_prefer_not_to_say := YesNoNA_Ind(cnt_prec_prefer_not_to_say)]
+dt[, cnt_household := YesNoNA_Ind(hhm_contact_yn)]
 
 dt[is.na(cnt_prec), cnt_prec := fifelse(cnt_prec_none == 0, "Yes", "No")]
 dt[, cnt_prec_yn := cnt_prec]
 dt[, cnt_prec := YesNoNA_Ind(cnt_prec_yn)]
 
-# Participants ------------------------------------------------------------
-part_cols <- grep("part", names(dt), value = TRUE)
-print(paste0("Participant vars: ", length(part_cols)))
+dt[contact_flag & cnt_home == 1, cnt_main_type := "Home"]
+dt[contact_flag & cnt_home == 0 & cnt_work == 1 & sample_type == "child", cnt_main_type := "Work"]
+dt[contact_flag & cnt_home == 0 & cnt_work == 0 & cnt_school == 1 & sample_type == "child", cnt_main_type := "School"]
+dt[contact_flag & cnt_home == 0 & cnt_work == 1 & sample_type == "adult", cnt_main_type := "Work"]
+dt[contact_flag & cnt_home == 0 & cnt_work == 0 & cnt_school == 1 & sample_type == "adult", cnt_main_type := "School"]
 
-# Household members -------------------------------------------------------
-hh_cols <- grep("hh", names(dt), value = TRUE)
-print(paste0("Household vars: ", length(hh_cols)))
+dt[contact_flag & cnt_home == 0 & cnt_work == 0 & cnt_school == 0, cnt_other := 1]
+dt[cnt_other == 1, cnt_main_type := "Other"]
 
 
-# Locations ---------------------------------------------------------------
-loc_cols <- grep("area|region", names(dt), value = TRUE)
-print(paste0("Location vars: ", length(loc_cols)))
+# Filter to contact data -------------------------------------------------------
 
+cnt_names <- grep("cnt", names(dt), value = TRUE)
+cnt_names <- cnt_names[cnt_names != "cnt_nickname_masked"]
+cnt_early <- c("cnt_age_group", "cnt_est_age_min","cnt_est_age_max",
+               "cnt_minutes_min","cnt_minutes_max","cnt_household",
+               "cnt_mass", "cnt_phys") 
+cnt_names <- cnt_names[!cnt_names %in% cnt_early]
+id_vars <- c("country",
+             "panel",
+             "wave",
+             "date",
+             "weekday",
+             "part_id",
+             "part_uid",
+             "part_wave_uid",
+             "hh_type",
+             "hh_size",
+             "hh_size_group",
+             "contact_flag")
+cnt_vars <- c(id_vars, cnt_early, cnt_names)
+
+contacts <- dt[contact_flag == TRUE, ..cnt_vars]
+
+# Remove contact variables from main data.-------------------------------------------------------------------------
+
+cnt_vars_remove <- c(cnt_early, cnt_names)
+set(dt,  j = cnt_vars_remove, value = NULL)
 
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)
 print(paste0('Saved:' , output_name))
+# Save contact data ---------------------------------------------------------------
+qs::qsave(contacts, file = output_data_contacts)
+print(paste0('Saved:' , output_name_contacts))
+
 
