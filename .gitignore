@@ -6,7 +6,7 @@
 data/~$spss_files.xlsx
 data/spss/*
 data/processing/*
-data/cleaned/*
+data/clean/*
 codebook/*
 reports/*
 

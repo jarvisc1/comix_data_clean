@@ -1,8 +1,8 @@
-## Name: dm09_clean_household.R
-## Description: Clean variables related to household members.
-## Input file: combined_9.qs
+## Name: dm09_clean_other_vars.R
+## Description: Clean variables not need for the contacts - less important for R.
+## Input file: combined_8.qs
 ## Functions:
-## Output file: combined_10.qs
+## Output file: combined_9.qs
 
 
 
@@ -16,20 +16,14 @@ source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("combined_9.qs")
+input_name <-  paste0("combined_7.qs")
+output_name <- paste0("combined_8.qs")
 input_data <-  file.path(dir_data_process, input_name)
-output_name <- paste0("combined_10.qs")
-output_hhms <- paste0("households.qs")
-
-## Save household data.
-current_date <- Sys.Date()
-output_hhms_date <- paste(current_date, output_hhms, sep = "_")
 output_data <- file.path(dir_data_process, output_name)
-output_data_hhms <- file.path("data/clean", output_hhms)
-output_data_hhms_date <- file.path("data/clean/archive", output_hhms_date)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
+
 
 # Participants ------------------------------------------------------------
 part_cols <- grep("part", names(dt), value = TRUE)
@@ -49,6 +43,27 @@ print(paste0("Location vars: ", length(loc_cols)))
 ## Create a rank of each survey within a country.
 
 ## This doesn't work
+
+## This will only work on all of the data?
+dt[, paneltemp := panel]
+dt[country == "uk" & panel %in% c("A", "C"), paneltemp := "AC"]
+dt[country == "uk" & panel %in% c("B", "D"), paneltemp := "BD"]
+dt[, min_date := min(date, na.rm = T), by = .(country, paneltemp, wave)]
+temp_rank <- dt[, .N, by = .(country, paneltemp, min_date) ]
+temp_rank[, survey_round := rank(min_date), by = .(country) ]
+temp_rank[, N := NULL]
+
+dt <- merge(dt, temp_rank, all.x = TRUE, by = c("country","min_date", "paneltemp"))
+
+dt[, min_date := min(date, na.rm = T), by = .(country, panel, wave)]
+
+dt[country == "uk" & panel == "C", survey_round:= survey_round + 6]
+dt[country == "uk" & panel == "D", survey_round:= survey_round + 7]
+dt[, paneltemp := NULL]
+dt[, rank1 := round(rank/2)]
+dt[, table(survey_round, panel , country)]
+dt[, table(min_date, panel , country)]
+
 
 ## Removing spaces ---------------------------------------------------------
 
@@ -116,44 +131,3 @@ dt[,
      lapply(.SD, as.Date, origin = "1970-01-01"),
    .SDcols = work_date_cols]
 
-
-# Filter to contact data -------------------------------------------------------
-
-hhm_names <- grep("hhm|hh", names(dt), value = TRUE)
-#hhm_names
-
-#names(dt)[!names(dt) %in% hhm_names]
-id_vars <- c("country",
-             "panel",
-             "wave",
-             "date",
-             "survey_date",
-             "weekday",
-             "part_id",
-             "part_uid",
-             "part_wave_uid",
-             "contact_flag",
-             "hhm_flag",
-             "part_flag",
-             "contact")
-hhm_vars <- c(id_vars, hhm_names)
-#names(dt)[!names(dt) %in% hhm_vars]
-
-hhms <- dt[hhm_flag == TRUE, ..hhm_vars]
-# Do not remove household variables.-------------------------------------------------------------------------
-
-## They will be used in the next script and change to part variables
-
-# Only keep household and participants ------------------------------------
-
-dt <- dt[ part_flag == TRUE]
-
-# Save data ---------------------------------------------------------------
-qs::qsave(dt, file = output_data)
-print(paste0('Removed household only data'))
-print(paste0('Saved: ' , output_name))
-# Save household data ---------------------------------------------------------------
-qs::qsave(hhms, file = output_data_hhms)
-qs::qsave(hhms, file = output_data_hhms_date)
-print(paste0('Saved: ' , output_hhms))
-print(paste0('Saved: ' , output_hhms_date))

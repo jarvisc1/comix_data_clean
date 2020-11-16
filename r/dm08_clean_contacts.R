@@ -156,6 +156,9 @@ YesNoNA = function(x)
 
 # Label values ------------------------------------------------------------
 
+dt[, survey_round := as.numeric(survey_round)]
+dt[, survey_round := first(survey_round), by = .(country, panel, wave)]
+
 dt[, part_uid := paste0(country,"_", part_id)]
 dt[, part_wave_uid := paste0(country,"_", panel, wave,"_", part_id)]
 
@@ -575,6 +578,7 @@ id_vars <- c("country",
              "panel",
              "wave",
              "date",
+             "survey_round",
              "weekday",
              "part_id",
              "part_uid",

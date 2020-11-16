@@ -31,6 +31,7 @@ for(country in country_codes){
    filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
    filenames <- filenames[!is.na(filenames$spss_name),]
    r_names <- filenames$r_name
+   filenames$week
    
    ## This script loads _1.qs files and save them as _2.qs files
    for(r_name in r_names){
@@ -49,8 +50,12 @@ for(country in country_codes){
       panel <- substring(panel, first = 3, last = 3)
       wave <- str_extract(r_name, "_wv[0-9]{2}")
       wave <- str_extract(wave, "[0-9]{2}")
+      week <- str_extract(r_name, "_wk[0-9]{2}")
+      week <- str_extract(week, "[0-9]{2}")
       wave <- as.numeric(str_extract(wave, "[0-9]{1,2}"))
       country <- str_extract(r_name, ".+?(?=_)")
+      
+      dt[, survey_round := week]
       
       # Country -----------------------------------------------------------------
       dt <- country_checker(dt, country)
@@ -119,3 +124,5 @@ for(country in country_codes){
       print(paste0('Saved: ' , output_name))
    }
 }
+
+
