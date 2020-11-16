@@ -2,22 +2,67 @@
 ## Take the Ipsos names and standardise the loop and scale varibles
 #var <- unique(allnames)
 standardise_names <- function(var){
-  questions_lists <- sapply(
-    var,
+  
+  var <- names(dt)
+  
+  #add delimiter to contact
+  var <- gsub("contact_","contact", var)
+
+  questions_loop <- data.table(oldname = var)
+  questions_loop[, temp := oldname]
+  
+  #identify all loop variable (reshaping required)
+  questions_loop[grepl("loop", oldname), loop := "loop"]
+  
+  questions_loop[loop=="loop", temp := gsub("_loop", "", temp)]
+  
+  #scale questions that do not need to be looped/reshaped
+  questions_loop[grepl("^q35", temp), temp := gsub("_scale", "", temp)]
+  questions_loop[grepl("^q36", temp), temp := gsub("_scale", "", temp)]
+  questions_loop[grepl("^q37", temp), temp := gsub("_scale", "", temp)]
+  questions_loop[grepl("^q38", temp), temp := gsub("_scale", "", temp)]
+  questions_loop[grepl("^q52", temp), temp := gsub("_scale", "", temp)]
+  questions_loop[grepl("^q55", temp), temp := gsub("_scale", "", temp)]
+  questions_loop[grepl("^q75", temp), temp := gsub("_scale", "", temp)]
+  questions_loop[grepl("^q76", temp), temp := gsub("_scale", "", temp)]
+  questions_loop[grepl("^q79a", temp), temp := gsub("_scale", "", temp)]
+  questions_loop[grepl("^q80a", temp), temp := gsub("_scale", "", temp)]
+  questions_loop[grepl("^q81a", temp), temp := gsub("_scale", "", temp)]
+  
+  #other scale questions are to be reshaped
+  questions_loop[grepl("scale", temp), loop := "loop"]
+  
+  #other questions that also need to be reshaped
+  questions_loop[grepl("qmktsize_[0-9]", temp), loop := "loop"]
+  questions_loop[grepl("^contact", temp), loop := "loop"]
+  questions_loop[grepl("^hhcompconfirm", temp), loop := "loop"]
+  questions_loop[grepl("^hhcompremove", temp), loop := "loop"]
+  
+  #split temp into parts
+  split <- sapply(
+    questions_loop$temp,
     strsplit, split="_"
   )
-  
-  questions_loop <- rbindlist(
-    lapply(questions_lists,
+  split <- rbindlist(
+    lapply(split,
            function(x){ as.data.table(t(c(paste0(x,collapse="_"),x))) }
     ),
     fill=TRUE
   )
-  # Change from V1 to p1 where p = part and number is the part of the questions
-  setnames(questions_loop, 
-           old = c("V1"     , "V2", "V3", "V4", "V5", "V6", "V7", "V8") , 
-           new = c("oldname", "p1", "p2", "p3", "p4", "p5", "p6", "p7"),
-           skip_absent = TRUE)
+  questions_loop <- cbind(questions_loop, split[,-1])
+  
+  #identify qnum
+  questions_loop[loop == "loop", qnum := V4]
+  questions_loop[loop == "loop" & qnum == "",       qnum := V2]
+  questions_loop[loop == "loop" & qnum == "scale",  qnum := V2]
+  questions_loop[loop == "loop" & qnum == "scale1", qnum := V2]
+  questions_loop[loop == "loop" & V2 == "qmktsize", qnum := V2]
+  
+  setnames(questions_loop,"V2","table")
+  setnames(questions_loop,"V3","table_row")
+  
+  questions_loop[loop=="loop", newname := qnum]
+  questions_loop[loop=="loop" & , newname := qnum]
   
   
 
@@ -116,3 +161,5 @@ standardise_names <- function(var){
   )
   questions_loop$newname
 }
+
+

@@ -105,13 +105,22 @@ for(country in country_codes){
          
          ## rename
          names(dt_child) <- gsub("qp", "q", names(dt_child))
-         names(dt_child) <- gsub("pcontacts", "contact", names(dt_child))
+         names(dt_child) <- gsub("pcontact", "contact", names(dt_child)) 
          
          # Combine using names
          dt <- rbindlist(list(dt_child, dt_adult), use.names = TRUE, fill = TRUE)
       }  
       
-
+      #confirm in hhcompfirm mis-spelt as confrim
+      names(dt) <- gsub("hhcompconfrim","hhcompconfirm", names(dt))
+      
+      #original --> scale_original for q21
+      q21_original <- grep("q21", names(dt), value = TRUE)
+      q21_original <- grep("original", q21_original, value = TRUE)
+      q21_original <- grep("scale", q21_original, value = TRUE, invert = TRUE)
+      q21_scale_original <- gsub("original","scale_original", q21_original)
+      setnames(dt, old = q21_original, new = q21_scale_original)
+      
       # Standardise names -------------------------------------------------------
       names(dt) <- standardise_names(names(dt))
    
