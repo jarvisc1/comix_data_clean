@@ -109,7 +109,7 @@ for(country in country_codes){
          
          ## rename
          names(dt_child) <- gsub("qp", "q", names(dt_child))
-         names(dt_child) <- gsub("pcontacts", "contact", names(dt_child))
+         names(dt_child) <- gsub("pcontact", "contact", names(dt_child))
          
          # Combine using names
          dt <- rbindlist(list(dt_child, dt_adult), use.names = TRUE, fill = TRUE)
