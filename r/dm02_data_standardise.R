@@ -118,6 +118,10 @@ for(country in country_codes){
 
       # Standardise names -------------------------------------------------------
       names(dt) <- standardise_names(names(dt))
+      
+
+      # Misspelt name -----------------------------------------------------------
+      names(dt) <- gsub("hhcompconfrim","hhcompconfirm", names(dt))
    
       ## Save _2 file
       qs::qsave(dt, file = output_data)
