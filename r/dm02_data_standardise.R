@@ -110,10 +110,7 @@ for(country in country_codes){
          # Combine using names
          dt <- rbindlist(list(dt_child, dt_adult), use.names = TRUE, fill = TRUE)
       }  
-      
-      #confirm in hhcompfirm mis-spelt as confrim
-      names(dt) <- gsub("hhcompconfrim","hhcompconfirm", names(dt))
-      
+
       #original --> scale_original for q21
       q21_original <- grep("q21", names(dt), value = TRUE)
       q21_original <- grep("original", q21_original, value = TRUE)
@@ -121,9 +118,80 @@ for(country in country_codes){
       q21_scale_original <- gsub("original","scale_original", q21_original)
       setnames(dt, old = q21_original, new = q21_scale_original)
       
+      #confirm in hhcompfirm mis-spelt as confrim
+      names(dt) <- gsub("hhcompconfrim","hhcompconfirm", names(dt))
+      
+      oldcnctname <- grep("^contact",names(dt), value = TRUE)
+      newcnctname <- gsub("contact","contact_", oldcnctname)
+      
+      setnames(dt, oldcnctname, newcnctname)
+      
       # Standardise names -------------------------------------------------------
-      names(dt) <- standardise_names(names(dt))
+      #names(dt) <- standardise_names(names(dt))
+      source('r/functions/standardise_names.R')
+      standardise_names <- standardise_names(names(dt))
+      id.vars=c("respondent_id","wave", "panel", "country")
+      
+      const.vars <- c(standardise_names[loop!="loop" | is.na(loop), oldname])
+      dt2 <- dt[, ..const.vars]
+      dt2 <- dt2[, table_row := 0L]
+      
+      loop_qs <- unique(standardise_names[loop=="loop", table]) 
+      
+         #reshape?
+         for (loop_table in loop_qs){
+            
+            print(loop_table)
+            
+            keep <- c(id.vars, standardise_names[table==loop_table, oldname])
+            
+            wide <- dt[, ..keep]
+            
+            current_q <- standardise_names[table==loop_table]
+            
+            setnames(wide, current_q$oldname, current_q$newname, skip_absent = TRUE)
+            
+            qnum <- unique(current_q$qnum)
+            
+            # wide <- melt(wide, id.vars = id.vars)
+            # wide[, value := trimws(value)]
+            # ## Replace missing value with NA
+            # wide[value == "", value := NA]
+            # wide <- wide[!is.na(value)]
+            # wide <- dcast(wide, respondent_id+wave+panel+country ~ variable)
+
+            long <- melt(wide, id.vars = id.vars, 
+                           measure = patterns(qnum), 
+                           value.name = qnum,
+                           variable.name = "table_row",
+                           variable.factor=FALSE,
+                           value.factor=FALSE)
+            
+            sel <- apply(long[,-c(1:5)], 1, function(x) !all(is.na(x)))
+            long <- long[sel, ]
+            
+            for (q in qnum){
+               long$table_row <- gsub(paste0(q,"_"),"",long$table_row)
+            }
+            long$table_row <- as.numeric(long$table_row)       
+            
+            setorder(long,respondent_id, table_row)
+
+            assign(paste0("table_",loop_table), long)
+         }
    
+      e <- environment()
+      
+      # Identify question tables and merge to create the final data.table
+      tables <- grep("table_", names(e), value = T)
+      table_names <- mget(unlist(tables))
+      
+      match_vars <- c(id.vars, "table_row")
+      combine_dt <- Reduce(function(...) merge(..., by = match_vars, all = T), table_names)
+      
+      dt2 <- merge(dt2, combine_dt, by = match_vars, all = TRUE)
+      
+            
       ## Save _2 file
       qs::qsave(dt, file = output_data)
       print(paste0('Saved: ' , output_name))
