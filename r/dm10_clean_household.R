@@ -338,58 +338,58 @@ dt[, hhm_seek_gov_info := YesNoNA_Ind(hhm_seek_gov_info)]
 # Map questions -----------------------------------------------------------
 ## Revisit
 dt[, table(hhm_covid_test_recent)]
-## dt[, table(hhm_covid_test_result)] ##? Not in the data?
+dt[, table(hhm_covid_test_result)] ##? Not in the data?
 names(dt)
-## dt[, table(hhm_covid_contact)] ## ? Not in the data?
+dt[, table(hhm_covid_contact)] ## ? Not in the data?
 dt[, table(hhm_employstatus)]
 dt[, table(hhm_high_risk)]
 
 ##  Revisit - yes no  prefer not to say
 
-dt[, table(hhm_isolate)]
-dt[, table(hhm_isolate_atleast_one_day)]
-dt[, table(hhm_educaton_closed)]
-dt[, table(hhm_work_closed)]
-dt[, table(hhm_avoid_work_school_other_reason1)]
-dt[, table(hhm_avoid_work_school_other_reason2)]
+#dt[, table(hhm_isolate)]
+#dt[, table(hhm_isolate_atleast_one_day)]
+#dt[, table(hhm_educaton_closed)]
+#dt[, table(hhm_work_closed)]
+#dt[, table(hhm_avoid_work_school_other_reason1)]
+#dt[, table(hhm_avoid_work_school_other_reason2)]
 
 ## Other
-dt[, table(hhm_neg_yes_other_reason)]
-dt[, table(hhm_close_childcare_other_reason)]
-dt[, table(hhm_cont_adm_hosp_other)]
-
-dt[, table(hhm_isolation_end_other)]
-dt[, table(hhm_isolation_start_other)]
-dt[, table(hhm_limit_school)]
-dt[, table(hhm_limit_school_atleast_day)]
-dt[, table(hhm_limit_work)]
-dt[, table(hhm_limit_work_atleast_day)]
-
-dt[, table(hhm_phone_gp_other)]
-dt[, table(hhm_pregnant)]
-dt[, table(hhm_quarantine)]
-dt[, table(hhm_quarantine_end_other)]
-dt[, table(hhm_quarantine_one_day)]
-dt[, table(hhm_quarantine_start_other)]
+#dt[, table(hhm_neg_yes_other_reason)]
+#dt[, table(hhm_close_childcare_other_reason)]
+#dt[, table(hhm_cont_adm_hosp_other)]
+#
+#dt[, table(hhm_isolation_end_other)]
+#dt[, table(hhm_isolation_start_other)]
+#dt[, table(hhm_limit_school)]
+#dt[, table(hhm_limit_school_atleast_day)]
+#dt[, table(hhm_limit_work)]
+#dt[, table(hhm_limit_work_atleast_day)]
+#
+#dt[, table(hhm_phone_gp_other)]
+#dt[, table(hhm_pregnant)]
+#dt[, table(hhm_quarantine)]
+#dt[, table(hhm_quarantine_end_other)]
+#dt[, table(hhm_quarantine_one_day)]
+#dt[, table(hhm_quarantine_start_other)]
 
 
 # Needs to be checked -----------------------------------------------------
 
 ## Revisit
-dt[, table(hhm_reaction_no_answer)] ## What does this mean
-dt[, table(hhm_reaction_dk)] ##
-dt[, table(hhm_reaction_none)]
-dt[, table(hhm_seek_gov_info_other)]
-
-
-
-dt[, table(hhm_visit_ae_other)]
-dt[, table(hhm_visit_gp_other)]
-dt[, table(hhm_visit_testing_other)]
-dt[, table(hhm_visit_other)]
-dt[, table(hhm_work_closure_end_other)]
-dt[, table(hhm_work_closure_start_other)]
-
+#dt[, table(hhm_reaction_no_answer)] ## What does this mean
+#dt[, table(hhm_reaction_dk)] ##
+#dt[, table(hhm_reaction_none)]
+#dt[, table(hhm_seek_gov_info_other)]
+#
+#
+#
+#dt[, table(hhm_visit_ae_other)]
+#dt[, table(hhm_visit_gp_other)]
+#dt[, table(hhm_visit_testing_other)]
+#dt[, table(hhm_visit_other)]
+#dt[, table(hhm_work_closure_end_other)]
+#dt[, table(hhm_work_closure_start_other)]
+#
 
 
 
