@@ -47,11 +47,9 @@ set(dt, j = vars_remove, value = NULL)
 set(dt, j = grep(".*_i$", names(dt), value = TRUE), value = NULL)
 
 setkey(dt, country, panel, wave,part_id)
+
 # Map objects for labels --------------------------------------------------
 
-
-### Kerry these could all go in a different script to be maintained elsewhere?
-### Then we would add a section on the readme about how to add label maps
 map_survey_sample <- c(
   "Qsample=1 WAVE-TO-WAVE" = "repeated",
   "Qsample=2 FRESH SAMPLE" = "new"
