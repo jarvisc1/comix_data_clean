@@ -395,6 +395,8 @@ dt[, temp_times := cut(temp_times,
                        right = FALSE)]
 dt[, temp_times := as.character(temp_times)]
 dt[, cnt_total_time := fifelse(is.na(cnt_total_time), temp_times, cnt_total_time)]
+cnt_tot_time_lev <- c("<5m", "5m-14m", "15m-59m",  "60m-4h", "4h+")
+dt[, cnt_total_time := factor(cnt_total_time, levels = cnt_tot_time_lev)]
 dt[, temp_times := NULL]
 dt[, cnt_hours := NULL]
 dt[, cnt_mins := NULL]
@@ -405,6 +407,8 @@ dt[, cnt_type := map_type[cnt_type]]
 dt[hhm_contact_yn == "Yes", cnt_type := "household"]
 
 dt[, cnt_frequency := map_freq[cnt_frequency]]
+cnt_freq_lev <- c("1-2 days", "3-7 days", "2-3 weeks", "1 month", "occasional", "never met")
+dt[, cnt_frequency := factor(cnt_frequency, levels = cnt_freq_lev)]
 
 # Contacts settings ----------------------------------------------------------
 dt[, cnt_home := YesNoNA_Ind(cnt_home)]
