@@ -316,7 +316,6 @@ dt[hhm_contact_yn == "Yes", cnt_gender := hhm_gender]
 
 ## Base on text from IPSOS
 dt[, contact := map_contacts_error[contact]]
-dt[is.na(contact), contact := map_contacts_error[pcontact]]
 dt <- dt[!contact %in% c("sus multi", "sus non-contact", "poten hhm")]
 #dt[, contact := NULL]
 
@@ -407,124 +406,11 @@ dt[hhm_contact_yn == "Yes", cnt_type := "household"]
 
 dt[, cnt_frequency := map_freq[cnt_frequency]]
 
-# Household - Kerry double check ------------------------------------------------------
-
-## Households types used to be one variable now multiple
-## Couple dependent children
-## Children under 18 
-dt[hh_type_partner == "Yes" &   
-  (hh_type_child_under_18 == "Yes"  |
-   hh_type_grandchild_under_18 == "Yes" |
-   hh_type_siblings_under_18 == "Yes"
-   ),
-   hh_type := "Couple with dependent children"
-   ]
-
-dt[hh_type == "Couple with dependent children aged 0-17",
-   hh_type := "Couple with dependent children",
-  ]
-
-## Couple independent children
-dt[hh_type_partner == "Yes" & 
-  (hh_type_child_18_plus == "Yes" |
-   hh_type_siblings_18_plus == "Yes"  |
-   hh_type_grandchild_18_plus == "Yes"
-   ) &
-  (hh_type_child_under_18 == "No"  &
-   hh_type_grandchild_under_18 == "No" &
-   hh_type_siblings_under_18 == "No"
-   ),
-   hh_type := "Couple with independent children only"
-   ]
-
-## Couple with no children
-dt[hh_type_partner == "Yes" &   
-   hh_type_child_18_plus == "No" &
-   hh_type_siblings_18_plus == "No" &
-   hh_type_grandchild_18_plus == "No" &
-   hh_type_child_under_18 == "No"  &
-   hh_type_grandchild_under_18 == "No" &
-   hh_type_siblings_under_18 == "No",
-   hh_type := "Couple with no children"
-   ]
-
-## Lone parent with dependent children
-dt[hh_type_partner == "No" &   
-  (hh_type_child_under_18 == "Yes"  |
-   hh_type_grandchild_under_18 == "Yes" |
-   hh_type_siblings_under_18 == "Yes"
-   ),
-   hh_type := "Lone parent with dependent children"
-  ]
-
-dt[hh_type == "Lone parent with dependent children aged 0-17",
-   hh_type := "Lone parent with dependent children",
-]
-
-## Lone parent independent children
-dt[hh_type_partner == "Yes" &   
-  (hh_type_child_18_plus == "Yes" |
-   hh_type_siblings_18_plus == "Yes"  |
-   hh_type_grandchild_18_plus == "Yes"
-   ) &
-  (hh_type_child_under_18 == "No"  &
-   hh_type_grandchild_under_18 == "No" &
-   hh_type_siblings_under_18 == "No"
-   ),
-   hh_type := "Lone parent with independent children only"]
-
-
-## Households containing two or more families
-dt[(hh_type_older_relatives == "Yes" |  
-     hh_type_other_relative == "Yes" )&
-     hh_type_non_relative  == "No",
-   hh_type := "Households containing two or more families"]
-
-dt[hh_type == "Households containing two or more families with children aged 0-17",
-   hh_type := "Households containing two or more families",
-]
-
-## Two or more non-family adults
-dt[hh_type_non_relative == "Yes" &
-   hh_type_older_relatives == "No" &  
-     hh_type_other_relative == "No",
-   hh_type := "Two or more non-family adults"]
-
-
-dt[is.na(hh_type), hh_type := "Other"]
-
-
-
-# Household size ----------------------------------------------------------
-
-## We are changing string to numeric and it drops NA's switch these warnings off
-oldw <- getOption("warn")
-options(warn = -1)
-
-dt[, hh_size_int := as.numeric(hh_size) + 1]
-dt[, hh_size_int := as.numeric(hh_size)]
-dt[hh_size == "none", hh_size_int := 1]
-dt[hh_size == "11 or more", hh_size_int := 12]
-dt[hh_size_int == 1, hh_size_group := "1",]
-dt[hh_size_int == 2, hh_size_group := "2",]
-dt[between(hh_size_int,3,5), hh_size_group := "3-5",]
-dt[between(hh_size_int,5,13), hh_size_group := "5+",]
-
-dt[, hh_size := hh_size_int]
-dt[, hh_size_int := NULL]
-
-## Switch warnings back on
-options(warn = oldw)
-
-# Fill in for all observations --------------------------------------------
-dt[, hh_size := first(hh_size), by = .(part_wave_uid)]
-dt[, hh_size_group := first(hh_size_group), by = .(part_wave_uid)]
-
 # Contacts settings ----------------------------------------------------------
-
 dt[, cnt_home := YesNoNA_Ind(cnt_home)]
 dt[, cnt_work := YesNoNA_Ind(cnt_work)]
 dt[, cnt_school := YesNoNA_Ind(cnt_school)]
+dt[, cnt_phys := YesNoNA_Ind(cnt_phys)]
 dt[, cnt_outside_other := YesNoNA_Ind(cnt_outside_other)]
 dt[, cnt_other_house := YesNoNA_Ind(cnt_other_house)]
 dt[, cnt_health_facility := YesNoNA_Ind(cnt_health_facility)]
@@ -539,7 +425,7 @@ dt[, cnt_public_market := YesNoNA_Ind(cnt_public_market)]
 dt[, cnt_otheryn := YesNoNA_Ind(cnt_otheryn)]
 dt[, cnt_inside := YesNoNA_Ind(cnt_inside)]
 dt[, cnt_outside := YesNoNA_Ind(cnt_outside)]
-dt[, cnt_other_text := YesNoNA_Ind(cnt_other_text)]
+dt[, cnt_other := YesNoNA_Ind(cnt_other)]
 
 dt[, cnt_prec_none := YesNoNA_Ind(cnt_prec_none)]
 dt[, cnt_prec_dk := YesNoNA_Ind(cnt_prec_dk)]
@@ -574,15 +460,7 @@ cnt_early <- c("cnt_age_group", "cnt_age_est_min","cnt_age_est_max",
                "cnt_minutes_min","cnt_minutes_max","cnt_household",
                "cnt_mass", "cnt_phys") 
 cnt_names <- cnt_names[!cnt_names %in% cnt_early]
-id_vars <- c("country",
-             "panel",
-             "wave",
-             "date",
-             "survey_round",
-             "weekday",
-             "part_id",
-             "part_uid",
-             "part_wave_uid",
+id_vars <- c("part_wave_uid",
              "contact_flag",
              "contact")
 cnt_vars <- c(id_vars, cnt_early, cnt_names)
