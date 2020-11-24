@@ -463,6 +463,7 @@ cnt_early <- c("cnt_age_group", "cnt_age_est_min","cnt_age_est_max",
                "cnt_mass", "cnt_phys") 
 cnt_names <- cnt_names[!cnt_names %in% cnt_early]
 id_vars <- c("part_wave_uid",
+             "survey_round"
              "contact_flag",
              "contact")
 cnt_vars <- c(id_vars, cnt_early, cnt_names)
