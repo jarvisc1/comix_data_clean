@@ -33,6 +33,41 @@ print(paste0("Opened: ", input_name))
 
 # Map objects for labels --------------------------------------------------
 
+
+map_test_recent <- c(
+  "Don’t know" = "unknown", 
+  "Prefer not to answer" = "no answer",
+  "Not tested" = "not tested", 
+  "Tested and the test showed {#i_they.response.label} have Coronavirus currently" = "positive", 
+  "Tested, and the test showed {#i_they.response.label} do not have Coronavirus currently" = "negative", 
+  "Yes, and {#im_are.response.label} still waiting to hear the result" = "waiting for result"
+)
+
+map_test_result <- c(
+  "Don’t know" = "unknown", 
+  "Prefer not to answer" = "no answer",
+  "Not tested" = "not tested", 
+  "Tested and the test showed I/they have Coronavirus" = "positive", 
+  "Tested, and the test showed I/they <u>do not</u> have Coronavirus" = "negative" , 
+  "Tested, and the test showed I/they do not have Coronavirus" = "negative", 
+  "Yes, and I’m still waiting to hear the result" = "waiting for result")
+
+map_yn_res <- c(
+  "Yes" = "yes",
+  "No" = "no", 
+  "Don’t know" = "unknown", 
+  "Not applicable" = "not applicable", 
+  "Prefer not to answer" = "no answer",
+  "{#Q45_help_insert} still isolating" = "still isolating",
+  "{#Q43_help_insert} still in quarantine" = "still in quarantine",
+  "It is still closed" = "still closed",
+  "Yes, currently infected" = "infected", 
+  "Yes, passed away" = "passed away",
+  "Yes, recovered" = "recovered"
+)
+
+
+
 YesNoNA_Ind = function(x)
 {
   ifelse(x == "Yes", 1,
@@ -236,16 +271,12 @@ dt[,
 dt[, hhm_student_college := YesNoNA_Ind(hhm_student_college)]
 dt[, hhm_student_nursery := YesNoNA_Ind(hhm_student_nursery)]
 dt[, hhm_student_school := YesNoNA_Ind(hhm_student_school)]
-dt[, hhm_contact_yn := YesNoNA_Ind(hhm_contact_yn)]
+dt[, hhm_contact := YesNoNA_Ind(hhm_contact)]
 dt[, hhm_student_university := YesNoNA_Ind(hhm_student_university)]
-
-## Revisit - what categories to use
-dt[, table(hhm_student)]
 
 # Symptoms ----------------------------------------------------------------
 
 dt[, hhm_symp_ache := YesNoNA_Ind(hhm_symp_ache)]
-dt[, hhm_symp_bn := YesNoNA_Ind(hhm_symp_bn)]
 dt[, hhm_symp_bodyaches := YesNoNA_Ind(hhm_symp_bodyaches)]
 dt[, hhm_symp_congestion := YesNoNA_Ind(hhm_symp_congestion)]
 dt[, hhm_symp_cough := YesNoNA_Ind(hhm_symp_cough)]
@@ -259,138 +290,129 @@ dt[, hhm_symp_none := YesNoNA_Ind(hhm_symp_none)]
 dt[, hhm_symp_sob := YesNoNA_Ind(hhm_symp_sob)]
 dt[, hhm_cont_adm_hosp := YesNoNA_Ind(hhm_cont_adm_hosp)]
 dt[, hhm_symp_sore_throat := YesNoNA_Ind(hhm_symp_sore_throat)]
-dt[, hhm_symp_st := YesNoNA_Ind(hhm_symp_st)]
 dt[, hhm_symp_tired := YesNoNA_Ind(hhm_symp_tired)]
 
 # Avoid work -------------------------------------------------------------
 
-dt[, hhm_avoid_work_reason_covidcarer_outside := YesNoNA_Ind(hhm_avoid_work_reason_covidcarer_outside)]
-dt[, hhm_avoid_work_reason_hh_isolation := YesNoNA_Ind(hhm_avoid_work_reason_hh_isolation)]
-dt[, hhm_avoid_work_reason_hh_quarantine := YesNoNA_Ind(hhm_avoid_work_reason_hh_quarantine)]
-dt[, hhm_avoid_work_reason_other := YesNoNA_Ind(hhm_avoid_work_reason_other)]
-dt[, hhm_avoid_work_reason_other_illness := YesNoNA_Ind(hhm_avoid_work_reason_other_illness)]
-dt[, hhm_avoid_work_reason_othercarer_outside := YesNoNA_Ind(hhm_avoid_work_reason_othercarer_outside)]
-dt[, hhm_avoid_work_reason_school_closure := YesNoNA_Ind(hhm_avoid_work_reason_school_closure)]
-dt[, hhm_avoid_work_reason_self_isolation := YesNoNA_Ind(hhm_avoid_work_reason_self_isolation)]
-dt[, hhm_avoid_work_reason_self_quarantine := YesNoNA_Ind(hhm_avoid_work_reason_self_quarantine)]
-dt[, hhm_avoid_work_school_14day_quar := YesNoNA_Ind(hhm_avoid_work_school_14day_quar)]
-dt[, hhm_avoid_work_school_7day_iso := YesNoNA_Ind(hhm_avoid_work_school_7day_iso)]
-dt[, hhm_avoid_work_school_caring_coivd_not_confirmed := YesNoNA_Ind(hhm_avoid_work_school_caring_coivd_not_confirmed)]
-dt[, hhm_avoid_work_school_caring_covid_confirmed := YesNoNA_Ind(hhm_avoid_work_school_caring_covid_confirmed)]
-dt[, hhm_avoid_work_school_child_home := YesNoNA_Ind(hhm_avoid_work_school_child_home)]
-dt[, hhm_avoid_work_school_illnes := YesNoNA_Ind(hhm_avoid_work_school_illnes)]
-dt[, hhm_avoid_work_school_other := YesNoNA_Ind(hhm_avoid_work_school_other)]
+dt[, hhm_avoid_work_reason_covidcarer_outside := map_yn_res[hhm_avoid_work_reason_covidcarer_outside]]
+dt[, hhm_avoid_work_reason_hh_isolation := map_yn_res[hhm_avoid_work_reason_hh_isolation]]
+dt[, hhm_avoid_work_reason_hh_quarantine := map_yn_res[hhm_avoid_work_reason_hh_quarantine]]
+dt[, hhm_avoid_work_reason_other := map_yn_res[hhm_avoid_work_reason_other]]
+dt[, hhm_avoid_work_reason_other_illness := map_yn_res[hhm_avoid_work_reason_other_illness]]
+dt[, hhm_avoid_work_reason_othercarer_outside := map_yn_res[hhm_avoid_work_reason_othercarer_outside]]
+dt[, hhm_avoid_work_reason_school_closure := map_yn_res[hhm_avoid_work_reason_school_closure]]
+dt[, hhm_avoid_work_reason_self_isolation := map_yn_res[hhm_avoid_work_reason_self_isolation]]
+dt[, hhm_avoid_work_reason_self_quarantine := map_yn_res[hhm_avoid_work_reason_self_quarantine]]
+dt[, hhm_avoid_work_school_14day_quar := map_yn_res[hhm_avoid_work_school_14day_quar]]
+dt[, hhm_avoid_work_school_7day_iso := map_yn_res[hhm_avoid_work_school_7day_iso]]
+dt[, hhm_avoid_work_school_caring_coivd_not_confirmed := map_yn_res[hhm_avoid_work_school_caring_coivd_not_confirmed]]
+dt[, hhm_avoid_work_school_caring_covid_confirmed := map_yn_res[hhm_avoid_work_school_caring_covid_confirmed]]
+dt[, hhm_avoid_work_school_child_home := map_yn_res[hhm_avoid_work_school_child_home]]
+dt[, hhm_avoid_work_school_illnes := map_yn_res[hhm_avoid_work_school_illnes]]
+dt[, hhm_avoid_work_school_other := map_yn_res[hhm_avoid_work_school_other]]
 
 # Who will look after children when school closed -------------------------------------------------------------
-dt[, hhm_close_childcare_grandparent := YesNoNA_Ind(hhm_close_childcare_grandparent)]
-dt[, hhm_close_childcare_neighbour_friend := YesNoNA_Ind(hhm_close_childcare_neighbour_friend)]
-dt[, hhm_close_childcare_not_required := YesNoNA_Ind(hhm_close_childcare_not_required)]
-dt[, hhm_close_childcare_other := YesNoNA_Ind(hhm_close_childcare_other)]
-dt[, hhm_close_childcare_parent_annual_leave := YesNoNA_Ind(hhm_close_childcare_parent_annual_leave)]
-dt[, hhm_close_childcare_parent_carer_leave := YesNoNA_Ind(hhm_close_childcare_parent_carer_leave)]
-dt[, hhm_close_childcare_parent_part_time_work := YesNoNA_Ind(hhm_close_childcare_parent_part_time_work)]
-dt[, hhm_close_childcare_parent_unemployed := YesNoNA_Ind(hhm_close_childcare_parent_unemployed)]
-dt[, hhm_close_childcare_parent_unpaid_leave := YesNoNA_Ind(hhm_close_childcare_parent_unpaid_leave)]
-dt[, hhm_close_childcare_parent_wfh := YesNoNA_Ind(hhm_close_childcare_parent_wfh)]
-dt[, hhm_close_childcare_school := YesNoNA_Ind(hhm_close_childcare_school)]
-dt[, hhm_close_childcare_sibling := YesNoNA_Ind(hhm_close_childcare_sibling)]
-dt[, hhm_close_childcare_sitter_paid := YesNoNA_Ind(hhm_close_childcare_sitter_paid)]
-dt[, hhm_close_childcare_sitter_unpaid := YesNoNA_Ind(hhm_close_childcare_sitter_unpaid)]
+dt[, hhm_close_childcare_grandparent := map_yn_res[hhm_close_childcare_grandparent]]
+dt[, hhm_close_childcare_neighbour_friend := map_yn_res[hhm_close_childcare_neighbour_friend]]
+dt[, hhm_close_childcare_not_required := map_yn_res[hhm_close_childcare_not_required]]
+dt[, hhm_close_childcare_other := map_yn_res[hhm_close_childcare_other]]
+dt[, hhm_close_childcare_parent_annual_leave := map_yn_res[hhm_close_childcare_parent_annual_leave]]
+dt[, hhm_close_childcare_parent_carer_leave := map_yn_res[hhm_close_childcare_parent_carer_leave]]
+dt[, hhm_close_childcare_parent_part_time_work := map_yn_res[hhm_close_childcare_parent_part_time_work]]
+dt[, hhm_close_childcare_parent_unemployed := map_yn_res[hhm_close_childcare_parent_unemployed]]
+dt[, hhm_close_childcare_parent_unpaid_leave := map_yn_res[hhm_close_childcare_parent_unpaid_leave]]
+dt[, hhm_close_childcare_parent_wfh := map_yn_res[hhm_close_childcare_parent_wfh]]
+dt[, hhm_close_childcare_school := map_yn_res[hhm_close_childcare_school]]
+dt[, hhm_close_childcare_sibling := map_yn_res[hhm_close_childcare_sibling]]
+dt[, hhm_close_childcare_sitter_paid := map_yn_res[hhm_close_childcare_sitter_paid]]
+dt[, hhm_close_childcare_sitter_unpaid := map_yn_res[hhm_close_childcare_sitter_unpaid]]
 
-# Negative impact of school closureed -------------------------------------------------------------
-dt[, hhm_neg_annual_leave := YesNoNA_Ind(hhm_neg_annual_leave)]
-dt[, hhm_neg_dont_know := YesNoNA_Ind(hhm_neg_dont_know)]
-dt[, hhm_neg_no_carer_leave := YesNoNA_Ind(hhm_neg_no_carer_leave)]
-dt[, hhm_neg_no_paid_by_employer := YesNoNA_Ind(hhm_neg_no_paid_by_employer)]
-dt[, hhm_neg_no_paid_by_government := YesNoNA_Ind(hhm_neg_no_paid_by_government)]
-dt[, hhm_neg_no_wfh := YesNoNA_Ind(hhm_neg_no_wfh)]
-dt[, hhm_neg_prefer_not_answer := YesNoNA_Ind(hhm_neg_prefer_not_answer)]
-dt[, hhm_neg_yes_lost_all_income := YesNoNA_Ind(hhm_neg_yes_lost_all_income)]
-dt[, hhm_neg_yes_other := YesNoNA_Ind(hhm_neg_yes_other)]
-dt[, hhm_neg_yes_partial_pay_employer := YesNoNA_Ind(hhm_neg_yes_partial_pay_employer)]
-dt[, hhm_neg_yes_partial_pay_government := YesNoNA_Ind(hhm_neg_yes_partial_pay_government)]
+# Negative impact of school closure -------------------------------------------------------------
+dt[, hhm_neg_annual_leave := map_yn_res[hhm_neg_annual_leave]]
+dt[, hhm_neg_dont_know := map_yn_res[hhm_neg_dont_know]]
+dt[, hhm_neg_no_carer_leave := map_yn_res[hhm_neg_no_carer_leave]]
+dt[, hhm_neg_no_paid_by_employer := map_yn_res[hhm_neg_no_paid_by_employer]]
+dt[, hhm_neg_no_paid_by_government := map_yn_res[hhm_neg_no_paid_by_government]]
+dt[, hhm_neg_no_wfh := map_yn_res[hhm_neg_no_wfh]]
+dt[, hhm_neg_prefer_not_answer := map_yn_res[hhm_neg_prefer_not_answer]]
+dt[, hhm_neg_yes_lost_all_income := map_yn_res[hhm_neg_yes_lost_all_income]]
+dt[, hhm_neg_yes_other := map_yn_res[hhm_neg_yes_other]]
+dt[, hhm_neg_yes_partial_pay_employer := map_yn_res[hhm_neg_yes_partial_pay_employer]]
+dt[, hhm_neg_yes_partial_pay_government := map_yn_res[hhm_neg_yes_partial_pay_government]]
 
 ## How did the children get looked after?
-dt[, hhm_not_attend_childcare_grandparent := YesNoNA_Ind(hhm_not_attend_childcare_grandparent)]
-dt[, hhm_not_attend_childcare_neighbour_friend := YesNoNA_Ind(hhm_not_attend_childcare_neighbour_friend)]
-dt[, hhm_not_attend_childcare_not_required := YesNoNA_Ind(hhm_not_attend_childcare_not_required)]
-dt[, hhm_not_attend_childcare_other := YesNoNA_Ind(hhm_not_attend_childcare_other)]
-dt[, hhm_not_attend_childcare_parent_annual_leave := YesNoNA_Ind(hhm_not_attend_childcare_parent_annual_leave)]
-dt[, hhm_not_attend_childcare_parent_carer_leave := YesNoNA_Ind(hhm_not_attend_childcare_parent_carer_leave)]
-dt[, hhm_not_attend_childcare_parent_part_time_work := YesNoNA_Ind(hhm_not_attend_childcare_parent_part_time_work)]
-dt[, hhm_not_attend_childcare_parent_unemployed := YesNoNA_Ind(hhm_not_attend_childcare_parent_unemployed)]
-dt[, hhm_not_attend_childcare_parent_unpaid_leave := YesNoNA_Ind(hhm_not_attend_childcare_parent_unpaid_leave)]
-dt[, hhm_not_attend_childcare_parent_wfh := YesNoNA_Ind(hhm_not_attend_childcare_parent_wfh)]
-dt[, hhm_not_attend_childcare_school_care := YesNoNA_Ind(hhm_not_attend_childcare_school_care)]
-dt[, hhm_not_attend_childcare_sibling := YesNoNA_Ind(hhm_not_attend_childcare_sibling)]
-dt[, hhm_not_attend_childcare_sitter_paid := YesNoNA_Ind(hhm_not_attend_childcare_sitter_paid)]
-dt[, hhm_not_attend_childcare_sitter_unpaid := YesNoNA_Ind(hhm_not_attend_childcare_sitter_unpaid)]
+dt[, hhm_not_attend_childcare_grandparent := map_yn_res[hhm_not_attend_childcare_grandparent]]
+dt[, hhm_not_attend_childcare_neighbour_friend := map_yn_res[hhm_not_attend_childcare_neighbour_friend]]
+dt[, hhm_not_attend_childcare_not_required := map_yn_res[hhm_not_attend_childcare_not_required]]
+dt[, hhm_not_attend_childcare_other := map_yn_res[hhm_not_attend_childcare_other]]
+dt[, hhm_not_attend_childcare_parent_annual_leave := map_yn_res[hhm_not_attend_childcare_parent_annual_leave]]
+dt[, hhm_not_attend_childcare_parent_carer_leave := map_yn_res[hhm_not_attend_childcare_parent_carer_leave]]
+dt[, hhm_not_attend_childcare_parent_part_time_work := map_yn_res[hhm_not_attend_childcare_parent_part_time_work]]
+dt[, hhm_not_attend_childcare_parent_unemployed := map_yn_res[hhm_not_attend_childcare_parent_unemployed]]
+dt[, hhm_not_attend_childcare_parent_unpaid_leave := map_yn_res[hhm_not_attend_childcare_parent_unpaid_leave]]
+dt[, hhm_not_attend_childcare_parent_wfh := map_yn_res[hhm_not_attend_childcare_parent_wfh]]
+dt[, hhm_not_attend_childcare_school_care := map_yn_res[hhm_not_attend_childcare_school_care]]
+dt[, hhm_not_attend_childcare_sibling := map_yn_res[hhm_not_attend_childcare_sibling]]
+dt[, hhm_not_attend_childcare_sitter_paid := map_yn_res[hhm_not_attend_childcare_sitter_paid]]
+dt[, hhm_not_attend_childcare_sitter_unpaid := map_yn_res[hhm_not_attend_childcare_sitter_unpaid]]
 
 # HHM visiting or seeking health help -------------------------------------
-dt[, hhm_visit_ae := YesNoNA_Ind(hhm_visit_ae)]
-dt[, hhm_visit_gp := YesNoNA_Ind(hhm_visit_gp)]
-dt[, hhm_visit_urgent := YesNoNA_Ind(hhm_visit_urgent)]
-dt[, hhm_visit_testing := YesNoNA_Ind(hhm_visit_testing)]
-dt[, hhm_phone_gp := YesNoNA_Ind(hhm_phone_gp)]
-dt[, hhm_seek_gov_info := YesNoNA_Ind(hhm_seek_gov_info)]
+dt[, hhm_visit_ae := map_yn_res[hhm_visit_ae]]
+dt[, hhm_visit_gp := map_yn_res[hhm_visit_gp]]
+dt[, hhm_visit_urgent := map_yn_res[hhm_visit_urgent]]
+dt[, hhm_visit_testing := map_yn_res[hhm_visit_testing]]
+dt[, hhm_phone_gp := map_yn_res[hhm_phone_gp]]
+dt[, hhm_seek_gov_info := map_yn_res[hhm_seek_gov_info]]
 
 
 # Map questions -----------------------------------------------------------
-## Revisit
-dt[, table(hhm_covid_test_recent)]
-dt[, table(hhm_covid_test_result)] ##? Not in the data?
-names(dt)
-dt[, table(hhm_covid_contact)] ## ? Not in the data?
-dt[, table(hhm_employstatus)]
-dt[, table(hhm_high_risk)]
 
-##  Revisit - yes no  prefer not to say
+dt[, hhm_covid_test_recent := map_test_recent[hhm_covid_test_recent]]
+dt[, hhm_covid_test_result := map_test_result[hhm_covid_test_result]]
 
-#dt[, table(hhm_isolate)]
-#dt[, table(hhm_isolate_atleast_one_day)]
-#dt[, table(hhm_educaton_closed)]
-#dt[, table(hhm_work_closed)]
-#dt[, table(hhm_avoid_work_school_other_reason1)]
-#dt[, table(hhm_avoid_work_school_other_reason2)]
+##  yes no  prefer not to say and restrictions
 
-## Other
-#dt[, table(hhm_neg_yes_other_reason)]
-#dt[, table(hhm_close_childcare_other_reason)]
-#dt[, table(hhm_cont_adm_hosp_other)]
-#
-#dt[, table(hhm_isolation_end_other)]
-#dt[, table(hhm_isolation_start_other)]
-#dt[, table(hhm_limit_school)]
-#dt[, table(hhm_limit_school_atleast_day)]
-#dt[, table(hhm_limit_work)]
-#dt[, table(hhm_limit_work_atleast_day)]
-#
-#dt[, table(hhm_phone_gp_other)]
-#dt[, table(hhm_pregnant)]
-#dt[, table(hhm_quarantine)]
-#dt[, table(hhm_quarantine_end_other)]
-#dt[, table(hhm_quarantine_one_day)]
-#dt[, table(hhm_quarantine_start_other)]
+dt[, hhm_covid_contact := map_yn_res[hhm_covid_contact]]
+dt[, hhm_covid_test := map_yn_res[hhm_covid_test]]
+dt[, hhm_high_risk := map_yn_res[hhm_high_risk]]
+dt[, hhm_high_risk := map_yn_res[hhm_high_risk]]
+dt[, hhm_isolate := map_yn_res[hhm_isolate]]
+dt[, hhm_isolate_atleast_one_day := map_yn_res[hhm_isolate_atleast_one_day]]
+dt[, hhm_educaton_closed := map_yn_res[hhm_educaton_closed]]
+dt[, hhm_work_closed := map_yn_res[hhm_work_closed]]
+dt[, hhm_cont_adm_hosp_other := map_yn_res[hhm_cont_adm_hosp_other]]
+dt[, hhm_avoid_work_school_other_reason1 := map_yn_res[hhm_avoid_work_school_other_reason1]]
+dt[, hhm_avoid_work_school_other_reason2 := map_yn_res[hhm_avoid_work_school_other_reason2]]
+dt[, hhm_isolation_end_other := map_yn_res[hhm_isolation_end_other]]
+dt[, hhm_isolation_start_other := map_yn_res[hhm_isolation_start_other]]
+dt[, hhm_limit_school := map_yn_res[hhm_limit_school]]
+dt[, hhm_limit_school_atleast_day := map_yn_res[hhm_limit_school_atleast_day]]
+dt[, hhm_limit_work := map_yn_res[hhm_limit_work]]
+dt[, hhm_limit_work_atleast_day := map_yn_res[hhm_limit_work_atleast_day]]
+dt[, hhm_phone_gp_other := map_yn_res[hhm_phone_gp_other]]
+dt[, hhm_pregnant := map_yn_res[hhm_pregnant]]
+dt[, hhm_quarantine := map_yn_res[hhm_quarantine]]
+dt[, hhm_quarantine_end_other := map_yn_res[hhm_quarantine_end_other]]
+dt[, hhm_quarantine_one_day := map_yn_res[hhm_quarantine_one_day]]
+dt[, hhm_quarantine_start_other := map_yn_res[hhm_quarantine_start_other]]
+dt[, hhm_reaction_dk := map_yn_res[hhm_reaction_dk]]
+dt[, hhm_reaction_none := map_yn_res[hhm_reaction_none]]
+dt[, hhm_seek_gov_info_other := map_yn_res[hhm_seek_gov_info_other]]
+dt[, hhm_visit_ae_other := map_yn_res[hhm_visit_ae_other]]
+dt[, hhm_visit_gp_other := map_yn_res[hhm_visit_gp_other]]
+dt[, hhm_visit_testing_other := map_yn_res[hhm_visit_testing_other]]
+dt[, hhm_visit_other := map_yn_res[hhm_visit_other]]
+dt[, hhm_work_closure_end_other := map_yn_res[hhm_work_closure_end_other]]
+dt[, hhm_work_closure_start_other := map_yn_res[hhm_work_closure_start_other]]
+dt[, hhm_reaction_no_answer := map_yn_res[hhm_reaction_no_answer]]
+dt[, hhm_employstatus := tolower(hhm_employstatus)]
+dt[, hhm_student := tolower(hhm_student)]
 
 
-# Needs to be checked -----------------------------------------------------
-
-## Revisit
-#dt[, table(hhm_reaction_no_answer)] ## What does this mean
-#dt[, table(hhm_reaction_dk)] ##
-#dt[, table(hhm_reaction_none)]
-#dt[, table(hhm_seek_gov_info_other)]
-#
-#
-#
-#dt[, table(hhm_visit_ae_other)]
-#dt[, table(hhm_visit_gp_other)]
-#dt[, table(hhm_visit_testing_other)]
-#dt[, table(hhm_visit_other)]
-#dt[, table(hhm_work_closure_end_other)]
-#dt[, table(hhm_work_closure_start_other)]
-#
-
+# Other reasons -----------------------------------------------------------
+# 
+# dt[, table(hhm_close_childcare_other_reason)]
+# dt[, table(hhm_neg_yes_other_reason)]
 
 
 # Filter to household data -------------------------------------------------------
