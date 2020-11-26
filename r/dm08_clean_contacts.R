@@ -201,7 +201,7 @@ dt[is.na(part_flag), part_flag := FALSE]
 ## These two lines should achieve the same thing.
 dt[row_id ==0 | !is.na(hhm_age_group), hhm := 1]
 dt[is.na(hhm_age_group), hhm := 0]
-dt[row_id == 0 | hhm_contact_yn == "Yes" | !is.na(hhm_age_group), hhm_flag := TRUE]
+dt[row_id == 0 | hhm_contact == "Yes" | !is.na(hhm_age_group), hhm_flag := TRUE]
 dt[is.na(hhm_flag), hhm_flag := FALSE]
 
 
@@ -209,9 +209,9 @@ dt[is.na(hhm_flag), hhm_flag := FALSE]
 ## Contacts are also household member with hhm_contact == "Yes"
 ## Fill in household member contacts to be no for all contacts except household members
 
-dt[is.na(row_id) | (is.na(hhm_contact_yn) & row_id != 0), hhm_contact_yn := "No"]
+dt[is.na(row_id) | (is.na(hhm_contact) & row_id != 0), hhm_contact := "No"]
 dt[is.na(row_id) | (is.na(hhm_age_group) & row_id != 0), contact_flag := TRUE]
-dt[hhm_contact_yn == "Yes", contact_flag := TRUE]
+dt[hhm_contact == "Yes", contact_flag := TRUE]
 dt[is.na(contact_flag), contact_flag := FALSE]
 
 # Physical contacts -------------------------------------------------------
@@ -307,8 +307,8 @@ dt[, age_max := NULL]
 # Contact's age -----------------------------------------------------------
 
 # Fill in contact age with hhm age if a contact
-dt[hhm_contact_yn == "Yes", cnt_age := hhm_age_group]
-dt[hhm_contact_yn == "Yes", cnt_gender := hhm_gender]
+dt[hhm_contact == "Yes", cnt_age := hhm_age_group]
+dt[hhm_contact == "Yes", cnt_gender := hhm_gender]
 
 # Remove non contacts -----------------------------------------------------
 
@@ -402,7 +402,7 @@ dt[, cnt_mins := NULL]
 # Contact relations --------------------------------------------------------
 
 dt[, cnt_type := map_type[cnt_type]]
-dt[hhm_contact_yn == "Yes", cnt_type := "household"]
+dt[hhm_contact == "Yes", cnt_type := "household"]
 
 dt[, cnt_frequency := map_freq[cnt_frequency]]
 cnt_freq_lev <- c("1-2 days", "3-7 days", "2-3 weeks", "1 month", "occasional", "never met")
@@ -438,7 +438,7 @@ dt[, cnt_prec_mask := YesNoNA_Ind(cnt_prec_mask)]
 dt[, cnt_prec_wash_before := YesNoNA_Ind(cnt_prec_wash_before)]
 dt[, cnt_prec_wash_after := YesNoNA_Ind(cnt_prec_wash_after)]
 dt[, cnt_prec_prefer_not_to_say := YesNoNA_Ind(cnt_prec_prefer_not_to_say)]
-dt[, cnt_household := YesNoNA_Ind(hhm_contact_yn)]
+dt[, cnt_household := YesNoNA_Ind(hhm_contact)]
 
 dt[is.na(cnt_prec), cnt_prec := fifelse(cnt_prec_none == 0, "Yes", "No")]
 dt[, cnt_prec_yn := cnt_prec]
@@ -463,7 +463,13 @@ cnt_early <- c("cnt_age_group", "cnt_age_est_min","cnt_age_est_max",
                "cnt_mass", "cnt_phys") 
 cnt_names <- cnt_names[!cnt_names %in% cnt_early]
 id_vars <- c("part_wave_uid",
-             "survey_round"
+             "part_id",
+             "date",
+             "weekday",
+             "survey_round",
+             "country",
+             "panel",
+             "wave",
              "contact_flag",
              "contact")
 cnt_vars <- c(id_vars, cnt_early, cnt_names)
