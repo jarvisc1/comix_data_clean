@@ -244,8 +244,6 @@ dt[, part_visit_outdoors := map_visits_yn[part_visit_outdoors_int]]
 
 # Times -------------------------------------------------------------------
 
-dt[, table(part_visit_cinema_not_attend_times)]
-
 cut_visits <- function(x) {
   cut(as.numeric(x), breaks = c(-1, 0,1,2,3,4, 30000), labels = c("None", "1", "2","3", "4", "5+"))
 }
@@ -261,33 +259,22 @@ dt[, part_visit_sportevent_participant_not_attend_times := cut_visits(part_visit
 dt[, part_visit_supermarket_not_attend_times := cut_visits(part_visit_supermarket_not_attend_times)]
 dt[, part_visit_religious_event_not_attend_times := cut_visits(part_visit_religious_event_not_attend_times)]
 
-dt[, table(part_visit_cinema_not_attend_times)]
-dt[, table(part_visit_concert_not_attend_times)]
-dt[, table(part_visit_indoor_event_not_attend_times)]
-dt[, table(part_visit_outdoor_event_not_attend_times)]
-dt[, table(part_visit_pub_not_attend_times)]
-dt[, table(part_visit_restaurant_not_attend_times)]
-dt[, table(part_visit_sportevent_attendee_not_attend_times)]
-dt[, table(part_visit_sportevent_participant_not_attend_times)]
-dt[, table(part_visit_supermarket_not_attend_times)]
-dt[, table(part_visit_religious_event_not_attend_times, survey_round)]
-
 # Could add in don't know to the above ------------------------------------
-dt[, table(part_visit_cinema_not_attend_times_dk)]
-dt[, table(part_visit_concert_not_attend_times_dk)]
-dt[, table(part_visit_pub_not_attend_times_dk)]
-dt[, table(part_visit_restaurant_not_attend_times_dk)]
-dt[, table(part_visit_sportevent_attendee_not_attend_times_dk)]
-dt[, table(part_visit_sportevent_participant_not_attend_times_dk)]
-dt[, table(part_visit_supermarket_not_attend_times_dk)]
-dt[, table(part_visit_religious_event_not_attend_times_dk)]
-
-dt[, table(part_visit_indoor_event_not_attend_times_reason_1)]
-dt[, table(part_visit_indoor_event_not_attend_times_reason_1_dk)]
-dt[, table(part_visit_indoor_event_not_attend_times_reason_2)]
-dt[, table(part_visit_outdoor_event_not_attend_times_dk)]
-dt[, table(part_visit_outdoor_event_not_attend_times_reason_1)]
-dt[, table(part_visit_outdoor_event_not_attend_times_reason_2)]
+# dt[, table(part_visit_cinema_not_attend_times_dk)]
+# dt[, table(part_visit_concert_not_attend_times_dk)]
+# dt[, table(part_visit_pub_not_attend_times_dk)]
+# dt[, table(part_visit_restaurant_not_attend_times_dk)]
+# dt[, table(part_visit_sportevent_attendee_not_attend_times_dk)]
+# dt[, table(part_visit_sportevent_participant_not_attend_times_dk)]
+# dt[, table(part_visit_supermarket_not_attend_times_dk)]
+# dt[, table(part_visit_religious_event_not_attend_times_dk)]
+# 
+# dt[, table(part_visit_indoor_event_not_attend_times_reason_1)]
+# dt[, table(part_visit_indoor_event_not_attend_times_reason_1_dk)]
+# dt[, table(part_visit_indoor_event_not_attend_times_reason_2)]
+# dt[, table(part_visit_outdoor_event_not_attend_times_dk)]
+# dt[, table(part_visit_outdoor_event_not_attend_times_reason_1)]
+# dt[, table(part_visit_outdoor_event_not_attend_times_reason_2)]
 
 # Facemasks --------------------------------------------------------------
 dt[, part_face_mask := map_fm_yn[part_face_mask]]
@@ -386,7 +373,7 @@ cut_class <- function(x) {
 
 
 dt[, part_school_class_size := cut_class(part_school_class_size)]
-dt[, table(part_school_class_size)]
+
 # Hand washing ------------------------------------------------------------
 
 cut_wash <- function(x) {
@@ -395,6 +382,35 @@ cut_wash <- function(x) {
 dt[, part_handsanit3h := cut_wash(part_handsanit3h)]
 dt[, part_handwash3h := cut_wash(part_handwash3h)]
 
+names(dt)
+
+
+
+# Switch hhm vars to be part ----------------------------------------------
+
+dt[, hhm_flag := NULL]
+
+hhmvars_old <- grep("hhm", names(dt), value = TRUE)
+
+hhmvars_new <-  gsub("hhm", "part", hhmvars)
+
+setnames(dt, old = hhmvars_old, new = hhmvars_new, skip_absent = TRUE)
+
+names(dt)
+dt[, table(part_type)]
+
+
+# Remove variables --------------------------------------------------------
+
+q21vars <- grep("q21", names(dt), value = TRUE)
+q23vars <- grep("q23", names(dt), value = TRUE)
+
+remove_vars <- c(q21vars, q23vars)
+# dt[, table(q41)] ## What is this?
+# dt[, table(q40)] ## What is this?
+# dt[, table(q48a)] ## What is this?
+
+set(dt, j = remove_vars, value = NULL)
 
 
 # Filter to relevant columns -------------------------------------------------------
