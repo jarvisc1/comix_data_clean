@@ -130,9 +130,9 @@ map_freq <- c(
 )
 
 map_report_ind_contacts <- c(
-            "{#child_name.response.value} did not have any contacts" = "No contacts", 
-            "{#Chosen_child} did not have any contacts" = "No contacts", 
-            "I did not have any contacts" = "No contacts", 
+            "{#child_name.response.value} did not have any contacts" = "no contacts", 
+            "{#Chosen_child} did not have any contacts" = "no contacts", 
+            "I did not have any contacts" = "no contacts", 
             "I did not individually include every person {#child_name.response.value} had contact with." = "all not reported", 
             "I did not individually include every person {#Chosen_child} had contact with." = "all not reported", 
             "I did not individually include every person I had contact with." = "all not reported", 
@@ -424,7 +424,7 @@ dt[, cnt_supermarket := YesNoNA_Ind(cnt_supermarket)]
 dt[, cnt_worship := YesNoNA_Ind(cnt_worship)]
 dt[, cnt_leisure := YesNoNA_Ind(cnt_leisure)]
 dt[, cnt_public_market := YesNoNA_Ind(cnt_public_market)]
-dt[, cnt_otheryn := YesNoNA_Ind(cnt_otheryn)]
+dt[, cnt_other_place := YesNoNA_Ind(cnt_other_place)]
 dt[, cnt_inside := YesNoNA_Ind(cnt_inside)]
 dt[, cnt_outside := YesNoNA_Ind(cnt_outside)]
 dt[, cnt_other := YesNoNA_Ind(cnt_other)]
