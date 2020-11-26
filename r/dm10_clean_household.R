@@ -266,14 +266,6 @@ dt[,
    .SDcols = work_date_cols]
 
 
-# Household member school type and whether contact ------------------------------------------------
-
-dt[, hhm_student_college := YesNoNA_Ind(hhm_student_college)]
-dt[, hhm_student_nursery := YesNoNA_Ind(hhm_student_nursery)]
-dt[, hhm_student_school := YesNoNA_Ind(hhm_student_school)]
-dt[, hhm_contact := YesNoNA_Ind(hhm_contact)]
-dt[, hhm_student_university := YesNoNA_Ind(hhm_student_university)]
-
 # Symptoms ----------------------------------------------------------------
 
 dt[, hhm_symp_ache := YesNoNA_Ind(hhm_symp_ache)]
@@ -407,6 +399,12 @@ dt[, hhm_work_closure_start_other := map_yn_res[hhm_work_closure_start_other]]
 dt[, hhm_reaction_no_answer := map_yn_res[hhm_reaction_no_answer]]
 dt[, hhm_employstatus := tolower(hhm_employstatus)]
 dt[, hhm_student := tolower(hhm_student)]
+dt[, hhm_student_college := tolower(hhm_student_college)]
+dt[, hhm_student_nursery := tolower(hhm_student_nursery)]
+dt[, hhm_student_school := tolower(hhm_student_school)]
+dt[, hhm_contact := tolower(hhm_contact)]
+dt[, hhm_student_university := tolower(hhm_student_university)]
+
 
 
 # Other reasons -----------------------------------------------------------
@@ -447,6 +445,16 @@ hhms <- dt[hhm_flag == TRUE, ..hhm_vars]
 # Only keep household and participants ------------------------------------
 
 dt <- dt[ part_flag == TRUE]
+
+cols_start <- ncol(dt)
+## Remove completely empty columns 
+emptycols_na <- colSums(is.na(dt)) == nrow(dt)
+if(sum(emptycols_na) > 0 ){
+  emptycols_na <- names(emptycols_na[emptycols_na])
+  set(dt, j = emptycols_na, value = NULL)
+}  
+
+print(paste0("Reduced from ", cols_start, " to ", ncol(dt), " columns"))
 
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)
