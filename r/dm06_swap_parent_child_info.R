@@ -120,13 +120,13 @@ dt[sample_type == "child" & (child_id == row_id),
 # Add parent as household member contact for C and D 
 ## This can be removed once CD version_s code has been frozen
 
-dt[panel %in% c("C", "D") & sample_type == "child" & (row_id == 0), hhm_contact_yn := "Yes"]
+dt[panel %in% c("C", "D") & sample_type == "child" & (row_id == 0), hhm_contact := "Yes"]
 dt[panel %in% c("C", "D") & sample_type == "child" & (row_id == 0), cnt_home := "Yes"]
 dt[panel %in% c("C", "D") & sample_type == "child" & (row_id == 0), cnt_work := "No"]
 dt[panel %in% c("C", "D") & sample_type == "child" & (row_id == 0), cnt_school := "No"]
 
 dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
-   hhm_contact_yn := first(hhm_contact_yn),
+   hhm_contact := first(hhm_contact),
    by = .(country, panel, wave, part_id)
    ]
 dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
@@ -142,7 +142,7 @@ dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
    by = .(country, panel, wave, part_id)
    ]
 dt[sample_type == "child" & (row_id == 0),
-   hhm_contact_yn := NA_character_,
+   hhm_contact := NA_character_,
    by = .(country, panel, wave, part_id)
    ]
 dt[sample_type == "child" & (row_id == 0),

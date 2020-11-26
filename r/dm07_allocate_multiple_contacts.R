@@ -90,7 +90,7 @@ dt[, cnt_multiple_contacts_work_precautions := NULL]
 dt[, cnt_multiple_contacts_school_precautions := NULL]
 dt[, cnt_multiple_contacts_other_precautions := NULL]
 
-dt[is.na(cnt_mass) & (!is.na(cnt_age) | hhm_contact_yn == "Yes"), cnt_mass := "individual"]
+dt[is.na(cnt_mass) & (!is.na(cnt_age) | hhm_contact == "Yes"), cnt_mass := "individual"]
 
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)
