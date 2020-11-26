@@ -218,15 +218,13 @@ dt[is.na(contact_flag), contact_flag := FALSE]
 
 ## Variable changed through panels
 
-dt[grepl("Physical contact \\(any sort", phys), phys := "Yes" ]
-dt[grepl("Non-physical contact", phys), phys := "No"]
-dt[grepl("Prefer not to answer", phys), phys := NA_character_]
+dt[grepl("Physical contact \\(any sort|Yes", cnt_phys), cnt_phys := "Yes" ]
+dt[grepl("Non-physical contact|No", cnt_phys), cnt_phys := "No"]
+dt[grepl("Prefer not to answer", cnt_phys), cnt_phys := "No"]
 
-dt[is.na(cnt_phys), cnt_phys := phys]
 
 ## Mass contact are treated as non-physical
 dt[cnt_mass == "mass", cnt_phys := "No"]
-dt[, phys := NULL]
 
 # Participant's age ---------------------------------------------------------------------
 
