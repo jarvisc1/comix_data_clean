@@ -392,12 +392,10 @@ dt[, hhm_flag := NULL]
 
 hhmvars_old <- grep("hhm", names(dt), value = TRUE)
 
-hhmvars_new <-  gsub("hhm", "part", hhmvars)
+hhmvars_new <-  gsub("hhm", "part", hhmvars_old)
 
 setnames(dt, old = hhmvars_old, new = hhmvars_new, skip_absent = TRUE)
 
-names(dt)
-dt[, table(part_type)]
 
 
 # Remove variables --------------------------------------------------------
