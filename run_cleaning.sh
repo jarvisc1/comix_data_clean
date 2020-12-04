@@ -17,10 +17,21 @@ Rscript.exe ".\r\dm04_rename_vars.R"
 echo "Combine all countries and waves together"
 Rscript.exe ".\r\dm05_combine_data.R"
 
-echo "dm06"
-echo "dm07"
+echo "Swap adult and child info for parent surveys"
+Rscript.exe ".\r\dm06_swap_parent_child_info.R"
+
+echo "Allocate mass contacts to contact rows"
+Rscript.exe ".\r\dm07_allocate_multiple_contacts.R"
  
-# 
-# echo "Clean existing variables"
-# 
-# echo "Add new variables"
+echo "Clean data needs for contact analyses"
+Rscript.exe ".\r\dm08_clean_contacts.R"
+
+echo "Clean location data"
+Rscript.exe ".\r\dm09_clean_locations.R"
+
+echo "Clean Households"
+Rscript.exe ".\r\dm10_clean_household.R"
+
+echo "Clean Participants"
+Rscript.exe ".\r\dm11_clean_participant.R"
+ 
