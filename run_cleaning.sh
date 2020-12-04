@@ -1,6 +1,8 @@
 #!/bin/bash
 # Data cleaning process
 
+echo "Install packages if needed"
+Rscript.exe ".\r\dm00_install_packages.R"
 
 echo "Convert from SPSS to QS files"
 Rscript.exe ".\r\dm01_resave_spss_as_qs.R"

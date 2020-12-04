@@ -4,6 +4,9 @@
 
 pkgs <- c("data.table",
   "qs",
+  "stringr",
+  "lubridate",
+  "readxl"
   )
 
-install.packages(pkgs)
+install.packages(setdiff(pkgs, rownames(installed.packages())))
