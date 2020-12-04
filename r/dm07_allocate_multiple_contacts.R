@@ -78,19 +78,9 @@ dt_cnts[is.na(cnt_prec),cnt_prec := fifelse(cnt_work == "Yes",
 dt_cnts[is.na(cnt_prec),cnt_prec := fifelse(cnt_school == "Yes",
     cnt_multiple_contacts_school_precautions, NA_character_)]
 
-dt_cnts[, cnt_multiple_contacts_work_precautions := NULL]
-dt_cnts[, cnt_multiple_contacts_school_precautions := NULL]
-dt_cnts[, cnt_multiple_contacts_other_precautions := NULL]
-
+dt[(!is.na(cnt_age) | hhm_contact == "Yes"), cnt_mass := "individual"]
 # Append on to main data --------------------------------------------------
 dt <- rbindlist(list(dt, dt_cnts), use.names = TRUE, fill = TRUE)
-
-## Remove excess prec for multi contacts
-dt[, cnt_multiple_contacts_work_precautions := NULL]
-dt[, cnt_multiple_contacts_school_precautions := NULL]
-dt[, cnt_multiple_contacts_other_precautions := NULL]
-
-dt[is.na(cnt_mass) & (!is.na(cnt_age) | hhm_contact == "Yes"), cnt_mass := "individual"]
 
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)

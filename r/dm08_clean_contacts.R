@@ -384,9 +384,9 @@ dt[, temp_times := (60 * as.numeric(cnt_hours)) + as.numeric(cnt_mins)]
 dt[, cnt_minutes_min := temp_times]
 dt[, cnt_minutes_max := temp_times]
 dt[is.na(cnt_minutes_min), cnt_minutes_min := map_minutes_min[cnt_total_time]]
-dt[is.na(cnt_minutes_max), cnt_minutes_min := map_minutes_max[cnt_total_time]]
+dt[is.na(cnt_minutes_max), cnt_minutes_max := map_minutes_max[cnt_total_time]]
 dt[, temp_times := cut(temp_times, 
-                       breaks = c(0,5,15,60,240, 1440),
+                       breaks = c(0,5,15,60,240, 20000),
                        labels = c("<5m","5m-14m","15m-59m","60m-4h","4h+"),
                        right = FALSE)]
 dt[, temp_times := as.character(temp_times)]
@@ -425,6 +425,9 @@ dt[, cnt_public_market := YesNoNA_Ind(cnt_public_market)]
 dt[, cnt_other_place := YesNoNA_Ind(cnt_other_place)]
 dt[, cnt_inside := YesNoNA_Ind(cnt_inside)]
 dt[, cnt_outside := YesNoNA_Ind(cnt_outside)]
+dt[, cnt_insde_outside_dk  := YesNoNA_Ind(cnt_insde_outside_dk)]
+dt[, cnt_other := YesNoNA_Ind(cnt_other)]
+
 dt[, cnt_other := YesNoNA_Ind(cnt_other)]
 
 dt[, cnt_prec_none := YesNoNA_Ind(cnt_prec_none)]

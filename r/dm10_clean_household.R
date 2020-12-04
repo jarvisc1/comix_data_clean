@@ -75,21 +75,6 @@ YesNoNA_Ind = function(x)
 }
 
 
-
-# Participants ------------------------------------------------------------
-part_cols <- grep("part", names(dt), value = TRUE)
-print(paste0("Participant vars: ", length(part_cols)))
-
-# Household members -------------------------------------------------------
-hh_cols <- grep("hh", names(dt), value = TRUE)
-print(paste0("Household vars: ", length(hh_cols)))
-
-
-# Locations ---------------------------------------------------------------
-loc_cols <- grep("area|region", names(dt), value = TRUE)
-print(paste0("Location vars: ", length(loc_cols)))
-
-
 # Household types ------------------------------------------------------
 
 ## Households types used to be one variable now multiple
@@ -145,7 +130,7 @@ dt[hh_type == "Lone parent with dependent children aged 0-17",
 ]
 
 ## Lone parent independent children
-dt[hh_type_partner == "Yes" &   
+dt[hh_type_partner == "No" &   
      (hh_type_child_18_plus == "Yes" |
         hh_type_siblings_18_plus == "Yes"  |
         hh_type_grandchild_18_plus == "Yes"
@@ -283,6 +268,7 @@ dt[, hhm_symp_sob := YesNoNA_Ind(hhm_symp_sob)]
 dt[, hhm_cont_adm_hosp := YesNoNA_Ind(hhm_cont_adm_hosp)]
 dt[, hhm_symp_sore_throat := YesNoNA_Ind(hhm_symp_sore_throat)]
 dt[, hhm_symp_tired := YesNoNA_Ind(hhm_symp_tired)]
+dt[, hhm_symp_diarrhoea := YesNoNA_Ind(hhm_symp_diarrhoea)]
 
 # Avoid work -------------------------------------------------------------
 
@@ -355,7 +341,10 @@ dt[, hhm_visit_urgent := map_yn_res[hhm_visit_urgent]]
 dt[, hhm_visit_testing := map_yn_res[hhm_visit_testing]]
 dt[, hhm_phone_gp := map_yn_res[hhm_phone_gp]]
 dt[, hhm_seek_gov_info := map_yn_res[hhm_seek_gov_info]]
-
+dt[, hhm_reaction_dk := map_yn_res[hhm_reaction_dk]]
+dt[, hhm_reaction_none := map_yn_res[hhm_reaction_none]]
+dt[, hhm_cont_adm_hosp_other := map_yn_res[hhm_cont_adm_hosp_other]]
+dt[, hhm_reaction_no_answer := map_yn_res[hhm_reaction_no_answer]]
 
 # Map questions -----------------------------------------------------------
 
@@ -372,7 +361,6 @@ dt[, hhm_isolate := map_yn_res[hhm_isolate]]
 dt[, hhm_isolate_atleast_one_day := map_yn_res[hhm_isolate_atleast_one_day]]
 dt[, hhm_educaton_closed := map_yn_res[hhm_educaton_closed]]
 dt[, hhm_work_closed := map_yn_res[hhm_work_closed]]
-dt[, hhm_cont_adm_hosp_other := map_yn_res[hhm_cont_adm_hosp_other]]
 dt[, hhm_avoid_work_school_other_reason1 := map_yn_res[hhm_avoid_work_school_other_reason1]]
 dt[, hhm_avoid_work_school_other_reason2 := map_yn_res[hhm_avoid_work_school_other_reason2]]
 dt[, hhm_isolation_end_other := map_yn_res[hhm_isolation_end_other]]
@@ -387,8 +375,6 @@ dt[, hhm_quarantine := map_yn_res[hhm_quarantine]]
 dt[, hhm_quarantine_end_other := map_yn_res[hhm_quarantine_end_other]]
 dt[, hhm_quarantine_one_day := map_yn_res[hhm_quarantine_one_day]]
 dt[, hhm_quarantine_start_other := map_yn_res[hhm_quarantine_start_other]]
-dt[, hhm_reaction_dk := map_yn_res[hhm_reaction_dk]]
-dt[, hhm_reaction_none := map_yn_res[hhm_reaction_none]]
 dt[, hhm_seek_gov_info_other := map_yn_res[hhm_seek_gov_info_other]]
 dt[, hhm_visit_ae_other := map_yn_res[hhm_visit_ae_other]]
 dt[, hhm_visit_gp_other := map_yn_res[hhm_visit_gp_other]]
@@ -396,7 +382,6 @@ dt[, hhm_visit_testing_other := map_yn_res[hhm_visit_testing_other]]
 dt[, hhm_visit_other := map_yn_res[hhm_visit_other]]
 dt[, hhm_work_closure_end_other := map_yn_res[hhm_work_closure_end_other]]
 dt[, hhm_work_closure_start_other := map_yn_res[hhm_work_closure_start_other]]
-dt[, hhm_reaction_no_answer := map_yn_res[hhm_reaction_no_answer]]
 dt[, hhm_employstatus := tolower(hhm_employstatus)]
 dt[, hhm_student := tolower(hhm_student)]
 dt[, hhm_student_college := tolower(hhm_student_college)]

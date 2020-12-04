@@ -57,7 +57,7 @@ map_visits_yn <- c("intended did not reason covid" = "no",
 
 map_test <- c(
   "Don’t know" = "unknown", 
-  "Prefer not to answer",
+  "Prefer not to answer"  = "no answer",
   "Not tested" = "not tested", 
   "Tested and the test showed {#i_they.response.label} have or had Coronavirus" = "positive", 
   "Tested, and the test showed {#i_they.response.label} have not had Coronavirus" = "negative", 
