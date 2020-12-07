@@ -491,10 +491,22 @@ id_vars <- c("part_wave_uid",
              "panel",
              "wave",
              "contact_flag",
-             "contact")
+             "contact", 
+             "cnt_household")
 cnt_vars <- c(id_vars, cnt_early, cnt_names)
 
 contacts <- dt[contact_flag == TRUE, ..cnt_vars]
+
+
+# Remove empty contacts that shouldn't be there ---------------------------
+
+# Remove Contacts without any information - not actually contacts
+rows_start <- nrow(contacts)
+
+missing <- rowSums(!is.na(contacts[,.SD, .SDcols = !id_vars]))==0
+
+contacts <- contacts[!missing]
+print(paste0("Removed ", rows_start-nrow(contacts), " empty rows"))
 
 # Remove contact variables from main data.-------------------------------------------------------------------------
 
