@@ -48,6 +48,22 @@ set(dt, j = grep(".*_i$", names(dt), value = TRUE), value = NULL)
 
 setkey(dt, country, panel, wave,part_id)
 
+
+# Remove data that is just for tracking household members -----------------
+
+## Remove household members that are just being tracked.
+vars <- c("country", "part_id", "panel", "wave", "row_id", "sample_type", "child_id")
+hhcomp <- grep("hhcomp", names(dt), value = TRUE)
+vars <- c(vars, hhcomp)
+
+rows_start <- nrow(dt)
+missing <- rowSums(!is.na(dt[,.SD, .SDcols = !vars]))==0
+
+## This could be output somewhere if we wanted. 
+dt_hhm_tracker <- dt[missing]
+dt <- dt[!missing]
+print(paste0("Removed ", rows_start-nrow(dt), " empty rows"))
+
 # Map objects for labels --------------------------------------------------
 
 map_survey_sample <- c(
@@ -151,6 +167,9 @@ YesNoNA = function(x)
    ifelse(x == "Yes", TRUE,
           ifelse(x == "No", FALSE, NA))
 }
+
+
+
 
 # Label values ------------------------------------------------------------
 
@@ -425,7 +444,7 @@ dt[, cnt_public_market := YesNoNA_Ind(cnt_public_market)]
 dt[, cnt_other_place := YesNoNA_Ind(cnt_other_place)]
 dt[, cnt_inside := YesNoNA_Ind(cnt_inside)]
 dt[, cnt_outside := YesNoNA_Ind(cnt_outside)]
-dt[, cnt_insde_outside_dk  := YesNoNA_Ind(cnt_insde_outside_dk)]
+dt[, cnt_inside_outside_dk  := YesNoNA_Ind(cnt_inside_outside_dk)]
 dt[, cnt_other := YesNoNA_Ind(cnt_other)]
 
 dt[, cnt_other := YesNoNA_Ind(cnt_other)]

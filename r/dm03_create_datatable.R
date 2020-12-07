@@ -54,8 +54,10 @@ for(country in country_codes){
     }  
     
     vars <- c("respondent_id", "panel", "wave", "country", "table_row")
+    cnt <- grep("contact", names(dt), value = TRUE)
+    vars <- c(vars, cnt)
     rows_start <- nrow(dt)
-    missing <- rowSums(!is.na(dt[,.SD, .SDcols = !vars]))==1
+    missing <- rowSums(!is.na(dt[,.SD, .SDcols = !vars]))==0
     dt <- dt[!missing]
     
     print(paste0("Reduced from ", cols_start, " to ", ncol(dt), " columns"))

@@ -423,6 +423,7 @@ hhm_vars <- c(id_vars, hhm_names)
 #names(dt)[!names(dt) %in% hhm_vars]
 
 hhms <- dt[hhm_flag == TRUE, ..hhm_vars]
+hhms <- hhms[hhcomp_remove != "Yes"]
 # Do not remove household variables.-------------------------------------------------------------------------
 
 ## They will be used in the next script and change to part variables
