@@ -20,6 +20,7 @@ if(Sys.info()["nodename"] == "DESKTOP-OKJFGKO"){
   dir_data_archive <- file.path(parent_path, 'data/clean/archive')
   ## Filepaths for temp processing files
   dir_data_process <- "data/processing"
+  dir_data_local <- file.path('../comix/data/')
 }
 
 ## AG

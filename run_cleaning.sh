@@ -36,4 +36,8 @@ Rscript.exe ".\r\dm10_clean_household.R"
 
 echo "Clean Participants"
 Rscript.exe ".\r\dm11_clean_participant.R"
+
+
+echo "Save data on LSHTM server"
+Rscript.exe ".\r\dm101_save_remote.R"
  
