@@ -382,9 +382,6 @@ cut_wash <- function(x) {
 dt[, part_handsanit3h := cut_wash(part_handsanit3h)]
 dt[, part_handwash3h := cut_wash(part_handwash3h)]
 
-names(dt)
-
-
 
 # Switch hhm vars to be part ----------------------------------------------
 
@@ -403,10 +400,9 @@ setnames(dt, old = hhmvars_old, new = hhmvars_new, skip_absent = TRUE)
 q21vars <- grep("q21", names(dt), value = TRUE)
 q23vars <- grep("q23", names(dt), value = TRUE)
 
-remove_vars <- c(q21vars, q23vars)
-# dt[, table(q41)] ## What is this?
-# dt[, table(q40)] ## What is this?
-# dt[, table(q48a)] ## What is this?
+vars_remove <- readxl::read_excel('codebook/var_names.xlsx', sheet = "remove_vars")
+remove_vars <- c(q21vars, q23vars, vars_remove$remove)
+remove_vars <- remove_vars[remove_vars %in% names(dt)]
 
 set(dt, j = remove_vars, value = NULL)
 
