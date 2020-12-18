@@ -1,12 +1,15 @@
 .Rproj.user
 .Rhistory
 .RData
+*.DS_Store
 .Ruserdata
 *.html
 data/~$spss_files.xlsx
 data/spss/*
 data/processing/*
+data/sharing/*
 data/clean/*
 codebook/*
 reports/*
-
+*7z
+*qs$
