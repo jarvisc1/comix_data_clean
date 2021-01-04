@@ -46,7 +46,8 @@ dt[, sample_type := first(sample_type), by = .(country, panel, wave, part_id)]
 
 hhm_id_pattern <- "^.*\\{_\\s*|\\s*\\}.*$"
 dt[ , child_id := as.numeric(gsub(hhm_id_pattern, "", child_hhm_select_raw))]
-dt[, child_id := first(child_id), by = .(country, panel, wave, part_id)]
+# Assumption note: all waves are filled in for the same child
+# dt[, child_id := first(child_id), by = .(country, panel, wave, part_id)]
 
 # Swap child parent info -----------------------------------------------------------
 
