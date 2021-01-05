@@ -94,10 +94,11 @@ for(country in country_codes){
          child_cols <- c(child_qs, child_cs)
          # Identify adult questions and remove
          adult_qs <- grep("^q[0-9]+", names(dt), value = T)
+         adult_vac_qs <- grep("^qxx|qzz", names(dt), value = T)
          adult_cs <- grep("^contact[0-9]+", names(dt), value = T)
          ## Needed in both
          adult_qs <- grep("^q23|q20", adult_qs, value = T, invert = T)
-         adult_cols <- c(adult_qs, adult_cs)
+         adult_cols <- c(adult_qs, adult_cs, adult_vac_qs)
          
          # Subset data
          dt_adult <- dt_adult[, -child_cols, with = F]

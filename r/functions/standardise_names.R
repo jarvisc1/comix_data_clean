@@ -1,5 +1,6 @@
 
 ## Take the Ipsos names and standardise the loop and scale variables
+#var <- names(dt)
 #var <- unique(allnames)
 standardise_names <- function(var, original_survey = FALSE){
   questions_lists <- sapply(
@@ -13,6 +14,9 @@ standardise_names <- function(var, original_survey = FALSE){
     ),
     fill=TRUE
   )
+  ## Fill in V7 and V8 if not present
+  if(is.null(questions_loop$V7)) questions_loop[, V7 := NA]
+  if(is.null(questions_loop$V8)) questions_loop[, V8 := NA]
   # Change from V1 to p1 where p = part and number is the part of the questions
   setnames(questions_loop, 
            old = c("V1"     , "V2", "V3", "V4", "V5", "V6", "V7", "V8") , 
@@ -96,7 +100,13 @@ standardise_names <- function(var, original_survey = FALSE){
   
   
     # Exceptions --------------------------------------------------------------
+    
 
+    # Vaccine questions -------------------------------------------------------
+    questions_loop[grepl("qxx|qpxx|qzz|qpzz", p1) & grepl("scale", p3), scalenum := as.numeric(p2)]
+    questions_loop[grepl("qxx|qpxx|qzz|qpzz", p1) & grepl("scale", p3), loopnum := 0]
+    questions_loop[grepl("qxx|qpxx|qzz|qpzz", p1) & grepl("scale", p3), text1 := p4]
+    questions_loop[grepl("qxx|qpxx|qzz|qpzz", p1) & grepl("scale", p3)]
     # Attitude and behaviour questions ----------------------------------------
     questions_loop[grepl("q35_[0-9].*_scale", oldname), newname := paste("q35_scale", p2, sep = "_")]
     questions_loop[grepl("q36_[0-9].*_scale", oldname), newname := paste("q36_scale", p2, sep = "_")]
