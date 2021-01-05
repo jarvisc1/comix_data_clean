@@ -46,124 +46,84 @@ dt[, sample_type := first(sample_type), by = .(country, panel, wave, part_id)]
 
 hhm_id_pattern <- "^.*\\{_\\s*|\\s*\\}.*$"
 dt[ , child_id := as.numeric(gsub(hhm_id_pattern, "", child_hhm_select_raw))]
-# Assumption note: all waves are filled in for the same child
-# dt[, child_id := first(child_id), by = .(country, panel, wave, part_id)]
+dt[, child_id := first(child_id), by = .(country, panel, wave, part_id)]
 
 # Swap child parent info -----------------------------------------------------------
 
 ## Swap age
-dt[sample_type == "child" & (row_id == 0),
-   parent_child := "child",
-   ]
+# dt[sample_type == "child" & (row_id == 0),
+#    parent_child := "child",
+#    ]
 dt[sample_type == "child" & (child_id == row_id),
-   parent_child := "parent",
+   parent_child := "child"
    ]
+dt[sample_type == "child" & row_id == 0,
+   row_id := 999
+]
+
+dt[sample_type == "child" & row_id == 999,
+   parent_child := "parent"
+]
+dt[sample_type == "child" &  parent_child == "child",
+   row_id := 0
+]
 
 ## Fill in parent's age
-dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
-   part_age := first(part_age),
-   by = .(country, panel, wave, part_id)
-   ]
-## Fill in child's age
-dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
-   hhm_age_group := last(hhm_age_group),
-   by = .(country, panel, wave, part_id)
-   ]
-## Swap parent's with child's
-dt[sample_type == "child" & (row_id == 0),
-   part_age := hhm_age_group,
-   by = .(country, panel, wave, part_id)
-   ]
-## Move parent to household member
-dt[sample_type == "child" & (child_id == row_id),
-   hhm_age_group := part_age,
-   by = .(country, panel, wave, part_id)
-   ]
-## Remove household age for child
-dt[sample_type == "child" & (row_id == 0),
-   hhm_age_group := NA_character_,
-   by = .(country, panel, wave, part_id)
-   ]
-## Remove participant age for parent
-dt[sample_type == "child" & (child_id == row_id),
-   part_age := NA_character_,
-   by = .(country, panel, wave, part_id)
-   ]
-
-## Same as above but for gender
-dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
-   part_gender := first(part_gender),
-   by = .(country, panel, wave, part_id)
-   ]
-dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
-   hhm_gender := last(hhm_gender),
-   by = .(country, panel, wave, part_id)
-   ]
-dt[sample_type == "child" & (row_id == 0),
-   part_gender := hhm_gender,
-   by = .(country, panel, wave, part_id)
-   ]
-dt[sample_type == "child" & (child_id == row_id),
-   hhm_gender := part_gender,
-   by = .(country, panel, wave, part_id)
-   ]
-dt[sample_type == "child" & (row_id == 0),
-   hhm_gender := NA_character_,
-   by = .(country, panel, wave, part_id)
-   ]
-dt[sample_type == "child" & (child_id == row_id),
-   part_gender := NA_character_,
-   by = .(country, panel, wave, part_id)
-   ]
-
-# Swap whether household contact ------------------------------------------
-
-# Add parent as household member contact for C and D 
-## This can be removed once CD version_s code has been frozen
-
-dt[panel %in% c("C", "D") & sample_type == "child" & (row_id == 0), hhm_contact := "Yes"]
-dt[panel %in% c("C", "D") & sample_type == "child" & (row_id == 0), cnt_home := "Yes"]
-dt[panel %in% c("C", "D") & sample_type == "child" & (row_id == 0), cnt_work := "No"]
-dt[panel %in% c("C", "D") & sample_type == "child" & (row_id == 0), cnt_school := "No"]
-
-dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
-   hhm_contact := first(hhm_contact),
-   by = .(country, panel, wave, part_id)
-   ]
-dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
-   cnt_home := first(cnt_home),
-   by = .(country, panel, wave, part_id)
-   ]
-dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
-   cnt_work := first(cnt_work),
-   by = .(country, panel, wave, part_id)
-   ]
-dt[sample_type == "child" & (row_id == 0 | child_id == row_id),
-   cnt_school := first(cnt_school),
-   by = .(country, panel, wave, part_id)
-   ]
-dt[sample_type == "child" & (row_id == 0),
-   hhm_contact := NA_character_,
-   by = .(country, panel, wave, part_id)
-   ]
-dt[sample_type == "child" & (row_id == 0),
-   cnt_home := NA_character_,
-   by = .(country, panel, wave, part_id)
-   ]
-dt[sample_type == "child" & (row_id == 0),
-   cnt_work := NA_character_,
-   by = .(country, panel, wave, part_id)
-   ]
-dt[sample_type == "child" & (row_id == 0),
-   cnt_school := NA_character_,
+dt[sample_type == "child",
+   hh_size := first(hh_size),
    by = .(country, panel, wave, part_id)
    ]
 
 
+## Fill in parent (part_id 999) household member data from participant data
+part_cols <- grep("part_[^id]", names(dt), value = T)
+part_cols <- grep("hhm", part_cols, value = T, invert = T)
 
-## also these hhm_student hhm_student_nursery hhm_student_school hhm_student_college
-## hhm_student_university
+table(dt[parent_child == "parent"]$hhm_gender_nb, useNA = "always")
+for(part_col in part_cols) {
+   hhm_col <- gsub("part_", "hhm_", part_col)
+   dt[parent_child == "parent", (hhm_col) := get(part_col)]
+}
 
+## Fill in child (part_id 0) partdata from hhm data
+hhm_cols <- c("hhm_gender", "hhm_age_group")
+table(dt[parent_child == "child"]$hhm_age_group)
+table(dt[parent_child == "child"]$part_age_group)
+for(hhm_col in hhm_cols) {
+   part_col <- gsub("hhm_", "part_", hhm_col)
+   dt[parent_child == "child", (part_col) := get(hhm_col)]
+}
+table(dt[parent_child == "child"]$part_age_group)
+
+# Add adult age group
+dt[parent_child == "parent", hhm_age_group := 
+      ifelse(between(hhm_age, 18, 19), "18-19", hhm_age_group)]
+dt[parent_child == "parent", hhm_age_group := 
+      ifelse(between(hhm_age, 20, 24), "20-24", hhm_age_group)]
+dt[parent_child == "parent", hhm_age_group := 
+      ifelse(between(hhm_age, 25, 29), "25-29", hhm_age_group)]
+dt[parent_child == "parent", hhm_age_group := 
+      ifelse(between(hhm_age, 30, 34), "30-34", hhm_age_group)]
+dt[parent_child == "parent", hhm_age_group := 
+      ifelse(between(hhm_age, 35, 39), "35-39", hhm_age_group)]
+dt[parent_child == "parent", hhm_age_group := 
+      ifelse(between(hhm_age, 40, 44), "40-44", hhm_age_group)]
+dt[parent_child == "parent", hhm_age_group := 
+      ifelse(between(hhm_age, 45, 49), "45-49", hhm_age_group)]
+dt[parent_child == "parent", hhm_age_group := 
+      ifelse(between(hhm_age, 50, 54), "50-54", hhm_age_group)]
+dt[parent_child == "parent", hhm_age_group := 
+      ifelse(between(hhm_age, 55, 59), "55-59", hhm_age_group)]
+dt[parent_child == "parent", hhm_age_group := 
+      ifelse(between(hhm_age, 60, 64), "60-64", hhm_age_group)]
+dt[parent_child == "parent", hhm_age_group := 
+      ifelse(between(hhm_age, 65, 69), "65-69", hhm_age_group)]
+dt[parent_child == "parent", hhm_age_group := 
+      ifelse(between(hhm_age, 70, 120), "70+", hhm_age_group)]
+
+
+# LAST STEP: 
+# Combine 2 parent dt rows into one for C and D (original IDS 0 and 999)
 
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)
