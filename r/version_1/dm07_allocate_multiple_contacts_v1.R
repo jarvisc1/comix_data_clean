@@ -1,8 +1,8 @@
 # Name: dm07_allocate_multiple_contacts.R
 ## Description: Assign each of the multiple contacts to a row
-## Input file: v1_AB_combined_6.qs
+## Input file: combined_6_v1.qs
 ## Functions:
-## Output file: v1_AB_combined_7.qs
+## Output file: combined_7_v1.qs
 
 
 # Packages ----------------------------------------------------------------
@@ -13,8 +13,8 @@ source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("v1_AB_combined_6.qs")
-output_name <- paste0("v1_AB_combined_7.qs")
+input_name <-  paste0("combined_6_v1.qs")
+output_name <- paste0("combined_7_v1.qs")
 input_data <-  file.path(dir_data_process, input_name)
 output_data <- file.path(dir_data_process, output_name)
 
@@ -54,10 +54,12 @@ dt_cnts <- dcast(dt_long, country+panel+wave+part_id+cnt_age+cnt_id ~ setting, v
 dt_cnts$cnt_mass <- "mass"
 dt_cnts$cnt_id <- NULL
 
+
+dt[(!is.na(cnt_age) | hhm_contact == "Yes"), cnt_mass := "individual"]
+
 # Append on to main data --------------------------------------------------
 dt <- rbindlist(list(dt, dt_cnts), use.names = TRUE, fill = TRUE)
 
-dt[is.na(cnt_mass) & (!is.na(cnt_age) | hhm_contact_yn == "Yes"), cnt_mass := "individual"]
 
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)

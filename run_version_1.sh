@@ -10,7 +10,6 @@ elif [ $1 == 'download' ]
   pwd
 fi
 
-
 echo "Check and add country panel and wave variables"
 Rscript.exe ".\r\version_1\dm02_data_standardise_v1.R"
 
@@ -28,5 +27,21 @@ Rscript.exe ".\r\version_1\dm06_swap_parent_child_info_v1.R"
 
 echo "Add the multiple contacts as multiple rows"
 Rscript.exe ".\r\version_1\dm07_allocate_multiple_contacts_v1.R"
+
+echo "Clean data needs for contact analyses"
+Rscript.exe ".\r\dm08_clean_contacts_v1.R"
+
+echo "Clean location data"
+Rscript.exe ".\r\dm09_clean_locations_v1.R"
+
+echo "Clean Households"
+Rscript.exe ".\r\dm10_clean_household_v1.R"
+
+echo "Clean Participants"
+Rscript.exe ".\r\dm11_clean_participant_v1.R"
+
+echo "Save data on LSHTM server"
+Rscript.exe ".\r\dm101_save_remote_v1.R"
+ 
 
  

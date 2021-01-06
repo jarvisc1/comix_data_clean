@@ -1,10 +1,9 @@
 ## Name: dm06_swap_parent_child_info_V1.R
 ## Description: Parent's answer on behalf of children. Therefore need to swap
 ##              their information for age and gender.
-## Input file: v1_AB_combined_5.qs
+## Input file: combined_5_v1.qs
 ## Functions:
-## Output file: v1_AB_combined_6.qs
-
+## Output file: combined_5_v1.qs
 
 # Packages ----------------------------------------------------------------
 library(data.table)
@@ -14,8 +13,8 @@ source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("v1_AB_combined_5.qs")
-output_name <- paste0("v1_AB_combined_6.qs")
+input_name <-  paste0("combined_5_v1.qs")
+output_name <- paste0("combined_6_v1.qs")
 input_data <-  file.path(dir_data_process, input_name)
 output_data <- file.path(dir_data_process, output_name)
 

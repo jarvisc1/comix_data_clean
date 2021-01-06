@@ -49,7 +49,11 @@ for(country in country_codes){
       wave <- str_extract(r_name, "_wv[0-9]{2}")
       wave <- str_extract(wave, "[0-9]{2}")
       wave <- as.numeric(str_extract(wave, "[0-9]{1,2}"))
+      week <- str_extract(r_name, "_wk[0-9]{2}")
+      week <- str_extract(week, "[0-9]{2}")
       country <- str_extract(r_name, ".+?(?=_)")
+      
+      dt[, survey_round := week]
       
       # Country -----------------------------------------------------------------
       dt <- country_checker(dt, country)
@@ -71,6 +75,9 @@ for(country in country_codes){
 
       # Standardise names -------------------------------------------------------
       names(dt) <- standardise_names(names(dt))
+      
+      # Misspelt name -----------------------------------------------------------
+      names(dt) <- gsub("hhcompconfrim","hhcompconfirm", names(dt))
    
       ## Save _2 file
       qs::qsave(dt, file = output_data)

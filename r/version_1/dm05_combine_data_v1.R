@@ -2,7 +2,7 @@
 ## Description: Combine all of the temporary cleaning data into one qs file
 ## Input file: cnty_wkN_yyyymmdd_pN_wvN_4.qs
 ## Functions:
-## Output file: v1_AB_combined_5.qs
+## Output file: combined_5_v1.qs
 
 
 # Packages ----------------------------------------------------------------
@@ -28,7 +28,7 @@ for(country in country_codes){
   
   for(r_name in r_names){
     input_name <-  paste0(r_name, "_4.qs")
-    output_name <- paste0("v1_AB_combined_5.qs")
+    output_name <- paste0("combined_5_v1.qs")
     input_data <-  file.path(dir_data_process, input_name)
     output_data <- file.path(dir_data_process, output_name)
   

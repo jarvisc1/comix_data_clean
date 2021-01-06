@@ -1,17 +1,16 @@
 ## Loop questions are questions such as what is the age for X?
 ## Where X may be each contact or household member or something like that.
-## This function will seperate the loop questions into different
+## This function will separate the loop questions into different
 ## datasets called tables. If the loop question is called Q23 then it will
 ## produce table_q23.
 
 
-## check_table_names run in the survery_to_datatable script. It
+## check_table_names run in the survey_to_datatable script. It
 ## checks whether the expected tables are in the data.
 
 
 survey_to_datatable <- function(df, export_var_names = FALSE){
   empty_tables <- NULL
-  ## Rename to lower case
   ## Reshape to long format
 
   suppressWarnings(
