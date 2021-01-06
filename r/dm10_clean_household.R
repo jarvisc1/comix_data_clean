@@ -348,7 +348,7 @@ dt[, hhm_reaction_no_answer := map_yn_res[hhm_reaction_no_answer]]
 
 # Map questions -----------------------------------------------------------
 
-dt[, hhm_covid_test_recent := map_test_recent[hhm_covid_test_recent]]
+#dt[, hhm_covid_test_recent := map_test_recent[hhm_covid_test_recent]]
 dt[, hhm_covid_test_result := map_test_result[hhm_covid_test_result]]
 
 ##  yes no  prefer not to say and restrictions

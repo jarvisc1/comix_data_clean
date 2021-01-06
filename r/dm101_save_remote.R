@@ -1,5 +1,5 @@
-## Name: dm100_save_locally.R
-## Description: Save the comix data to my local area on my machine
+## Name: dm101_save_remote.R
+## Description: Save the comix data to my remote filer machine for current version
 ## Input file: "part.qs", "part_min.qs", "households.qs", "contacts.qs"
 ## Functions:
 ## Output file: Same but also an archive file.
@@ -10,6 +10,7 @@
 source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
+
 
 clean_dta <- c("part.qs", "part_min.qs", "households.qs", "contacts.qs")
 

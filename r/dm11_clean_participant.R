@@ -1,8 +1,8 @@
-## Name: dm09_clean_other_vars.R
-## Description: Clean variables not need for the contacts - less important for R.
-## Input file: combined_8.qs
+## Name: dm11_clean_participants_v1.R
+## Description: Clean variables nrelated to particiapants
+## Input file: combined_10.qs
 ## Functions:
-## Output file: combined_9.qs
+## Output file: combined_11.qs,  part.qs, part_min.qs
 
 
 
