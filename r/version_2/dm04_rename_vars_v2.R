@@ -1,4 +1,4 @@
-## Name: dm04_rename_vars_v1.R
+## Name: dm04_rename_vars_v2.R
 ## Description: Rename the variables using a csv file
 ## Input file: cnty_wkN_yyyymmdd_pN_wvN_3.qs
 ## Functions: 
@@ -12,20 +12,19 @@ library(data.table)
 source('r/00_setup_filepaths.r')
 
 # Countries ---------------------------------------------------------------
-country_codes <- c("UK", "NL", "BE", "NO")
+country <- "UK"
 
-for(country in country_codes){
-  print(paste0("Start: ", country))
-  
-  # Setup input and output data and filepaths -------------------------------
-  filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
-  filenames <- filenames[!is.na(filenames$spss_name) & 
-                           filenames$survey_version == 1,]
-  r_names <- filenames$r_name
+print(paste0("Start: ", country))
 
-  # Load dataname spreadsheet -----------------------------------------------
-  survey1 <- as.data.table(readxl::read_excel("codebook/var_names.xlsx", sheet = "survey_1"))
-  survey1 <- survey1[!is.na(newname)]
+# Setup input and output data and filepaths -------------------------------
+filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
+filenames <- filenames[!is.na(filenames$spss_name) & 
+                         filenames$survey_version == 2,]
+r_names <- filenames$r_name
+
+# Load dataname spreadsheet -----------------------------------------------
+survey1 <- as.data.table(readxl::read_excel("codebook/var_names.xlsx", sheet = "survey_1"))
+survey1 <- survey1[!is.na(newname)]
   
   for(r_name in r_names){
     input_name <-  paste0(r_name, "_3.qs")
@@ -44,7 +43,7 @@ for(country in country_codes){
     qs::qsave(dt, file = output_data)
     print(paste0('Saved:' , output_name))
   }
-}
+
 
 
 
