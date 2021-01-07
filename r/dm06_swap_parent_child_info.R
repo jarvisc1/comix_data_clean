@@ -157,7 +157,7 @@ dt[parent_child == "parent", hhm_age_group :=
 
 
 
-Sys.time() - t
+message(Sys.time() - t)
 
 table(dt[parent_child == "child"]$hhm_age_group)
 table(dt[parent_child == "child"]$part_age_group)
@@ -167,9 +167,23 @@ table(dt[row_id == 999]$hhm_gender_nb, useNA = "always")
 table(dt[row_id == 999]$hhm_gender_nb,
       dt[ row_id == 999]$panel, useNA = "always")
 
+
+table(dt[parent_child == "child"]$part_face_mask, 
+      dt[parent_child == "child"]$panel, useNA = "always")
+table(dt[parent_child == "child"]$row_id)
+table(dt[parent_child == "parent"]$cnt_work,
+      dt[parent_child == "parent"]$panel, useNA = "always")
+table(dt[parent_child == "parent"]$row_id)
+
+dt[part_id == 30001 & wave == 1 & row_id %in% c(0,999) & !(parent_child == "parent" & is.na(hhm_contact)),
+   list(part_id, panel, wave, row_id, parent_child, mixed_data, cnt_work, cnt_frequency, hhm_contact)]
+dt[part_id == 50002 & wave == 1 & row_id %in% c(0,999),
+   list(part_id, panel, wave, row_id, parent_child, mixed_data, hhm_gender, part_gender)]
 ## IMPORTANT
 ## Remove now-reduntant mixed_data row
-test <- dt[is.na(mixed_data)]
+dt <- dt[!(parent_child == "parent" & is.na(hhm_contact))]
+
+# duplicate?
 
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)
