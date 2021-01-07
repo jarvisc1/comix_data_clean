@@ -13,6 +13,7 @@ library(data.table)
 source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
+t <- Sys.time()
 
 input_name <-  paste0("combined_5.qs")
 output_name <- paste0("combined_6.qs")
@@ -85,10 +86,6 @@ parent_cols <-
      "part_social_group1", "part_social_group2", "part_ukitv", "part_workplace_status"
    )
 
-
-table(dt[parent_child == "parent"]$part_gender_nb, 
-      dt[parent_child == "parent"]$panel, useNA = "always")
-t <- Sys.time()
 for(parent_col in parent_cols) {
    # parent_col <- "part_gender_nb"
    hhm_col <- gsub("part_", "hhm_", parent_col)
@@ -98,25 +95,17 @@ for(parent_col in parent_cols) {
    # dt[row_id == 999 & !panel %in% c("C", "D"), 
    #    (hhm_col) := get(parent_col)]
 }
-table(dt[row_id == 999]$hhm_gender_nb, useNA = "always")
-table(dt[row_id == 999]$hhm_gender_nb,
-      dt[ row_id == 999]$panel, useNA = "always")
+
 
 
 ## Fill in child (part_id 0) partdata from hhm data
 hhm_cols <- c("hhm_gender", "hhm_age_group")
-table(dt[parent_child == "child"]$hhm_age_group)
-table(dt[parent_child == "child"]$part_age_group)
 for(hhm_col in hhm_cols) {
    part_col <- gsub("hhm_", "part_", hhm_col)
    dt[parent_child == "child", (part_col) := get(hhm_col)]
 }
 
 ## Fill in child (part_id 0) mixed_data row
-# child_part_cols <- grep("transport|class_size|attend|social_group|region|area",
-# names(dt), value = T)
-# child_part_cols <- grep("visit|nl|hhm|cnt|contact|symp",
-#                         child_part_cols, value = T, invert = T)
 child_part_cols  <- 
    c("area_1_name","area_2_name", "area_3_name",  "area_4_name", 
      "area_5_name", "area_pop_dens_1_label", "area_pop_dens_2_label", 
