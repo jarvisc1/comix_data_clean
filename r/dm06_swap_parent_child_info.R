@@ -11,9 +11,9 @@ library(data.table)
 
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
+t <- Sys.time()
 
 # I/O Data ----------------------------------------------------------------
-t <- Sys.time()
 
 input_name <-  paste0("combined_5.qs")
 output_name <- paste0("combined_6.qs")
@@ -86,16 +86,15 @@ parent_cols <-
      "part_social_group1", "part_social_group2", "part_ukitv", "part_workplace_status"
    )
 
+
+
 for(parent_col in parent_cols) {
-   # parent_col <- "part_gender_nb"
    hhm_col <- gsub("part_", "hhm_", parent_col)
    dt[row_id  %in% c(999), 
       (hhm_col) := first(get(parent_col)), 
       by = .(part_id, panel, wave, country)]
-   # dt[row_id == 999 & !panel %in% c("C", "D"), 
-   #    (hhm_col) := get(parent_col)]
+  
 }
-
 
 
 ## Fill in child (part_id 0) partdata from hhm data
@@ -105,7 +104,7 @@ for(hhm_col in hhm_cols) {
    dt[parent_child == "child", (part_col) := get(hhm_col)]
 }
 
-## Fill in child (part_id 0) mixed_data row
+## Fill in child data (part_id 0) from mixed_data row
 child_part_cols  <- 
    c("area_1_name","area_2_name", "area_3_name",  "area_4_name", 
      "area_5_name", "area_pop_dens_1_label", "area_pop_dens_2_label", 
@@ -122,19 +121,11 @@ child_part_cols  <-
      "uk_region1", "uk_region2", "uk_region3", "uk_region3_label", 
      "uk_stdregion", "ukregion1", "ukstdregion")
 
-table(dt[sample_type == "child" &  panel %in% c("C", "F") & row_id == 0]$part_public_transport_bus)
-t <- Sys.time()
 for(child_part_col in child_part_cols) {
-   # browser()
    dt[sample_type == "child" & (row_id == 0 | mixed_data == T), 
       (child_part_col) := first(get(child_part_col)), 
       by = .(part_id, panel, wave, country)]
-   # dt[row_id == 999 & !panel %in% c("C", "D"), 
-   #    (hhm_col) := get(parent_col)]
 }
-
-
-
 
 
 # Add adult age group
@@ -164,14 +155,21 @@ dt[parent_child == "parent", hhm_age_group :=
       ifelse(between(hhm_age, 70, 120), "70+", hhm_age_group)]
 
 
-## IMPORTANT
-## Remove now-reduntant mixed_data row
-dt <- dt[is.na(mixed_data)]
+
 
 Sys.time() - t
 
+table(dt[parent_child == "child"]$hhm_age_group)
+table(dt[parent_child == "child"]$part_age_group)
 table(dt[sample_type == "child" &  panel %in% c("C", "F") & row_id == 0]$part_public_transport_bus)
 table(dt[parent_child == "parent"]$hhm_age_group)
+table(dt[row_id == 999]$hhm_gender_nb, useNA = "always")
+table(dt[row_id == 999]$hhm_gender_nb,
+      dt[ row_id == 999]$panel, useNA = "always")
+
+## IMPORTANT
+## Remove now-reduntant mixed_data row
+test <- dt[is.na(mixed_data)]
 
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)
