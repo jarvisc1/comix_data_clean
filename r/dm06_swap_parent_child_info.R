@@ -82,8 +82,8 @@ parent_cols <-
      "part_ethnicity", "part_ethnicity2", "part_furloughed", "part_gender", 
      "part_gender_nb", "part_handsanit3h", "part_handwash3h", "part_high_risk_v2", 
      "part_med_risk_v2", "part_no_contacts", "part_occupation", "part_occupation_prev", 
-     "part_pregnant", "part_reported_all_contacts", "part_social_group", 
-     "part_social_group1", "part_social_group2", "part_ukitv", "part_workplace_status"
+     "part_pregnant", "part_social_group",  "part_social_group1", "part_social_group2", 
+     "part_ukitv", "part_workplace_status"
    )
 
 
@@ -116,10 +116,12 @@ child_part_cols  <-
      "part_public_transport_plane_mins", "part_public_transport_taxi_uber", 
      "part_public_transport_taxi_uber_hours", "part_public_transport_taxi_uber_mins", 
      "part_public_transport_train", "part_public_transport_train_hours", 
-     "part_public_transport_train_mins", "part_school_class_size", 
+     "part_public_transport_train_mins", "part_reported_all_contacts", "part_school_class_size", 
      "part_social_group", "part_social_group1", "part_social_group2", 
      "uk_region1", "uk_region2", "uk_region3", "uk_region3_label", 
      "uk_stdregion", "ukregion1", "ukstdregion")
+# multiple_contact_cols <- grep("multiple_contacts_*.[^precautions]", names(dt), value = T)
+# child_part_cols  <- c(multiple_contact_cols)
 
 for(child_part_col in child_part_cols) {
    dt[sample_type == "child" & (row_id == 0 | mixed_data == T), 
@@ -175,7 +177,9 @@ message(Sys.time() - t)
 # table(dt[parent_child == "parent"]$cnt_work,
 #       dt[parent_child == "parent"]$panel, useNA = "always")
 # table(dt[parent_child == "parent"]$row_id)
-# 
+# table(dt[row_id == 0]$multiple_contacts_adult_school, 
+#       dt[row_id == 0]$panel, useNA = "always")
+# # 
 # dt[part_id == 30001 & wave == 1 & row_id %in% c(0,999) & !(parent_child == "parent" & is.na(hhm_contact)),
 #    list(part_id, panel, wave, row_id, parent_child, mixed_data, cnt_work, cnt_frequency, hhm_contact)]
 # dt[part_id == 50002 & wave == 1 & row_id %in% c(0,999),
