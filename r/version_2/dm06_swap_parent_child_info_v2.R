@@ -48,8 +48,7 @@ output_data <- file.path(dir_data_process, output_name)
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
 
-dt <- dt[panel %in% c("C", "D")]
-original_nrow <- nrow(dt)
+original_child_nrow <- nrow(dt[panel %in% c("C", "D")])
 
 ## Panel C, D for UK are children
 dt[ country == "uk" & panel %in% c("C", "D"), sample_type := "child"]
@@ -90,14 +89,14 @@ parent_cols <-
      "hhm_symp_congestion", "hhm_symp_cough", "hhm_symp_dk", "hhm_symp_fever", 
      "hhm_symp_no_answer", "hhm_symp_none", "hhm_symp_sob", "hhm_symp_sore_throat", 
      "hhm_symp_tired"
-     )
+   )
 
 for(parent_col in parent_cols) {
    hhm_col <- gsub("part_", "hhm_", parent_col)
    dt[mixed_data == T | parent_child == "parent",
       (hhm_col) := first(get(parent_col)),
       by = .(part_id, panel, wave, country)]
-
+   
 }
 
 
@@ -108,7 +107,7 @@ for(hhm_col in hhm_cols) {
    part_col <- gsub("hhm_", "part_", hhm_col)
    dt[mixed_data == T | parent_child == "child", 
       (part_col) := last(get(hhm_col)), 
-       by = .(part_id, panel, wave, country)]
+      by = .(part_id, panel, wave, country)]
 }
 
 ## STEP 6. Add adult age group
@@ -149,46 +148,29 @@ dt[mixed_data == TRUE, parent_child := "child"]
 
 
 message(Sys.time() - t)
-# # should be the same
+
+# For visual testing
 table(dt$parent_child, dt$panel, useNA = "always")
 table(dt[sample_type == "child"]$part_public_transport_bus, useNA = "always")
 table(dt[parent_child == "child"]$part_age_group, dt[parent_child == "child"]$wave)
 table(dt[mixed_data == T]$part_age_group, dt[mixed_data == T]$wave)
-original_nrow == nrow(dt) + nrow(dt[parent_child == "child"])
+original_child_nrow  == nrow(dt[panel %in% c("C", "D")]) + nrow(dt[parent_child == "child"])
 
 table(dt[row_id == 999]$hhm_gender, useNA = "always")
 table(dt[row_id == 0]$part_gender, useNA = "always")
 table(dt[parent_child == "parent"]$hhm_age_group, dt[parent_child == "parent"]$wave)
 table(dt[parent_child == "parent"]$hhm_symp_fever)
-# table(dt[parent_child == "parent"]$hhm_high_risk)
-# table(dt[parent_child == "child"]$part_face_mask, 
-#       dt[parent_child == "child"]$panel, useNA = "always")
-# table(dt[parent_child == "child"]$row_id)
-# table(dt[parent_child == "parent"]$cnt_work,
-#       dt[parent_child == "parent"]$panel, useNA = "always")
-# table(dt[parent_child == "parent"]$row_id)
-# table(dt[row_id == 0]$multiple_contacts_adult_school, 
-#       dt[row_id == 0]$panel, useNA = "always")
-# # 
-# dt[part_id == 30001 & wave == 1 & row_id %in% c(0,999) & !(parent_child == "parent" & is.na(hhm_contact)),
-#    list(part_id, panel, wave, row_id, parent_child, mixed_data, cnt_work, cnt_frequency, hhm_contact)]
-# dt[part_id == 50002 & wave == 1 & row_id %in% c(0,999),
-#    list(part_id, panel, wave, row_id, parent_child, mixed_data, hhm_gender, part_gender)]
-# ## IMPORTANT
+table(dt[parent_child == "parent"]$hhm_high_risk)
+table(dt[parent_child == "child"]$part_face_mask,
+      dt[parent_child == "child"]$panel, useNA = "always")
+table(dt[parent_child == "parent"]$hhm_contact,
+      dt[parent_child == "parent"]$panel, useNA = "always")
+table(dt[parent_child == "parent"]$row_id)
+table(dt[parent_child == "child"]$multiple_contacts_child_school,
+      dt[parent_child == "child"]$wave, useNA = "always")
 
-# table(dt[parent_child == "parent"]$hhm_contact, useNA = "always")
-# duplicate?
 
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)
 print(paste0('Saved:' , output_name))
 
-
-
-
-
-
-
-
-    
-  
