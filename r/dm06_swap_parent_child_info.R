@@ -158,32 +158,32 @@ dt[parent_child == "parent", hhm_age_group :=
 
 
 message(Sys.time() - t)
-# should be the same
-sum(!dt[parent_child == "child"]$hhm_age_group == dt[parent_child == "child"]$part_age_group)
-table(dt[sample_type == "child" & row_id == 0]$part_public_transport_bus, useNA = "always")
-
-table(dt[sample_type == "child" &  panel %in% c("C", "F") & row_id == 0]$part_public_transport_bus, useNA = "always")
-table(dt[parent_child == "parent"]$hhm_age_group, useNA = "always")
-table(dt[row_id == 999]$hhm_gender_nb, useNA = "always")
-table(dt[row_id == 999]$hhm_gender_nb,
-      dt[ row_id == 999]$panel, useNA = "always")
-
-
-table(dt[parent_child == "child"]$part_face_mask, 
-      dt[parent_child == "child"]$panel, useNA = "always")
-table(dt[parent_child == "child"]$row_id)
-table(dt[parent_child == "parent"]$cnt_work,
-      dt[parent_child == "parent"]$panel, useNA = "always")
-table(dt[parent_child == "parent"]$row_id)
-
-dt[part_id == 30001 & wave == 1 & row_id %in% c(0,999) & !(parent_child == "parent" & is.na(hhm_contact)),
-   list(part_id, panel, wave, row_id, parent_child, mixed_data, cnt_work, cnt_frequency, hhm_contact)]
-dt[part_id == 50002 & wave == 1 & row_id %in% c(0,999),
-   list(part_id, panel, wave, row_id, parent_child, mixed_data, hhm_gender, part_gender)]
-## IMPORTANT
+# # should be the same
+# sum(!dt[parent_child == "child"]$hhm_age_group == dt[parent_child == "child"]$part_age_group)
+# table(dt[sample_type == "child" & row_id == 0]$part_public_transport_bus, useNA = "always")
+# 
+# table(dt[sample_type == "child" &  panel %in% c("C", "F") & row_id == 0]$part_public_transport_bus, useNA = "always")
+# table(dt[parent_child == "parent"]$hhm_age_group, useNA = "always")
+# table(dt[row_id == 999]$hhm_gender_nb, useNA = "always")
+# table(dt[row_id == 999]$hhm_gender_nb,
+#       dt[ row_id == 999]$panel, useNA = "always")
+# 
+# 
+# table(dt[parent_child == "child"]$part_face_mask, 
+#       dt[parent_child == "child"]$panel, useNA = "always")
+# table(dt[parent_child == "child"]$row_id)
+# table(dt[parent_child == "parent"]$cnt_work,
+#       dt[parent_child == "parent"]$panel, useNA = "always")
+# table(dt[parent_child == "parent"]$row_id)
+# 
+# dt[part_id == 30001 & wave == 1 & row_id %in% c(0,999) & !(parent_child == "parent" & is.na(hhm_contact)),
+#    list(part_id, panel, wave, row_id, parent_child, mixed_data, cnt_work, cnt_frequency, hhm_contact)]
+# dt[part_id == 50002 & wave == 1 & row_id %in% c(0,999),
+#    list(part_id, panel, wave, row_id, parent_child, mixed_data, hhm_gender, part_gender)]
+# ## IMPORTANT
 ## Remove now-reduntant mixed_data row
 dt <- dt[!(parent_child == "parent" & is.na(hhm_contact))]
-table(dt[parent_child == "parent"]$hhm_contact, useNA = "always")
+# table(dt[parent_child == "parent"]$hhm_contact, useNA = "always")
 # duplicate?
 
 # Save data ---------------------------------------------------------------
