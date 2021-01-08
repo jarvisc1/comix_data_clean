@@ -158,11 +158,12 @@ dt[parent_child == "parent", hhm_age_group :=
 
 
 message(Sys.time() - t)
+# should be the same
+sum(!dt[parent_child == "child"]$hhm_age_group == dt[parent_child == "child"]$part_age_group)
+table(dt[sample_type == "child" & row_id == 0]$part_public_transport_bus, useNA = "always")
 
-table(dt[parent_child == "child"]$hhm_age_group)
-table(dt[parent_child == "child"]$part_age_group)
-table(dt[sample_type == "child" &  panel %in% c("C", "F") & row_id == 0]$part_public_transport_bus)
-table(dt[parent_child == "parent"]$hhm_age_group)
+table(dt[sample_type == "child" &  panel %in% c("C", "F") & row_id == 0]$part_public_transport_bus, useNA = "always")
+table(dt[parent_child == "parent"]$hhm_age_group, useNA = "always")
 table(dt[row_id == 999]$hhm_gender_nb, useNA = "always")
 table(dt[row_id == 999]$hhm_gender_nb,
       dt[ row_id == 999]$panel, useNA = "always")
@@ -182,7 +183,7 @@ dt[part_id == 50002 & wave == 1 & row_id %in% c(0,999),
 ## IMPORTANT
 ## Remove now-reduntant mixed_data row
 dt <- dt[!(parent_child == "parent" & is.na(hhm_contact))]
-
+table(dt[parent_child == "parent"]$hhm_contact, useNA = "always")
 # duplicate?
 
 # Save data ---------------------------------------------------------------
