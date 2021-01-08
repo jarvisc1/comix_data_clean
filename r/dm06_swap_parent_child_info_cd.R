@@ -95,7 +95,7 @@ parent_cols <-
 for(parent_col in parent_cols) {
    hhm_col <- gsub("part_", "hhm_", parent_col)
    dt[mixed_data == T | parent_child == "parent",
-      (hhm_col) := !is.na(get(parent_col)),
+      (hhm_col) := first(get(parent_col)),
       by = .(part_id, panel, wave, country)]
 
 }
@@ -107,7 +107,7 @@ hhm_cols <- c("hhm_gender", "hhm_age_group")
 for(hhm_col in hhm_cols) {
    part_col <- gsub("hhm_", "part_", hhm_col)
    dt[mixed_data == T | parent_child == "child", 
-      (part_col) := first(get(hhm_col)), 
+      (part_col) := last(get(hhm_col)), 
        by = .(part_id, panel, wave, country)]
 }
 
