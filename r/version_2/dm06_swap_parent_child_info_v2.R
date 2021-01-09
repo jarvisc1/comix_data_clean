@@ -51,7 +51,7 @@ print(paste0("Opened: ", input_name))
 original_child_nrow <- nrow(dt[panel %in% c("C", "D")])
 
 ## Panel C, D for UK are children
-dt[ country == "uk" & panel %in% c("C", "D"), sample_type := "child"]
+dt[ country == "uk" & panel %in% c("C", "D"), sample_type := "child_CD"]
 
 dt[, sample_type := first(sample_type), by = .(country, panel, wave, part_id)]
 
@@ -59,12 +59,12 @@ dt[, sample_type := first(sample_type), by = .(country, panel, wave, part_id)]
 hhm_id_pattern <- "^.*\\{_\\s*|\\s*\\}.*$"
 dt[ , child_id := as.numeric(gsub(hhm_id_pattern, "", child_hhm_select_raw))]
 dt[, child_id := first(child_id), by = .(country, panel, wave, part_id)]
-dt[child_id == row_id, parent_child := "child"]
+dt[child_id == row_id, parent_child := "child_CD"]
 
 # STEP 2, 3, Identify mixed data and parent rows ------------------------------
 
-dt[sample_type == "child" & row_id == 0, mixed_data := T]
-dt[sample_type == "child" & row_id == 999, parent_child := "parent"]
+dt[sample_type == "child_CD" & row_id == 0, mixed_data := T]
+dt[sample_type == "child_CD" & row_id == 999, parent_child := "parent"]
 
 emptycols_na <- colSums(!is.na(dt[mixed_data == T])) == nrow(dt[mixed_data == T])
 emptycols_na <- names(emptycols_na[emptycols_na])
@@ -93,7 +93,7 @@ parent_cols <-
 
 for(parent_col in parent_cols) {
    hhm_col <- gsub("part_", "hhm_", parent_col)
-   dt[mixed_data == T | parent_child == "parent",
+   dt[panel %in% c("C", "D") & mixed_data == T | parent_child == "parent",
       (hhm_col) := first(get(parent_col)),
       by = .(part_id, panel, wave, country)]
    
@@ -105,72 +105,73 @@ hhm_cols <- c("hhm_gender", "hhm_age_group")
 
 for(hhm_col in hhm_cols) {
    part_col <- gsub("hhm_", "part_", hhm_col)
-   dt[mixed_data == T | parent_child == "child", 
+   dt[mixed_data == T | parent_child == "child_CD", 
       (part_col) := last(get(hhm_col)), 
       by = .(part_id, panel, wave, country)]
 }
 
 ## STEP 6. Add adult age group
-dt[parent_child == "parent", hhm_age_group := 
+dt[panel %in% c("C", "D") & parent_child == "parent", hhm_age_group := 
       ifelse(between(hhm_age, 18, 19), "18-19", hhm_age_group)]
-dt[parent_child == "parent", hhm_age_group := 
+dt[panel %in% c("C", "D") & parent_child == "parent", hhm_age_group := 
       ifelse(between(hhm_age, 20, 24), "20-24", hhm_age_group)]
-dt[parent_child == "parent", hhm_age_group := 
+dt[panel %in% c("C", "D") & parent_child == "parent", hhm_age_group := 
       ifelse(between(hhm_age, 25, 29), "25-29", hhm_age_group)]
-dt[parent_child == "parent", hhm_age_group := 
+dt[panel %in% c("C", "D") & parent_child == "parent", hhm_age_group := 
       ifelse(between(hhm_age, 30, 34), "30-34", hhm_age_group)]
-dt[parent_child == "parent", hhm_age_group := 
+dt[panel %in% c("C", "D") & parent_child == "parent", hhm_age_group := 
       ifelse(between(hhm_age, 35, 39), "35-39", hhm_age_group)]
-dt[parent_child == "parent", hhm_age_group := 
+dt[panel %in% c("C", "D") & parent_child == "parent", hhm_age_group := 
       ifelse(between(hhm_age, 40, 44), "40-44", hhm_age_group)]
-dt[parent_child == "parent", hhm_age_group := 
+dt[panel %in% c("C", "D") & parent_child == "parent", hhm_age_group := 
       ifelse(between(hhm_age, 45, 49), "45-49", hhm_age_group)]
-dt[parent_child == "parent", hhm_age_group := 
+dt[panel %in% c("C", "D") & parent_child == "parent", hhm_age_group := 
       ifelse(between(hhm_age, 50, 54), "50-54", hhm_age_group)]
-dt[parent_child == "parent", hhm_age_group := 
+dt[panel %in% c("C", "D") & parent_child == "parent", hhm_age_group := 
       ifelse(between(hhm_age, 55, 59), "55-59", hhm_age_group)]
-dt[parent_child == "parent", hhm_age_group := 
+dt[panel %in% c("C", "D") & parent_child == "parent", hhm_age_group := 
       ifelse(between(hhm_age, 60, 64), "60-64", hhm_age_group)]
-dt[parent_child == "parent", hhm_age_group := 
+dt[panel %in% c("C", "D") & parent_child == "parent", hhm_age_group := 
       ifelse(between(hhm_age, 65, 69), "65-69", hhm_age_group)]
-dt[parent_child == "parent", hhm_age_group := 
+dt[panel %in% c("C", "D") & parent_child == "parent", hhm_age_group := 
       ifelse(between(hhm_age, 70, 120), "70+", hhm_age_group)]
 
 
 ## STEP 7. Fill in original household size
-dt[sample_type == "child", hh_size := first(hh_size),
+dt[sample_type == "child_CD", hh_size := first(hh_size),
    by = .(country, panel, part_id)]
 
 ## STEP 8. Remove now-reduntant child hhm row and assign mixed_data row (row_id == 0) to child 
-dt <- dt[parent_child != "child" | is.na(parent_child)]
+dt <- dt[parent_child != "child_CD" | is.na(parent_child)]
 
-dt[mixed_data == TRUE, parent_child := "child"]
+dt[mixed_data == TRUE, parent_child := "child_CD"]
 
 
 message(Sys.time() - t)
 
 # For visual testing
 table(dt$parent_child, dt$panel, useNA = "always")
-table(dt[sample_type == "child"]$part_public_transport_bus, useNA = "always")
-table(dt[parent_child == "child"]$part_age_group, dt[parent_child == "child"]$wave)
+table(dt[sample_type == "child_CD"]$part_public_transport_bus, useNA = "always")
+table(dt[parent_child == "child_CD"]$part_age_group, dt[parent_child == "child_CD"]$wave)
 table(dt[mixed_data == T]$part_age_group, dt[mixed_data == T]$wave)
-original_child_nrow  == nrow(dt[panel %in% c("C", "D")]) + nrow(dt[parent_child == "child"])
+original_child_nrow  == nrow(dt[panel %in% c("C", "D")]) + nrow(dt[parent_child == "child_CD"])
 
-table(dt[row_id == 999]$hhm_gender, useNA = "always")
-table(dt[row_id == 0]$part_gender, useNA = "always")
-table(dt[parent_child == "parent"]$hhm_age_group, dt[parent_child == "parent"]$wave)
-table(dt[parent_child == "parent"]$hhm_symp_fever)
-table(dt[parent_child == "parent"]$hhm_high_risk)
-table(dt[parent_child == "child"]$part_face_mask,
-      dt[parent_child == "child"]$panel, useNA = "always")
-table(dt[parent_child == "parent"]$hhm_contact,
-      dt[parent_child == "parent"]$panel, useNA = "always")
-table(dt[parent_child == "parent"]$row_id)
-table(dt[parent_child == "child"]$multiple_contacts_child_school,
-      dt[parent_child == "child"]$wave, useNA = "always")
+table(dt[panel %in% c("C", "D") & row_id == 999]$hhm_gender, useNA = "always")
+table(dt[panel %in% c("C", "D") & row_id == 0]$part_gender, useNA = "always")
+table(dt[panel %in% c("C", "D") & parent_child == "parent"]$hhm_age_group, 
+      dt[panel %in% c("C", "D") & parent_child == "parent"]$wave)
+table(dt[panel %in% c("C", "D") & parent_child == "parent"]$hhm_symp_fever)
+table(dt[panel %in% c("C", "D") & parent_child == "parent"]$hhm_high_risk)
+table(dt[parent_child == "child_CD"]$part_face_mask,
+      dt[parent_child == "child_CD"]$panel, useNA = "always")
+table(dt[panel %in% c("C", "D") & parent_child == "parent"]$hhm_contact,
+      dt[panel %in% c("C", "D") & parent_child == "parent"]$panel, useNA = "always")
+table(dt[panel %in% c("C", "D") & parent_child == "parent"]$row_id)
+table(dt[parent_child == "child_CD"]$multiple_contacts_child_school,
+      dt[parent_child == "child_CD"]$wave, useNA = "always")
 
 
 # Save data ---------------------------------------------------------------
+dt[parent_child == "child_CD", parent_child := "child"]
 qs::qsave(dt, file = output_data)
 print(paste0('Saved:' , output_name))
-
