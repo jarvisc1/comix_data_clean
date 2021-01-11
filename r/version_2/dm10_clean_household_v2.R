@@ -327,7 +327,6 @@ id_vars <- c("country",
              "part_uid",
              "part_wave_uid",
              "contact_flag",
-             "hhm_flag",
              "part_flag",
              "contact")
 hhm_vars <- c(id_vars, hhm_names)

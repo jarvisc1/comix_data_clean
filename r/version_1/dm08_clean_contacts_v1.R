@@ -429,6 +429,7 @@ dt[, cnt_frequency := factor(cnt_frequency, levels = cnt_freq_lev)]
 dt[, cnt_home := YesNoNA_Ind(cnt_home)]
 dt[, cnt_work := YesNoNA_Ind(cnt_work)]
 dt[, cnt_school := YesNoNA_Ind(cnt_school)]
+dt[, cnt_other := YesNoNA_Ind(cnt_other)]
 dt[, cnt_phys := YesNoNA_Ind(cnt_phys)]
 dt[, cnt_outside_other := YesNoNA_Ind(cnt_outside_other)]
 dt[, cnt_other_house := YesNoNA_Ind(cnt_other_house)]
@@ -475,8 +476,8 @@ id_vars <- c("part_wave_uid",
              "panel",
              "wave",
              "contact_flag",
-             "contact", 
-             "cnt_household")
+             "contact"
+             )
 cnt_vars <- c(id_vars, cnt_early, cnt_names)
 
 contacts <- dt[contact_flag == TRUE, ..cnt_vars]

@@ -431,7 +431,6 @@ dt[, cnt_outside := YesNoNA_Ind(cnt_outside)]
 dt[, cnt_inside_outside_dk  := YesNoNA_Ind(cnt_inside_outside_dk)]
 dt[, cnt_other := YesNoNA_Ind(cnt_other)]
 
-dt[, cnt_other := YesNoNA_Ind(cnt_other)]
 
 dt[, cnt_prec_none := YesNoNA_Ind(cnt_prec_none)]
 dt[, cnt_prec_dk := YesNoNA_Ind(cnt_prec_dk)]
@@ -475,8 +474,8 @@ id_vars <- c("part_wave_uid",
              "panel",
              "wave",
              "contact_flag",
-             "contact", 
-             "cnt_household")
+             "contact" 
+             )
 cnt_vars <- c(id_vars, cnt_early, cnt_names)
 
 contacts <- dt[contact_flag == TRUE, ..cnt_vars]

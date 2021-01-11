@@ -186,6 +186,9 @@ hhmvars_old <- grep("hhm", names(dt), value = TRUE)
 
 hhmvars_new <-  gsub("hhm", "part", hhmvars_old)
 
+hhmvars_old <- hhmvars_old[!hhmvars_new %in% names(dt)]
+hhmvars_new <- hhmvars_new[!hhmvars_new %in% names(dt)]
+
 setnames(dt, old = hhmvars_old, new = hhmvars_new, skip_absent = TRUE)
 
 
