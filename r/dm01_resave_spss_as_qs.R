@@ -31,7 +31,7 @@ for(country in country_codes){
   #for(i in length(spss_names)){
     print(paste0("Opened: ",spss_names[i]))
     ## User written function: read sspss file save as qs
-    save_spss_qs(spss_names[i], r_names[i], country)
+    save_spss_qs(spss_names[i], r_names[i], tolower(country))
     print(paste0("Saved: ", r_names[i]))
   }  
 }
