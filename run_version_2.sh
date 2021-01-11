@@ -41,7 +41,7 @@ echo "Clean Participants"
 Rscript.exe ".\r\version_2\dm11_clean_participant_v2.R"
  
 echo "Save data on LSHTM server"
-Rscript.exe ".\r\version_2\dm102_save_remote_v2.R"
+Rscript.exe ".\r\version_2\dm101_save_remote_v2.R"
  
 
  
