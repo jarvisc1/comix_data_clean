@@ -277,19 +277,26 @@ options(warn = oldw)
 ## Acceptable child age groups
 child_age_groups <- c("0-4", "5-11", "12-17")
 
+
+
+dt[part_age_group %in% c("under 1", "1-4", "1-3"), part_age_group := "0-4"]
+dt[part_age_group %in% c("5-11", "4-7", "8-10"), part_age_group := "5-11"]
+dt[part_age_group %in% c("11-15", "12-15", "16-17"), part_age_group := "12-17"]
+child_age_groups <- c("0-4", "5-11", "12-17")
 ## Make sample_type present in all questions
 dt[, sample_type := first(sample_type), by = part_id]
-dt[sample_type == "child" & part_age_est_max == 1,                        part_age_est_max := 4]
-dt[sample_type == "child" & part_age_est_min > 0 &  part_age_est_max <5,  part_age_est_min := 0]
-dt[sample_type == "child" & part_age_est_min > 0 &  part_age_est_max <5,  part_age_est_max := 4]
-dt[sample_type == "child" & part_age_est_min > 4 &  part_age_est_max <12, part_age_est_min := 5]
-dt[sample_type == "child" & part_age_est_min > 4 &  part_age_est_max <12, part_age_est_max := 11]
-dt[sample_type == "child" & part_age_est_min > 11 & part_age_est_max <18, part_age_est_min := 12]
-dt[sample_type == "child" & part_age_est_min > 11 & part_age_est_max <18, part_age_est_max := 17]
+dt[sample_type == "child" & !part_age_group %in% child_age_groups, part_age_group := NA_character_]
+dt[sample_type == "child" & part_age_group == "0-4",                        part_age_est_min := 0]
+dt[sample_type == "child" & part_age_group == "0-4",                        part_age_est_max := 4]
+dt[sample_type == "child" & part_age_group == "5-11",                        part_age_est_min := 5]
+dt[sample_type == "child" & part_age_group == "5-11",                        part_age_est_max := 11]
+dt[sample_type == "child" & part_age_group == "12-17",                        part_age_est_min := 12]
+dt[sample_type == "child" & part_age_group == "12-17",                        part_age_est_max := 17]
 
-dt[sample_type == "child" & part_age_est_min > 17,  part_age_est_min := NA_real_]
-dt[sample_type == "child" & part_age_est_max > 17,  part_age_est_max := NA_real_]
 
+
+
+## Make sample_type present in all questions
 ## Cut up the age groups into categories
 ## Min
 dt[between(part_age_est_min,  0, 4)   , age_min :=  0 ]
