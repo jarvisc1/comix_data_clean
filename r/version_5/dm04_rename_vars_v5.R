@@ -1,6 +1,6 @@
-## Name: dm04_rename_vars_v3.R
+## Name: dm04_rename_vars_v4.R
 ## Description: Rename the variables using a csv file
-## Input file: cnty_wkN_yyyymmdd_pN_wvN_3.qs
+## Input file: cnty_wkN_yyyymmdd_pN_wvN_4.qs
 ## Functions: 
 ## Output file: cnty_wkN_yyyymmdd_pN_wvN_4.qs
 ## NOTE: !Need to sort out so only one change names function
@@ -12,19 +12,19 @@ library(data.table)
 source('r/00_setup_filepaths.r')
 
 # Countries ---------------------------------------------------------------
-country <- "UK"
+country <- "Group1"
 
 print(paste0("Start: ", country))
 
 # Setup input and output data and filepaths -------------------------------
 filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
-                         filenames$survey_version == 3,]
+                         filenames$survey_version == 5,]
 r_names <- filenames$r_name
 
 # Load dataname spreadsheet -----------------------------------------------
-survey2 <- as.data.table(readxl::read_excel("codebook/var_names.xlsx", sheet = "survey_3"))
-survey2 <- survey2[!is.na(newname)]
+survey4 <- as.data.table(readxl::read_excel("codebook/var_names.xlsx", sheet = "survey_5"))
+survey4 <- survey4[!is.na(newname)]
   
   for(r_name in r_names){
     input_name <-  paste0(r_name, "_3.qs")
@@ -34,16 +34,16 @@ survey2 <- survey2[!is.na(newname)]
   
     dt <- qs::qread(input_data)
     print(paste0("Opened: ", input_name)) 
-    browser()
-    setnames(dt, survey2$oldname, survey2$newname, skip_absent = TRUE)
+
+    if (is.null(dt$q20)) dt$q20 <- dt$q20_new
+    
+    setnames(dt, survey4$oldname, survey4$newname, skip_absent = TRUE)
       
-    if (is.null(dt$q20)) dt$q20 <- dt$q20_new 
     
     # Save temp data ----------------------------------------------------------
     qs::qsave(dt, file = output_data)
     print(paste0('Saved:' , output_name))
   }
-
 
 
 

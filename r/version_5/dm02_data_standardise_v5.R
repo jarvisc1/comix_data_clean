@@ -39,8 +39,9 @@ for(r_name in r_names){
    ## Read in _1 data
    dt <- qs::qread(input_data)
    print(paste0("Opened: ", input_name)) 
+   
    ## Add wave, panel, and country variables ----------------------------------
-
+   
    ## get country, panel, and wave from filename
    panel <- str_extract(r_name, "_p[A-Z]_")
    panel <- substring(panel, first = 3, last = 3)
