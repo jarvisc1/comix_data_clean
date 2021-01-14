@@ -1,8 +1,8 @@
-## Name: dm05_combine_data_v4.R
+## Name: dm05_combine_data_v5.R
 ## Description: Combine all of the temporary cleaning data into one qs file
 ## Input file: cnty_wkN_yyyymmdd_pN_wvN_4.qs
 ## Functions:
-## Output file: combined_5_v3.qs
+## Output file: combined_5_v5.qs
 
 
 # Packages ----------------------------------------------------------------
@@ -13,7 +13,7 @@ source('r/00_setup_filepaths.r')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
-country <- "BE"
+country <- "Group1"
 
 # Cleaning ----------------------------------------------------------------
 dt_list <- list()
@@ -23,12 +23,12 @@ print(paste0("Start: ", country))
 # Setup input and output data and filepaths -------------------------------
 filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
-                         filenames$survey_version == 4,]
+                         filenames$survey_version == 5,]
 r_names <- filenames$r_name
 
 for(r_name in r_names){
   input_name <-  paste0(r_name, "_4.qs")
-  output_name <- paste0("combined_5_v4.qs")
+  output_name <- paste0("combined_5_v5.qs")
   input_data <-  file.path(dir_data_process, input_name)
   output_data <- file.path(dir_data_process, output_name)
 

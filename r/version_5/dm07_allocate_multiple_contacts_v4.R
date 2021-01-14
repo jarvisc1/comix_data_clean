@@ -1,8 +1,8 @@
 # Name: dm07_allocate_multiple_contacts.R
 ## Description: Assign each of the multiple contacts to a row
-## Input file: combined_6_v4.qs
+## Input file: combined_6_v5.qs
 ## Functions:
-## Output file: combined_7_v4.qs
+## Output file: combined_7_v5.qs
 
 
 # Packages ----------------------------------------------------------------
@@ -13,8 +13,8 @@ source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("combined_6_v4.qs")
-output_name <- paste0("combined_7_v4.qs")
+input_name <-  paste0("combined_6_v5.qs")
+output_name <- paste0("combined_7_v5.qs")
 input_data <-  file.path(dir_data_process, input_name)
 output_data <- file.path(dir_data_process, output_name)
 
@@ -30,19 +30,9 @@ multi <- grep("duration|precaution", multi, value = TRUE, invert= TRUE)
 multi <- grep("phys", multi, value =TRUE, invert = TRUE)
 multi <- c("country", "part_id", "panel", "wave", multi)
 
-dt[, multiple_contacts_child_work := 
-     sum(as.numeric(multiple_contacts_12_17_work), 
-     as.numeric(multiple_contacts_under_12_work), na.rm = T)]
-dt[, multiple_contacts_child_school := 
-     sum(as.numeric(multiple_contacts_12_17_school), 
-     as.numeric(multiple_contacts_under_12_school), na.rm = T)]
-dt[, multiple_contacts_child_other := 
-     sum(as.numeric(multiple_contacts_12_17_other), 
-     as.numeric(multiple_contacts_under_12_other), na.rm = T)]
 # Reshape to one row per contact per setting type -------------------------------------
 
 multi <- grep("^multi", names(dt), value =TRUE)
-multi <- grep("child|duration|precaution", multi, value = TRUE, invert= TRUE)
 
 multi <- grep("phys", multi, value =TRUE, invert = TRUE)
 multi <- c("country", "part_id", "panel", "wave", multi)
@@ -62,8 +52,7 @@ dt_long <- dt_long[rep(seq(.N), value), !"value"]
 
 dt_long[variable %like% "older_adult", cnt_age := "65+"]
 dt_long[variable %like% "[^older]_adult", cnt_age := "18-64"]
-dt_long[variable %like% "under_12", cnt_age := "0-11"]
-dt_long[variable %like% "12_17", cnt_age := "12-17"]
+dt_long[variable %like% "child", cnt_age := "0-17"]
 
 dt_long[variable %like% "other", setting := "cnt_other"]
 dt_long[variable %like% "school", setting := "cnt_school"]
@@ -83,7 +72,6 @@ dt_cnts$cnt_id <- NULL
 
 multi_prec <- grep("^multiple_cont", names(dt), value =TRUE)
 multi_prec <- grep("prec", multi_prec, value =TRUE)
-multi_prec <- grep("child", multi_prec, value = TRUE, invert= TRUE)
 
 multi_prec <- c("country", "part_id", "panel", "wave", multi_prec)
 dt_prec <- dt[, ..multi_prec]

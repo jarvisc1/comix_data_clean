@@ -1,6 +1,6 @@
-## Name: dm04_rename_vars_v3.R
+## Name: dm04_rename_vars_v4.R
 ## Description: Rename the variables using a csv file
-## Input file: cnty_wkN_yyyymmdd_pN_wvN_3.qs
+## Input file: cnty_wkN_yyyymmdd_pN_wvN_4.qs
 ## Functions: 
 ## Output file: cnty_wkN_yyyymmdd_pN_wvN_4.qs
 ## NOTE: !Need to sort out so only one change names function
@@ -12,18 +12,18 @@ library(data.table)
 source('r/00_setup_filepaths.r')
 
 # Countries ---------------------------------------------------------------
-country <- "BE"
+country <- "Group1"
 
 print(paste0("Start: ", country))
 
 # Setup input and output data and filepaths -------------------------------
 filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
-                         filenames$survey_version == 4,]
+                         filenames$survey_version == 5,]
 r_names <- filenames$r_name
 
 # Load dataname spreadsheet -----------------------------------------------
-survey4 <- as.data.table(readxl::read_excel("codebook/var_names.xlsx", sheet = "survey_4"))
+survey4 <- as.data.table(readxl::read_excel("codebook/var_names.xlsx", sheet = "survey_5"))
 survey4 <- survey4[!is.na(newname)]
   
   for(r_name in r_names){
