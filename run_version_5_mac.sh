@@ -2,11 +2,11 @@
 
 if [ -z $1 ]
   then
-  echo "Running local code run 'sh run_version_5.sh download' to download data."
+  echo "Running local code run 'sh run_version_5_mac.sh download' to download data."
 elif [ $1 == 'download' ]
   then
   echo "Convert from SPSS to QS files"
-  Rscript "./r/version_5/dm02_resave_spss_as_qs_V5.R"
+  Rscript "r/version_5/dm01_resave_spss_as_qs_V5.R"
   pwd
 fi
 

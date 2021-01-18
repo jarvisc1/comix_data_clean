@@ -426,13 +426,16 @@ dt[, cnt_sport := YesNoNA_Ind(cnt_sport)]
 dt[, cnt_supermarket := YesNoNA_Ind(cnt_supermarket)]
 dt[, cnt_worship := YesNoNA_Ind(cnt_worship)]
 dt[, cnt_bar_rest := YesNoNA_Ind(cnt_bar_rest)]
-# dt[, cnt_public_market := YesNoNA_Ind(cnt_public_market)] ## yes for EU
+# dt[, cnt_public_market := YesNoNA_Ind(cnt_public_market)] ## BE only
 dt[, cnt_other_place := YesNoNA_Ind(cnt_other_place)]
 dt[, cnt_other := YesNoNA_Ind(cnt_other)]
 
 
 dt[, cnt_prec_none := YesNoNA_Ind(cnt_prec_none)]
-# dt[, cnt_prec_dk := YesNoNA_Ind(cnt_prec_dk)]
+if ("Child" %in% unique(dt$sample_type)) {
+   dt[sample_type == "Child", 
+      cnt_prec_dk := YesNoNA_Ind(cnt_prec_dk)] # Child samples only
+}
 dt[, cnt_prec_2m_plus := YesNoNA_Ind(cnt_prec_2m_plus)]
 dt[, cnt_prec_1m_plus := YesNoNA_Ind(cnt_prec_1m_plus)]
 dt[, cnt_prec_within_1m := YesNoNA_Ind(cnt_prec_within_1m)]

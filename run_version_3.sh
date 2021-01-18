@@ -6,7 +6,7 @@ if [ -z $1 ]
 elif [ $1 == 'download' ] 
   then
   echo "Convert from SPSS to QS files"
-  Rscript.exe ".\r\version_3\dm02_resave_spss_as_qs_v3.R"
+  Rscript.exe ".\r\version_3\dm01_resave_spss_as_qs_v3.R"
   pwd
 fi
 

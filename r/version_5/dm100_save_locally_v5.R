@@ -13,7 +13,7 @@ source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 
-clean_dta <- c("part_v4.qs", "part_min_v4.qs", "households_v4.qs", "contacts_v4.qs")
+clean_dta <- c("part_v5.qs", "part_min_v5.qs", "households_v5.qs", "contacts_v5.qs")
 
 
 for(i in clean_dta){

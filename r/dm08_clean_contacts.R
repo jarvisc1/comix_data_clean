@@ -51,7 +51,7 @@ setkey(dt, country, panel, wave,part_id)
 
 # Remove data that is just for tracking household members -----------------
 
-## Remove household members that are just being tracked.
+## Remove household members that are just being tracked. 
 vars <- c("country", "part_id", "panel", "wave", "row_id", "sample_type", "child_id")
 hhcomp <- grep("hhcomp", names(dt), value = TRUE)
 vars <- c(vars, hhcomp)
@@ -279,7 +279,7 @@ child_age_groups <- c("0-4", "5-11", "12-17")
 
 ## Make sample_type present in all questions
 dt[, sample_type := first(sample_type), by = part_id]
-dt[sample_type == "child" & part_age_est_max == 1,                        part_age_est_max := 4]
+dt[sample_type == "child" & part_age_est_max == 1, part_age_est_max := 4] #Note: should line after next cover this?
 dt[sample_type == "child" & part_age_est_min > 0 &  part_age_est_max <5,  part_age_est_min := 0]
 dt[sample_type == "child" & part_age_est_min > 0 &  part_age_est_max <5,  part_age_est_max := 4]
 dt[sample_type == "child" & part_age_est_min > 4 &  part_age_est_max <12, part_age_est_min := 5]

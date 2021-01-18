@@ -38,7 +38,6 @@ for(r_name in r_names){
   dt_list[[r_name]] <- dt
 }
 
-
 dt_combined <- rbindlist(dt_list, use.names = TRUE, fill = TRUE)
 
 ## Save combined file
