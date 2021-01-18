@@ -34,7 +34,6 @@ survey2 <- survey2[!is.na(newname)]
   
     dt <- qs::qread(input_data)
     print(paste0("Opened: ", input_name)) 
-    browser()
     setnames(dt, survey2$oldname, survey2$newname, skip_absent = TRUE)
       
     if (is.null(dt$q20)) dt$q20 <- dt$q20_new 
