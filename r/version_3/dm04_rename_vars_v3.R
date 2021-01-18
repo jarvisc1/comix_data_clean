@@ -23,7 +23,7 @@ filenames <- filenames[!is.na(filenames$spss_name) &
 r_names <- filenames$r_name
 
 # Load dataname spreadsheet -----------------------------------------------
-survey2 <- as.data.table(readxl::read_excel("codebook/var_names.xlsx", sheet = "survey_2"))
+survey2 <- as.data.table(readxl::read_excel("codebook/var_names.xlsx", sheet = "survey_3"))
 survey2 <- survey2[!is.na(newname)]
   
   for(r_name in r_names){
