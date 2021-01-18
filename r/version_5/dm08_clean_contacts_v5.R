@@ -1,8 +1,8 @@
-## Name: dm07_clean_contact_vars.R
+## Name: dm07_clean_contact_vars_v5.R
 ## Description: Clean the variables relating to the contact data.
-## Input file: combined_7.qs
+## Input file: combined_7_v5.qs
 ## Functions:
-## Output file: combined_8.qs clean/contacts.qs
+## Output file: combined_8_v5.qs clean/contacts_v5.qs
 
 
 # Packages ----------------------------------------------------------------
@@ -15,14 +15,14 @@ source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("combined_7.qs")
+input_name <-  paste0("combined_7_v5.qs")
 input_data <-  file.path(dir_data_process, input_name)
-output_name <- paste0("combined_8.qs")
+output_name <- paste0("combined_8_v5.qs")
 output_data <- file.path(dir_data_process, output_name)
 
 ## Save contact data
 current_date <- Sys.Date()
-output_cnts <- paste0("contacts.qs")
+output_cnts <- paste0("contacts_v5.qs")
 output_cnts_date <- paste(current_date, output_cnts, sep = "_")
 output_data_cnts <- file.path("data/clean", output_cnts)
 output_data_cnts_date <- file.path("data/clean/archive", output_cnts_date)
@@ -51,11 +51,12 @@ setkey(dt, country, panel, wave,part_id)
 
 # Remove data that is just for tracking household members -----------------
 
-## Remove household members that are just being tracked. 
-vars <- c("country", "part_id", "panel", "wave", "row_id", "sample_type", "child_id")
+## Remove household members that are just being tracked.
+# vars <- c("country", "part_id", "panel", "wave", "row_id", "sample_type", "child_id")
+vars <- c("country", "part_id", "panel", "wave", "row_id")
 hhcomp <- grep("hhcomp", names(dt), value = TRUE)
 vars <- c(vars, hhcomp)
-
+vars <- vars
 rows_start <- nrow(dt)
 missing <- rowSums(!is.na(dt[,.SD, .SDcols = !vars]))==0
 
@@ -67,20 +68,20 @@ print(paste0("Removed ", rows_start-nrow(dt), " empty rows"))
 # Map objects for labels --------------------------------------------------
 
 map_survey_sample <- c(
-  "Qsample=1 WAVE-TO-WAVE" = "repeated",
-  "Qsample=2 FRESH SAMPLE" = "new"
+   "Qsample=1 WAVE-TO-WAVE" = "repeated",
+   "Qsample=2 FRESH SAMPLE" = "new"
 )
 map_sample_type <- c(
-  "Sampletype=1 Main sample" = "adult",
-  "Sampletype=2 Parent sample" = "child"
+   "Sampletype=1 Main sample" = "adult",
+   "Sampletype=2 Parent sample" = "child"
 )
 
 map_minutes <- c(
-  "Less than 5 minutes" = "<5m",
-  "5 minutes or more, but less than 15 minutes" = "5m-14m",
-  "15 minutes or more, but less than 1 hour" = "15m-59m",
-  "1 hour or more, but less than 4 hours" = "60m-4h",
-  "4 hours or more" = "4h+"
+   "Less than 5 minutes" = "<5m",
+   "5 minutes or more, but less than 15 minutes" = "5m-14m",
+   "15 minutes or more, but less than 1 hour" = "15m-59m",
+   "1 hour or more, but less than 4 hours" = "60m-4h",
+   "4 hours or more" = "4h+"
 )
 
 map_minutes_min = c(
@@ -100,12 +101,12 @@ map_minutes_max = c(
 )
 
 map_gender <- c(
-  "Female" = "female",
-  "Male" = "male",
-  "In another way" = "other",
-  "Prefer not to answer" = NA_character_,
-  "3" = NA_character_,
-  "4" = NA_character_
+   "Female" = "female",
+   "Male" = "male",
+   "In another way" = "other",
+   "Prefer not to answer" = NA_character_,
+   "3" = NA_character_,
+   "4" = NA_character_
 )
 
 map_contacts_error <- c(
@@ -146,15 +147,15 @@ map_freq <- c(
 )
 
 map_report_ind_contacts <- c(
-            "{#child_name.response.value} did not have any contacts" = "no contacts", 
-            "{#Chosen_child} did not have any contacts" = "no contacts", 
-            "I did not have any contacts" = "no contacts", 
-            "I did not individually include every person {#child_name.response.value} had contact with." = "all not reported", 
-            "I did not individually include every person {#Chosen_child} had contact with." = "all not reported", 
-            "I did not individually include every person I had contact with." = "all not reported", 
-            "I individually included every person {#child_name.response.value} had contact with." = "reported all", 
-            "I individually included every person {#Chosen_child} had contact with." = "reported all", 
-            "I individually included every person I had contact with." = "reported all"
+   "{#child_name.response.value} did not have any contacts" = "no contacts", 
+   "{#Chosen_child} did not have any contacts" = "no contacts", 
+   "I did not have any contacts" = "no contacts", 
+   "I did not individually include every person {#child_name.response.value} had contact with." = "all not reported", 
+   "I did not individually include every person {#Chosen_child} had contact with." = "all not reported", 
+   "I did not individually include every person I had contact with." = "all not reported", 
+   "I individually included every person {#child_name.response.value} had contact with." = "reported all", 
+   "I individually included every person {#Chosen_child} had contact with." = "reported all", 
+   "I individually included every person I had contact with." = "reported all"
 )
 YesNoNA_Ind = function(x)
 {
@@ -243,6 +244,7 @@ dt[grepl("Prefer not to answer", cnt_phys), cnt_phys := "No"]
 
 
 ## Mass contact are treated as non-physical
+dt[, cnt_mass := 0]
 dt[cnt_mass == "mass", cnt_phys := "No"]
 
 # Participant's age ---------------------------------------------------------------------
@@ -279,7 +281,7 @@ child_age_groups <- c("0-4", "5-11", "12-17")
 
 ## Make sample_type present in all questions
 dt[, sample_type := first(sample_type), by = part_id]
-dt[sample_type == "child" & part_age_est_max == 1, part_age_est_max := 4] #Note: should line after next cover this?
+dt[sample_type == "child" & part_age_est_max == 1,                        part_age_est_max := 4]
 dt[sample_type == "child" & part_age_est_min > 0 &  part_age_est_max <5,  part_age_est_min := 0]
 dt[sample_type == "child" & part_age_est_min > 0 &  part_age_est_max <5,  part_age_est_max := 4]
 dt[sample_type == "child" & part_age_est_min > 4 &  part_age_est_max <12, part_age_est_min := 5]
@@ -397,24 +399,8 @@ dt[,age_max := NULL]
 ## Harmonise the categories.
 dt[, cnt_total_time := map_minutes[cnt_total_time]]
 
-dt[, temp_times := (60 * as.numeric(cnt_hours)) + as.numeric(cnt_mins)]
-
-## Get min and miax for contact time
-dt[, cnt_minutes_min := temp_times]
-dt[, cnt_minutes_max := temp_times]
-dt[is.na(cnt_minutes_min), cnt_minutes_min := map_minutes_min[cnt_total_time]]
-dt[is.na(cnt_minutes_max), cnt_minutes_max := map_minutes_max[cnt_total_time]]
-dt[, temp_times := cut(temp_times, 
-                       breaks = c(0,5,15,60,240, 20000),
-                       labels = c("<5m","5m-14m","15m-59m","60m-4h","4h+"),
-                       right = FALSE)]
-dt[, temp_times := as.character(temp_times)]
-dt[, cnt_total_time := fifelse(is.na(cnt_total_time), temp_times, cnt_total_time)]
 cnt_tot_time_lev <- c("<5m", "5m-14m", "15m-59m",  "60m-4h", "4h+")
 dt[, cnt_total_time := factor(cnt_total_time, levels = cnt_tot_time_lev)]
-dt[, temp_times := NULL]
-dt[, cnt_hours := NULL]
-dt[, cnt_mins := NULL]
 
 # Contact relations --------------------------------------------------------
 
@@ -440,17 +426,16 @@ dt[, cnt_sport := YesNoNA_Ind(cnt_sport)]
 dt[, cnt_supermarket := YesNoNA_Ind(cnt_supermarket)]
 dt[, cnt_worship := YesNoNA_Ind(cnt_worship)]
 dt[, cnt_bar_rest := YesNoNA_Ind(cnt_bar_rest)]
-dt[, cnt_public_market := YesNoNA_Ind(cnt_public_market)]
+# dt[, cnt_public_market := YesNoNA_Ind(cnt_public_market)] ## BE only
 dt[, cnt_other_place := YesNoNA_Ind(cnt_other_place)]
-dt[, cnt_inside := YesNoNA_Ind(cnt_inside)]
-dt[, cnt_outside := YesNoNA_Ind(cnt_outside)]
-dt[, cnt_inside_outside_dk  := YesNoNA_Ind(cnt_inside_outside_dk)]
 dt[, cnt_other := YesNoNA_Ind(cnt_other)]
 
-dt[, cnt_other := YesNoNA_Ind(cnt_other)]
 
 dt[, cnt_prec_none := YesNoNA_Ind(cnt_prec_none)]
-dt[, cnt_prec_dk := YesNoNA_Ind(cnt_prec_dk)]
+if ("Child" %in% unique(dt$sample_type)) {
+   dt[sample_type == "Child", 
+      cnt_prec_dk := YesNoNA_Ind(cnt_prec_dk)] # Child samples only
+}
 dt[, cnt_prec_2m_plus := YesNoNA_Ind(cnt_prec_2m_plus)]
 dt[, cnt_prec_1m_plus := YesNoNA_Ind(cnt_prec_1m_plus)]
 dt[, cnt_prec_within_1m := YesNoNA_Ind(cnt_prec_within_1m)]
@@ -459,6 +444,7 @@ dt[, cnt_prec_wash_before := YesNoNA_Ind(cnt_prec_wash_before)]
 dt[, cnt_prec_wash_after := YesNoNA_Ind(cnt_prec_wash_after)]
 dt[, cnt_prec_prefer_not_to_say := YesNoNA_Ind(cnt_prec_prefer_not_to_say)]
 dt[, cnt_household := YesNoNA_Ind(hhm_contact)]
+
 
 dt[is.na(cnt_prec), cnt_prec := fifelse(cnt_prec_none == 0, "Yes", "No")]
 dt[, cnt_prec_yn := cnt_prec]
@@ -479,7 +465,7 @@ dt[cnt_other == 1, cnt_main_type := "Other"]
 cnt_names <- grep("cnt", names(dt), value = TRUE)
 cnt_names <- cnt_names[cnt_names != "cnt_nickname_masked"]
 cnt_early <- c("cnt_age_group", "cnt_age_est_min","cnt_age_est_max",
-               "cnt_minutes_min","cnt_minutes_max","cnt_household",
+               "cnt_household",
                "cnt_mass", "cnt_phys") 
 cnt_names <- cnt_names[!cnt_names %in% cnt_early]
 id_vars <- c("part_wave_uid",
@@ -491,8 +477,8 @@ id_vars <- c("part_wave_uid",
              "panel",
              "wave",
              "contact_flag",
-             "contact", 
-             "cnt_household")
+             "contact" 
+             )
 cnt_vars <- c(id_vars, cnt_early, cnt_names)
 
 contacts <- dt[contact_flag == TRUE, ..cnt_vars]
@@ -526,5 +512,4 @@ qs::qsave(contacts, file = output_data_cnts)
 qs::qsave(contacts, file = output_data_cnts_date)
 print(paste0('Saved: ' , output_cnts))
 print(paste0('Saved: ' , output_cnts_date))
-
 

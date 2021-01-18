@@ -7,6 +7,8 @@ data/~$spss_files.xlsx
 data/spss/*
 data/processing/*
 data/clean/*
+data/sharing/*
 codebook/*
 reports/*
+*DS_Store
 
