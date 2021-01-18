@@ -14,7 +14,7 @@ echo "Check and add country panel and wave variables"
 Rscript "r/version_5/dm02_data_standardise_V5.R"
 
 echo "Turn from wide data to long data.table"
-Rscript "/r/version_5/dm03_create_datatable_v.4R"
+Rscript "r/version_5/dm03_create_datatable_v4.R"
 
 echo "Rename the variables"
 Rscript "r/version_5/dm04_rename_vars_V5.R"
