@@ -69,7 +69,7 @@ for(r_name in r_names){
    ## Start at 10,000 and add 10,000 for each panel. 
    ## B starts from 20,000
    ## C starts from 30,000
-   dt[respondent_id < 10000, respondent_id := respondent_id + 10000*as.numeric(factor(panel, LETTERS))]
+   dt[respondent_id < 100000, respondent_id := respondent_id + 100000*as.numeric(factor(panel, LETTERS))]
    
    
    # Parent - Child questions ------------------------------------------------
