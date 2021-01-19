@@ -46,7 +46,7 @@ multi <- grep("child|duration|precaution", multi, value = TRUE, invert= TRUE)
 
 multi <- grep("phys", multi, value =TRUE, invert = TRUE)
 multi <- c("country", "part_id", "panel", "wave", multi)
-dt_long <- melt(dt[, ..multi], id.vars = c("country", "part_id", "panel", "wave"))
+dt_long <- melt(dt[row_id == 0, ..multi], id.vars = c("country", "part_id", "panel", "wave"))
 
 ## Remove those without multiple contacts
 

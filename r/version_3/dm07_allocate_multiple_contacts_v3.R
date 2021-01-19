@@ -29,7 +29,7 @@ multi <- grep("phys", multi, value =TRUE, invert = TRUE)
 multi <- c("country", "part_id", "panel", "wave", multi)
 
 # Reshape to one row per contact per setting type -------------------------------------
-dt_long <- melt(dt[, ..multi], id.vars = c("country", "part_id", "panel", "wave"))
+dt_long <- melt(dt[row_id == 0, ..multi], id.vars = c("country", "part_id", "panel", "wave"))
 
 ## Remove those without multiple contacts
 dt_long <- dt_long[!is.na(value) & value > 0]
