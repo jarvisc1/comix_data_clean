@@ -229,9 +229,9 @@ dt[is.na(hhm_flag), hhm_flag := FALSE]
 ## Fill in household member contacts to be no for all contacts except household members
 
 dt[is.na(row_id) | (is.na(hhm_contact) & row_id != 0), hhm_contact := "No"]
-dt[is.na(row_id) | (is.na(hhm_age_group) & row_id != 0), contact_flag := TRUE]
-dt[hhm_contact == "Yes", contact_flag := TRUE]
+dt[!is.na(cnt_mass), contact_flag := TRUE]
 dt[is.na(contact_flag), contact_flag := FALSE]
+
 
 # Physical contacts -------------------------------------------------------
 
@@ -413,8 +413,6 @@ dt[, cnt_household := YesNoNA_Ind(hhm_contact)]
 dt[contact_flag & cnt_home == 1, cnt_main_type := "Home"]
 dt[contact_flag & cnt_home == 0 & cnt_work == 1 & sample_type == "child", cnt_main_type := "Work"]
 dt[contact_flag & cnt_home == 0 & cnt_work == 0 & cnt_school == 1 & sample_type == "child", cnt_main_type := "School"]
-dt[contact_flag & cnt_home == 0 & cnt_work == 1 & sample_type == "adult", cnt_main_type := "Work"]
-dt[contact_flag & cnt_home == 0 & cnt_work == 0 & cnt_school == 1 & sample_type == "adult", cnt_main_type := "School"]
 
 dt[contact_flag & cnt_home == 0 & cnt_work == 0 & cnt_school == 0, cnt_other := 1]
 dt[contact_flag == TRUE & is.na(cnt_other), cnt_other := 0]

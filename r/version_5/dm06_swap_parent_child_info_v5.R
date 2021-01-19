@@ -133,7 +133,8 @@ print(paste0("Opened: ", input_name))
 # dt[parent_child == "parent", row_id := 999]
 # dt[parent_child == "child", row_id := 0]
 # 
-# 
+# dt[parent_child == "child", hhm_contact := "No"]
+#
 # # For visual testing
 # table(dt$parent_child, dt$panel, useNA = "always")
 # table(dt[sample_type == "child"]$part_public_transport_bus, useNA = "always")

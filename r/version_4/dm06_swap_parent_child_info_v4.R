@@ -133,6 +133,8 @@ dt[between(hhm_age, 70, 120) & parent_child == "parent", hhm_age_group := "70+"]
 dt[parent_child == "parent", row_id := 999]
 dt[parent_child == "child", row_id := 0]
 
+dt[parent_child == "child", hhm_contact := "No"]
+
 
 # For visual testing
 table(dt$parent_child, dt$panel, useNA = "always")
