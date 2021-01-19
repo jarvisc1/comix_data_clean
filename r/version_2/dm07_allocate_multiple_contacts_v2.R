@@ -51,6 +51,7 @@ dt_long[, value := "Yes"]
 dt_long[, cnt_id := 1:.N, by = .(country, panel, wave, part_id)]
 dt_cnts <- dcast(dt_long, country+panel+wave+part_id+cnt_age+cnt_id ~ setting, value.var = "value", fill = "No")
 
+dt_cnts$cnt_home <- "No" ## Add in that they are not home contacts.
 dt_cnts$cnt_mass <- "mass"
 dt_cnts$cnt_id <- NULL
 
