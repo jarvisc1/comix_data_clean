@@ -242,7 +242,6 @@ dt[grepl("Prefer not to answer", cnt_phys), cnt_phys := "No"]
 
 
 ## Mass contact are treated as non-physical
-dt[, cnt_mass := 0]
 dt[cnt_mass == "mass", cnt_phys := "No"]
 
 # Participant's age ---------------------------------------------------------------------
@@ -312,6 +311,14 @@ dt[between(part_age_est_max,  50,59)  , age_max :=  59]
 dt[between(part_age_est_max,  60,69)  , age_max :=  69]
 dt[between(part_age_est_max,  70,120) , age_max :=  120]
 
+split_age <- function(age_group, min_max) {
+  as.numeric(strsplit(age_group, "-")[[1]][min_max])
+}
+dt[parent_child == "child", age_min := unlist(lapply(part_age_group, split_age, 1))]
+dt[parent_child == "child", age_max := unlist(lapply(part_age_group, split_age, 2))]
+dt[parent_child == "child" & part_age_group == "Under 1", age_min := 0]
+dt[parent_child == "child" & part_age_group == "Under 1", age_max := 0]
+
 dt[!is.na(age_min), part_age_group := paste0(age_min, "-", age_max)]
 
 dt[, part_age := part_age_int]
@@ -326,6 +333,7 @@ dt[, age_max := NULL]
 # Fill in contact age with hhm age if a contact
 dt[hhm_contact == "Yes", cnt_age := hhm_age_group]
 dt[hhm_contact == "Yes", cnt_gender := hhm_gender]
+# browser()
 
 # Remove non contacts -----------------------------------------------------
 
@@ -356,6 +364,7 @@ dt[cnt_age == "Don’t know", cnt_age_est_max := 120]
 dt[cnt_age == "Prefer not to answer", cnt_age_est_min := 0]
 dt[cnt_age == "Prefer not to answer", cnt_age_est_max := 120]
 dt[cnt_age == "Under 1", cnt_age_est_min := 0]
+# Redo to 0?
 dt[cnt_age == "Under 1", cnt_age_est_max := 1]
 dt[cnt_age %like% "^[0-9]+\\+$", cnt_age_est_min := as.numeric(str_replace_all(cnt_age, "\\+", ""))]
 dt[cnt_age %like% "^[0-9]+\\+$", cnt_age_est_max := 120]
@@ -386,6 +395,9 @@ dt[between(cnt_age_est_max,  40,49)  , age_max :=  49]
 dt[between(cnt_age_est_max,  50,59)  , age_max :=  59]
 dt[between(cnt_age_est_max,  60,69)  , age_max :=  69]
 dt[between(cnt_age_est_max,  70,120) , age_max :=  120]
+dt[cnt_age == "65+" & cnt_mass == "mass", age_min := 65]
+dt[cnt_age == "65+" & cnt_mass == "mass", age_max := 120]
+
 
 dt[!is.na(age_min), cnt_age_group := paste0(age_min, "-", age_max)]
 dt[,age_min := NULL]
@@ -472,12 +484,13 @@ dt[cnt_other == 1, cnt_main_type := "Other"]
 
 cnt_names <- grep("cnt", names(dt), value = TRUE)
 cnt_names <- cnt_names[cnt_names != "cnt_nickname_masked"]
-cnt_early <- c("cnt_age_group", "cnt_age_est_min","cnt_age_est_max",
+cnt_early <- c("sample_type", "cnt_age_group", "cnt_age_est_min","cnt_age_est_max",
                "cnt_household",
                "cnt_mass", "cnt_phys") 
 cnt_names <- cnt_names[!cnt_names %in% cnt_early]
 id_vars <- c("part_wave_uid",
              "part_id",
+             "row_id",
              "date",
              "weekday",
              "survey_round",

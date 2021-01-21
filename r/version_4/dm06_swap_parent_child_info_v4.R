@@ -152,7 +152,7 @@ table(dt[parent_child == "parent"]$hhm_age_group,
       dt[parent_child == "parent"]$wave, useNA = "always")
 table(dt[parent_child == "parent"]$hhm_symp_fever)
 table(dt[parent_child == "parent"]$hhm_contact,
-      dt[parent_child == "parent"]$panel, useNA = "always")
+      dt[parent_child == "parent"]$wave, useNA = "always")
 table(dt[parent_child == "parent"]$row_id)
 table(dt[parent_child == "child"]$multiple_contacts_under_12_school,
       dt[parent_child == "child"]$wave, useNA = "always")
