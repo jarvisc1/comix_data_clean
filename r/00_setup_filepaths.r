@@ -34,6 +34,7 @@ if(Sys.info()["nodename"] == "Amys-MacBook-Pro.local"){
   dir_data_process <- "data/processing"
   dir_data_local <- file.path('data', "clean")
   
+  pw_file_path <- "data/sharing/pw_secret.R"
 }
 
 
