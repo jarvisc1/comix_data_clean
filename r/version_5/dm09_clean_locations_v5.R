@@ -27,19 +27,6 @@ print(paste0("Opened: ", input_name))
 locations <- as.data.table(readxl::read_excel('codebook/var_names.xlsx', sheet = "locations"))
 
 
-# Recode country codes and country names -------------------------------------------
-dt[, country_code := toupper(country)]
-map_eu_nations <- c(
-  "AT" =  "Austria",
-  "DK" = "Denmark",
-  "ES" = "Spain",
-  "FR" = "France",
-  "IT" = "Italy",
-  "PL" = "Poland",
-  "PT" = "Portugal"
-  )
-
-
 ## area_3_name 
 map_area_2_name <- locations[variable == "area_2_name",]$newname
 names(map_area_2_name) <- locations[variable == "area_2_name",]$oldname
