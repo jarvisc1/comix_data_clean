@@ -74,6 +74,96 @@ YesNoNA_Ind = function(x)
          ifelse(x == "No", 0, NA))
 }
 
+# Household types ------------------------------------------------------
+
+## Households types used to be one variable now multiple
+## Couple dependent children
+## Children under 18 
+dt[hh_type_partner == "Yes" &   
+     (hh_type_child_under_18 == "Yes"  |
+        hh_type_grandchild_under_18 == "Yes" |
+        hh_type_siblings_under_18 == "Yes"
+     ),
+   hh_type := "Couple with dependent children"
+]
+
+dt[hh_type == "Couple with dependent children aged 0-17",
+   hh_type := "Couple with dependent children",
+]
+
+## Couple independent children
+dt[hh_type_partner == "Yes" & 
+     (hh_type_child_18_plus == "Yes" |
+        hh_type_siblings_18_plus == "Yes"  |
+        hh_type_grandchild_18_plus == "Yes"
+     ) &
+     (hh_type_child_under_18 == "No"  &
+        hh_type_grandchild_under_18 == "No" &
+        hh_type_siblings_under_18 == "No"
+     ),
+   hh_type := "Couple with independent children only"
+]
+
+## Couple with no children
+dt[hh_type_partner == "Yes" &   
+     hh_type_child_18_plus == "No" &
+     hh_type_siblings_18_plus == "No" &
+     hh_type_grandchild_18_plus == "No" &
+     hh_type_child_under_18 == "No"  &
+     hh_type_grandchild_under_18 == "No" &
+     hh_type_siblings_under_18 == "No",
+   hh_type := "Couple with no children"
+]
+
+## Lone parent with dependent children
+dt[hh_type_partner == "No" &   
+     (hh_type_child_under_18 == "Yes"  |
+        hh_type_grandchild_under_18 == "Yes" |
+        hh_type_siblings_under_18 == "Yes"
+     ),
+   hh_type := "Lone parent with dependent children"
+]
+
+dt[hh_type == "Lone parent with dependent children aged 0-17",
+   hh_type := "Lone parent with dependent children",
+]
+
+## Lone parent independent children
+dt[hh_type_partner == "No" &   
+     (hh_type_child_18_plus == "Yes" |
+        hh_type_siblings_18_plus == "Yes"  |
+        hh_type_grandchild_18_plus == "Yes"
+     ) &
+     (hh_type_child_under_18 == "No"  &
+        hh_type_grandchild_under_18 == "No" &
+        hh_type_siblings_under_18 == "No"
+     ),
+   hh_type := "Lone parent with independent children only"]
+
+
+## Households containing two or more families
+dt[(hh_type_older_relatives == "Yes" |  
+      hh_type_other_relative == "Yes" )&
+     hh_type_non_relative  == "No",
+   hh_type := "Households containing two or more families"]
+
+dt[hh_type == "Households containing two or more families with children aged 0-17",
+   hh_type := "Households containing two or more families",
+]
+
+## Two or more non-family adults
+dt[hh_type_non_relative == "Yes" &
+     hh_type_older_relatives == "No" &  
+     hh_type_other_relative == "No",
+   hh_type := "Two or more non-family adults"]
+
+
+dt[is.na(hh_type), hh_type := "Other"]
+
+hh_type_names <- grep("hh_type", names(dt), value = TRUE)
+hh_type_names <- hh_type_names[hh_type_names != "hh_type"]
+
+set(dt, j = hh_type_names, value = NULL)
 
 
 
