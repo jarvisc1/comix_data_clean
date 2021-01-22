@@ -243,7 +243,6 @@ dt[grepl("Prefer not to answer", cnt_phys), cnt_phys := "No"]
 
 
 ## Mass contact are treated as non-physical
-dt[, cnt_mass := 0]
 dt[cnt_mass == "mass", cnt_phys := "No"]
 
 # Participant's age ---------------------------------------------------------------------
