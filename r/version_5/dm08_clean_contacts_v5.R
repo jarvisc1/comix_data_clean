@@ -402,7 +402,7 @@ dt[,age_max := NULL]
 ## Harmonise the categories.
 dt[, cnt_total_time := map_minutes[cnt_total_time]]
 
-cnt_tot_time_lev <- c("<5m", "5m-14m", "15m-59m",  "60m-4h", "4h+")
+cnt_tot_time_lev <- c("<1m", "<5m", "5m-14m", "15m-59m",  "60m-4h", "4h+")
 dt[, cnt_total_time := factor(cnt_total_time, levels = cnt_tot_time_lev)]
 
 # Contact relations --------------------------------------------------------

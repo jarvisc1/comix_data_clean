@@ -46,6 +46,15 @@ output_data <- file.path(dir_data_process, output_name)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
+
+
+map_sample_type <- c(
+  "Sampletype=1 Main sample" = "adult",
+  "Sampletype=2 Parent sample" = "child"
+)
+dt[,sample_type := map_sample_type[sample_type]]
+
+
 # 
 # # Standardize child age groups for Belgium
 # 
@@ -55,11 +64,6 @@ print(paste0("Opened: ", input_name))
 # 
 # 
 # # Step 1: Identify the adult and children samples -------------------------------------------------------------
-# map_sample_type <- c(
-#   "Sampletype=1 Main sample" = "adult",
-#   "Sampletype=2 Parent sample" = "child"
-# )
-# dt[,sample_type := map_sample_type[sample_type]]
 # table(dt$sample_type)
 # 
 # dt[, sample_type := first(sample_type), by = .(country, panel, wave, part_id)]

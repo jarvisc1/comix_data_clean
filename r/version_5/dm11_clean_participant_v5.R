@@ -176,49 +176,6 @@ dt[, part_att_likely := factor(part_att_likely, levels = att_levels)]
 dt[, part_att_serious := factor(part_att_serious, levels = att_levels)]
 dt[, part_att_spread := factor(part_att_spread, levels = att_levels)]
 
-# Visits ------------------------------------------------------------------
-
-## Map the vars to more readable answers
-# 
-# dt[, part_visit_restaurant_int := map_visits[part_visit_restaurant_int]]
-# dt[, part_visit_religious_event_int := map_visits[part_visit_religious_event_int]]
-# dt[, part_visit_another_home_int := map_visits_yn[part_visit_another_home_int]]
-# dt[, part_visit_essential_shop_int := map_visits_yn[part_visit_essential_shop_int]]
-# dt[, part_visit_healthcare_int := map_visits_yn[part_visit_healthcare_int]]
-# dt[, part_visit_non_essential_shop_int := map_visits_yn[part_visit_non_essential_shop_int]]
-# dt[, part_visit_none_int := map_visits_yn[part_visit_none_int]]
-# dt[, part_visit_public_transport_int := map_visits_yn[part_visit_public_transport_int]]
-# dt[, part_visit_salon_int := map_visits_yn[part_visit_salon_int]]
-# dt[, part_visit_outdoors_int := map_visits_yn[part_visit_outdoors_int]]
-
-## Create yes no versions
-# dt[, part_visit_restaurant := map_visits_yn[part_visit_restaurant_int]]
-# dt[, part_visit_religious_event := map_visits_yn[part_visit_religious_event_int]]
-# dt[, part_visit_another_home := map_visits_yn[part_visit_another_home_int]]
-# dt[, part_visit_essential_shop := map_visits_yn[part_visit_essential_shop_int]]
-# dt[, part_visit_healthcare := map_visits_yn[part_visit_healthcare_int]]
-# dt[, part_visit_non_essential_shop := map_visits_yn[part_visit_non_essential_shop_int]]
-# dt[, part_visit_none := map_visits_yn[part_visit_none_int]]
-# dt[, part_visit_public_transport := map_visits_yn[part_visit_public_transport_int]]
-# dt[, part_visit_salon := map_visits_yn[part_visit_salon_int]]
-# dt[, part_visit_outdoors := map_visits_yn[part_visit_outdoors_int]]
-
-# Could add in don't know to the above ------------------------------------
-# dt[, table(part_visit_cinema_not_attend_times_dk)]
-# dt[, table(part_visit_concert_not_attend_times_dk)]
-# dt[, table(part_visit_pub_not_attend_times_dk)]
-# dt[, table(part_visit_restaurant_not_attend_times_dk)]
-# dt[, table(part_visit_sportevent_attendee_not_attend_times_dk)]
-# dt[, table(part_visit_sportevent_participant_not_attend_times_dk)]
-# dt[, table(part_visit_supermarket_not_attend_times_dk)]
-# dt[, table(part_visit_religious_event_not_attend_times_dk)]
-# 
-# dt[, table(part_visit_indoor_event_not_attend_times_reason_1)]
-# dt[, table(part_visit_indoor_event_not_attend_times_reason_1_dk)]
-# dt[, table(part_visit_indoor_event_not_attend_times_reason_2)]
-# dt[, table(part_visit_outdoor_event_not_attend_times_dk)]
-# dt[, table(part_visit_outdoor_event_not_attend_times_reason_1)]
-# dt[, table(part_visit_outdoor_event_not_attend_times_reason_2)]
 
 # Facemasks --------------------------------------------------------------
 dt[, part_face_mask := map_fm_yn[part_face_mask]]
