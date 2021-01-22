@@ -77,14 +77,18 @@ map_sample_type <- c(
 )
 
 map_minutes <- c(
+   "Less than 1 minute" = "<1m",
+   "1 minutes or more, but less than 5 minutes" = "<5m",
    "Less than 5 minutes" = "<5m",
    "5 minutes or more, but less than 15 minutes" = "5m-14m",
    "15 minutes or more, but less than 1 hour" = "15m-59m",
    "1 hour or more, but less than 4 hours" = "60m-4h",
+   "1 hour or more" = "60m-4h",
    "4 hours or more" = "4h+"
 )
 
 map_minutes_min = c(
+   "<1m" = 0,
    "<5m" = 0,
    "5m-14m" = 5,
    "15 minutes or more, but less than 1 hour" = 15,
@@ -93,6 +97,7 @@ map_minutes_min = c(
 )
 
 map_minutes_max = c(
+   "<1m" = 1,
    "<5m" = 5,
    "5m-14m" = 15,
    "15 minutes or more, but less than 1 hour" = 60,

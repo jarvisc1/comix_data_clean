@@ -94,7 +94,7 @@ dt_prec <- dt_prec[!is.na(multiple_contacts_school_precautions) ]
 
 dt_cnts <- merge(dt_cnts, dt_prec, all.x = TRUE, by = c("country", "panel", "wave", "part_id"))
 
-# Combine into one precaution --------------------------------------------
+# Combine into one precaution and duration--------------------------------------------
 
 dt_cnts[,cnt_prec := fifelse(cnt_other == "Yes",
                              multiple_contacts_other_precautions, NA_character_)]
@@ -104,6 +104,16 @@ dt_cnts[is.na(cnt_prec),cnt_prec := fifelse(cnt_work == "Yes",
 
 dt_cnts[is.na(cnt_prec),cnt_prec := fifelse(cnt_school == "Yes",
                                             multiple_contacts_school_precautions, NA_character_)]
+
+
+dt_cnts[,cnt_total_time  := fifelse(cnt_other == "Yes",
+                                    multiple_contacts_other_duration, NA_character_)]
+
+dt_cnts[is.na(cnt_total_time), cnt_total_time := fifelse(cnt_work == "Yes",
+                                                   multiple_contacts_work_duration, NA_character_)]
+
+dt_cnts[is.na(cnt_total_time), cnt_total_time := fifelse(cnt_school == "Yes",
+                                                   multiple_contacts_school_duration, NA_character_)]
 
 dt[(!is.na(cnt_age) | hhm_contact == "Yes"), cnt_mass := "individual"]
 # Append on to main data --------------------------------------------------

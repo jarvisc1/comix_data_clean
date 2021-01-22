@@ -80,6 +80,21 @@ dt_cnts[is.na(cnt_prec),cnt_prec := fifelse(cnt_work == "Yes",
 dt_cnts[is.na(cnt_prec),cnt_prec := fifelse(cnt_school == "Yes",
                                             cnt_multiple_contacts_school_precautions, NA_character_)]
 
+
+## Needed past survey round 39. May split survey round so move to another part
+
+dt_cnts[,cnt_total_time  := fifelse(cnt_other == "Yes",
+                                    multiple_contacts_other_duration, NA_character_)]
+
+dt_cnts[is.na(cnt_total_time), cnt_total_time := fifelse(cnt_work == "Yes",
+                                                   multiple_contacts_work_duration, NA_character_)]
+
+dt_cnts[is.na(cnt_total_time), cnt_total_time := fifelse(cnt_school == "Yes",
+                                                   multiple_contacts_school_duration, NA_character_)]
+
+
+
+
 dt[(!is.na(cnt_age) | hhm_contact == "Yes"), cnt_mass := "individual"]
 # Append on to main data --------------------------------------------------
 dt <- rbindlist(list(dt, dt_cnts), use.names = TRUE, fill = TRUE)
