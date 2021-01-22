@@ -239,6 +239,7 @@ dt[, part_face_mask_work_education := map_fm_yn[part_face_mask_work_education]]
 
 dt[, part_antibody_test := map_test[part_antibody_test]]
 dt[, part_covid_test_past := map_test[part_covid_test_past]]
+dt[, part_covid_test_recent := map_test[part_covid_test_recent]]
 
 
 # Travel ------------------------------------------------------------------

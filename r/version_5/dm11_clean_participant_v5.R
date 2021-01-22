@@ -60,6 +60,8 @@ map_test <- c(
   "Prefer not to answer"  = "no answer",
   "Not tested" = "not tested", 
   "Tested and the test showed {#i_they.response.label} have or had Coronavirus" = "positive", 
+  "Tested and the test showed {#i_they.response.label} have Coronavirus currently" = "positive",
+  "Tested, and the test showed {#i_they.response.label} do not have Coronavirus currently" = "negative",
   "Tested, and the test showed {#i_they.response.label} have not had Coronavirus" = "negative", 
   "Yes, and {#im_are.response.label} still waiting to hear the result" = "waiting for result",
   "Tested and the test showed {#i_they.response.label} did have Coronavirus at the time" = "positive", 
@@ -196,6 +198,7 @@ dt[, part_face_mask_work_education := map_fm_yn[part_face_mask_work_education]]
 
 dt[, part_antibody_test := map_test[part_antibody_test]]
 dt[, part_covid_test_past := map_test[part_covid_test_past]]
+dt[, part_covid_test_recent := map_test[part_covid_test_recent]]
 
 
 # Travel ------------------------------------------------------------------

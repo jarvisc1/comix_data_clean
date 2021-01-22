@@ -201,13 +201,17 @@ print(paste0("Date vars: ", length(date_cols)))
 ## SPSS dates start at "1582-10-14 and are recorded in seconds
 
 ## Will be relevant for vaccination but not for much else
-# spss_date_cols <- c(
-#   
-#   "hhm_work_closure_start_date",
-#   "hhm_work_closure_end_date")
-# 
-# spss_date <- function(x) as.Date(as.numeric(x)/86400, origin = "1582-10-14")
-# dt[, (spss_date_cols) := lapply(.SD, spss_date), .SDcols = spss_date_cols ]
+spss_date_cols <- c(
+  # "hhm_work_closure_start_date",
+  # "hhm_work_closure_end_date",
+  "part_vacc_dose1_date",
+  "part_vacc_dose2_date",
+  "part_vacc_dose3_date",
+  "part_vacc_dose4_date"
+)
+
+spss_date <- function(x) as.Date(as.numeric(x)/86400, origin = "1582-10-14")
+dt[, (spss_date_cols) := lapply(.SD, spss_date), .SDcols = spss_date_cols ]
 
 
 # Symptoms ----------------------------------------------------------------
