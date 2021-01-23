@@ -17,9 +17,13 @@ contacts <- as.data.table(qs::qread(file.path(dir_data_clean, "contacts_v5.qs"))
 part_cols <- read.csv("codebook/part_names.csv")$cols
 contact_cols <- read.csv("codebook/contact_names.csv")$cols
 
-part <- part[, part_cols, with = F]
-contacts <- contacts[, contact_cols, with = F]
+ncol(part)
+part <- part[, ..part_cols]
+contacts <- contacts[, ..contact_cols]
+names(part)[duplicated(names(part))]
+ncol(part)
 
+countries <- unique(part$country)
 
 for (country_name in countries) {
   part_country <- part[country == country_name]
@@ -45,21 +49,21 @@ for (country_name in countries) {
         row.names = F)
   
   # Save Zipped files to filr ---------------
-  
-  source(pw_file_path)
-  pwc <- create_pw(country_name)
-  zip_file_name <- file.path("data", "clean", 
-                             paste("CoMix", toupper(country_name), Sys.Date(), 
-                                   sep = "_"))
-  country_file_path <- file.path(dir_data_local, country_name, "*")  
-  cmd <- paste0("7z a ", zip_file_name, " ",   country_file_path, " -p", pwc)
-  message(paste("Zip command: ", cmd))
-  system(cmd)
-  
-  # Save to filr ---------------
-  country_remote_folder <- file.path(dir_data_clean)
-  cmd <- paste0("7z a ", dir_data_clean, " ",   country_file_path, " -p", pwc)
-  system(cmd)
+  # 
+  # source(pw_file_path)
+  # pwc <- create_pw(country_name)
+  # zip_file_name <- file.path("data", "clean", 
+  #                            paste("CoMix", toupper(country_name), Sys.Date(), 
+  #                                  sep = "_"))
+  # country_file_path <- file.path(dir_data_local, country_name, "*")  
+  # cmd <- paste0("7z a ", zip_file_name, " ",   country_file_path, " -p", pwc)
+  # message(paste("Zip command: ", cmd))
+  # system(cmd)
+  # 
+  # # Save to filr ---------------
+  # country_remote_folder <- file.path(dir_data_clean)
+  # cmd <- paste0("7z a ", dir_data_clean, " ",   country_file_path, " -p", pwc)
+  # system(cmd)
   dir.create(file.path(dir_data_clean, country_name), showWarnings = F)
   qsave(x = as.data.frame(part_country),
         file = file.path(dir_data_clean, country_name, paste0(country_name, "_participants.qs")))
