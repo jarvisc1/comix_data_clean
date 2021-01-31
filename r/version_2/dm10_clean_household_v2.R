@@ -76,6 +76,9 @@ YesNoNA_Ind = function(x)
 
 
 # Household types ------------------------------------------------------
+##Copy value to different rows for each participant
+dt[, hh_type := min(hh_type, na.rm = TRUE), 
+   by = .(country, panel, wave, part_id)]
 
 dt[is.na(hh_type), hh_type := "Other"]
 
@@ -94,7 +97,7 @@ dt[hh_size == "11 or more", hh_size_int := 12]
 dt[hh_size_int == 1, hh_size_group := "1",]
 dt[hh_size_int == 2, hh_size_group := "2",]
 dt[between(hh_size_int,3,5), hh_size_group := "3-5",]
-dt[between(hh_size_int,5,13), hh_size_group := "5+",]
+dt[between(hh_size_int,6,13), hh_size_group := "5+",]
 
 dt[, hh_size := hh_size_int]
 dt[, hh_size_int := NULL]
