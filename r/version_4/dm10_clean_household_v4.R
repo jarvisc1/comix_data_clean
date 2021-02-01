@@ -163,7 +163,7 @@ dt[hh_type_alone == "Yes", hh_type := "Live alone"]
 
 
 ##Copy value to different rows for each participant
-dt[, hh_type := min(hh_type, na.rm = TRUE), 
+dt[, hh_type := first(hh_type, na.rm = TRUE), 
    by = .(country, panel, wave, part_id)]
 
 dt[is.na(hh_type), hh_type := "Other"]
@@ -266,6 +266,7 @@ id_vars <- c("country",
              "wave",
              "date",
              "survey_date",
+             "survey_round",
              "weekday",
              "part_id",
              "part_uid",

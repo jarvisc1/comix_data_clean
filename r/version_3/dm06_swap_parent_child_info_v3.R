@@ -41,6 +41,8 @@ source('r/00_setup_filepaths.r')
 args = commandArgs(trailingOnly=TRUE)
 
 if(length(args) == 0){
+  latest <-  1 ## Change to zero if you to test all interactively
+} else if(args[1] == 0){
   latest <-  0
 } else if(args[1] == 1){
   latest <- args[1]
@@ -73,12 +75,12 @@ map_sample_type <- c(
   "Sampletype=2 Parent sample" = "child"
 )
 dt[,sample_type := map_sample_type[sample_type]]
-table(dt$sample_type)
+#table(dt$sample_type)
 
 dt[, sample_type := first(sample_type), by = .(country, panel, wave, part_id)]
 original_child_nrow <- nrow(dt)
+#table(dt$sample_type, dt$row_id)
 
-table(dt$sample_type, dt$row_id)
 # Step 2: Identify chosen child's id and selected child------------------------
 hhm_id_pattern <- "^.*\\{_\\s*|\\s*\\}.*$"
 dt[ , child_id := as.numeric(gsub(hhm_id_pattern, "", child_hhm_select_raw))]
@@ -125,7 +127,7 @@ for(part_col in part_cols) {
      by = .(part_id, panel, wave, country)]
   dt[parent_child == "child", (hhm_col) := NA]
 }
-table(dt[parent_child == "parent"]$hhm_gender)
+#table(dt[parent_child == "parent"]$hhm_gender)
 
 # Step 7. Add adult age group--------------------------------------------------
 dt[between(hhm_age, 18, 19) & parent_child == "parent", hhm_age_group := "18-19"]
@@ -151,22 +153,22 @@ dt[parent_child == "child", hhm_contact := "No"]
 
 
 # For visual testing
-table(dt$parent_child, dt$panel, useNA = "always")
-table(dt[sample_type == "child"]$part_public_transport_bus, useNA = "always")
-table(dt[parent_child == "child"]$part_age_group, dt[parent_child == "child"]$wave)
-table(dt[mixed_data == T]$part_age_group, dt[mixed_data == T]$wave)
-original_child_nrow  == nrow(dt[panel %in% c("E", "F")])
-
-table(dt[row_id == 999]$hhm_gender, useNA = "always")
-table(dt[row_id == 0]$part_gender, useNA = "always")
-table(dt[parent_child == "parent"]$hhm_age_group, 
-      dt[parent_child == "parent"]$wave)
-table(dt[parent_child == "parent"]$hhm_symp_fever)
-table(dt[parent_child == "parent"]$hhm_contact,
-      dt[parent_child == "parent"]$panel, useNA = "always")
-table(dt[parent_child == "parent"]$row_id)
-table(dt[parent_child == "child"]$multiple_contacts_child_school,
-      dt[parent_child == "child"]$wave, useNA = "always")
+# table(dt$parent_child, dt$panel, useNA = "always")
+# table(dt[sample_type == "child"]$part_public_transport_bus, useNA = "always")
+# table(dt[parent_child == "child"]$part_age_group, dt[parent_child == "child"]$wave)
+# table(dt[mixed_data == T]$part_age_group, dt[mixed_data == T]$wave)
+# original_child_nrow  == nrow(dt[panel %in% c("E", "F")])
+# 
+# table(dt[row_id == 999]$hhm_gender, useNA = "always")
+# table(dt[row_id == 0]$part_gender, useNA = "always")
+# table(dt[parent_child == "parent"]$hhm_age_group, 
+#       dt[parent_child == "parent"]$wave)
+# table(dt[parent_child == "parent"]$hhm_symp_fever)
+# table(dt[parent_child == "parent"]$hhm_contact,
+#       dt[parent_child == "parent"]$panel, useNA = "always")
+# table(dt[parent_child == "parent"]$row_id)
+# table(dt[parent_child == "child"]$multiple_contacts_child_school,
+#       dt[parent_child == "child"]$wave, useNA = "always")
 
 
 # Save data ---------------------------------------------------------------

@@ -18,6 +18,8 @@ source('r/00_setup_filepaths.r')
 args = commandArgs(trailingOnly=TRUE)
 
 if(length(args) == 0){
+  latest <-  1 ## Change to zero if you to test all interactively
+} else if(args[1] == 0){
   latest <-  0
 } else if(args[1] == 1){
   latest <- args[1]
@@ -191,28 +193,20 @@ dt[, part_att_spread := factor(part_att_spread, levels = att_levels)]
 
 ## Map the vars to more readable answers
 
-dt[, part_visit_restaurant_int := map_visits[part_visit_restaurant_int]]
-dt[, part_visit_religious_event_int := map_visits[part_visit_religious_event_int]]
-dt[, part_visit_another_home_int := map_visits_yn[part_visit_another_home_int]]
-dt[, part_visit_essential_shop_int := map_visits_yn[part_visit_essential_shop_int]]
-dt[, part_visit_healthcare_int := map_visits_yn[part_visit_healthcare_int]]
-dt[, part_visit_non_essential_shop_int := map_visits_yn[part_visit_non_essential_shop_int]]
-dt[, part_visit_none_int := map_visits_yn[part_visit_none_int]]
-dt[, part_visit_public_transport_int := map_visits_yn[part_visit_public_transport_int]]
-dt[, part_visit_salon_int := map_visits_yn[part_visit_salon_int]]
-dt[, part_visit_outdoors_int := map_visits_yn[part_visit_outdoors_int]]
+visit_names_int <- grep("part_visit", names(dt), value = TRUE)
 
-## Create yes no versions
-dt[, part_visit_restaurant := map_visits_yn[part_visit_restaurant_int]]
-dt[, part_visit_religious_event := map_visits_yn[part_visit_religious_event_int]]
-dt[, part_visit_another_home := map_visits_yn[part_visit_another_home_int]]
-dt[, part_visit_essential_shop := map_visits_yn[part_visit_essential_shop_int]]
-dt[, part_visit_healthcare := map_visits_yn[part_visit_healthcare_int]]
-dt[, part_visit_non_essential_shop := map_visits_yn[part_visit_non_essential_shop_int]]
-dt[, part_visit_none := map_visits_yn[part_visit_none_int]]
-dt[, part_visit_public_transport := map_visits_yn[part_visit_public_transport_int]]
-dt[, part_visit_salon := map_visits_yn[part_visit_salon_int]]
-dt[, part_visit_outdoors := map_visits_yn[part_visit_outdoors_int]]
+
+if(length(visit_names_int)>0){
+  map_visits_fn <- function(x) map_visits[x]
+  map_visits_yn_fn <- function(x) map_visits_yn[x]
+  
+  dt[ , (visit_names_int) := lapply(.SD, map_visits_fn), .SDcols = visit_names_int]
+  
+  visit_names <- gsub("_int", "", visit_names_int)
+  ## Create yes no versions
+  dt[ , (visit_names) := lapply(.SD, map_visits_yn_fn), .SDcols = visit_names_int]
+}
+
 
 # Could add in don't know to the above ------------------------------------
 # dt[, table(part_visit_cinema_not_attend_times_dk)]
@@ -276,8 +270,6 @@ dt[, part_employed_attends_education := tolower(part_employed_attends_education)
 dt[, part_educationplace_status := map_status[part_educationplace_status]]
 dt[, part_workplace_status := map_status[part_workplace_status]]
 dt[, part_furloughed := map_fm_yn[part_furloughed]]
-dt[, part_med_risk_v2 := map_fm_yn[part_med_risk_v2]]
-dt[, part_high_risk_v2 := map_fm_yn[part_high_risk_v2]]
 dt[, part_isolation_quarantine := map_fm_yn[part_isolation_quarantine]]
 dt[, part_pregnant := map_fm_yn[part_pregnant]]
 dt[, part_income := tolower(part_income)]
@@ -285,6 +277,12 @@ dt[, part_no_contacts := tolower(part_no_contacts)]
 dt[, part_reported_all_contacts := map_report_contacts[part_reported_all_contacts]]
 
 
+## Risk change from personal to all household from survey round 44
+risk_names <- grep("part_.*_risk", names(dt), value = TRUE)
+if(length(risk_names)>0){
+  dt[, part_med_risk_v2 := map_fm_yn[part_med_risk_v2]]
+  dt[, part_high_risk_v2 := map_fm_yn[part_high_risk_v2]]
+}
 
 
 # Class size --------------------------------------------------------------
@@ -313,7 +311,9 @@ hhmvars_new <- hhmvars_new[!hhmvars_new %in% names(dt)]
 
 setnames(dt, old = hhmvars_old, new = hhmvars_new, skip_absent = TRUE)
 
-
+dt[, table(part_high_risk_v2)]
+dt[, table(part_med_risk_v2)]
+dt[, part_high_risk := ifelse(part_high_risk_v2 == "yes" | part_med_risk_v2 == "yes", "yes", "no")]
 
 # Remove variables --------------------------------------------------------
 

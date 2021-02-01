@@ -15,6 +15,8 @@ source('r/00_setup_filepaths.r')
 args = commandArgs(trailingOnly=TRUE)
 
 if(length(args) == 0){
+  latest <-  1 ## Change to zero if you to test all interactively
+} else if(args[1] == 0){
   latest <-  0
 } else if(args[1] == 1){
   latest <- args[1]
@@ -42,22 +44,26 @@ r_names <- filenames$r_name
 survey2 <- as.data.table(readxl::read_excel("codebook/var_names.xlsx", sheet = "survey_3"))
 survey2 <- survey2[!is.na(newname)]
   
-  for(r_name in r_names){
-    input_name <-  paste0(r_name, "_3.qs")
-    output_name <- paste0(r_name, "_4.qs")
-    input_data <-  file.path(dir_data_process, input_name)
-    output_data <- file.path(dir_data_process, output_name)
-  
-    dt <- qs::qread(input_data)
-    print(paste0("Opened: ", input_name)) 
-    setnames(dt, survey2$oldname, survey2$newname, skip_absent = TRUE)
-      
-    if (is.null(dt$q20)) dt$q20 <- dt$q20_new 
+for(r_name in r_names){
+  input_name <-  paste0(r_name, "_3.qs")
+  output_name <- paste0(r_name, "_4.qs")
+  input_data <-  file.path(dir_data_process, input_name)
+  output_data <- file.path(dir_data_process, output_name)
+
+  dt <- qs::qread(input_data)
+  print(paste0("Opened: ", input_name)) 
+  setnames(dt, survey2$oldname, survey2$newname, skip_absent = TRUE)
     
-    # Save temp data ----------------------------------------------------------
-    qs::qsave(dt, file = output_data)
-    print(paste0('Saved:' , output_name))
+  
+  if (is.null(dt$q20)){
+    if(!is.null(dt$q20_new))  dt$q20 <- dt$q20_new 
+    if(!is.null(dt$q20_original))  dt$q20 <- dt$q20_original
   }
+  
+  # Save temp data ----------------------------------------------------------
+  qs::qsave(dt, file = output_data)
+  print(paste0('Saved:' , output_name))
+}
 
 
 

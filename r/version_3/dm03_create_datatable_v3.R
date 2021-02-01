@@ -17,6 +17,8 @@ source('./r/version_3/functions/survey_to_datatable_v3.R')
 args = commandArgs(trailingOnly=TRUE)
 
 if(length(args) == 0){
+  latest <-  1 ## Change to zero if you to test all interactively
+} else if(args[1] == 0){
   latest <-  0
 } else if(args[1] == 1){
   latest <- args[1]

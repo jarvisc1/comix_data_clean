@@ -17,6 +17,8 @@ source('r/00_setup_filepaths.r')
 args = commandArgs(trailingOnly=TRUE)
 
 if(length(args) == 0){
+   latest <-  1 ## Change to zero if you to test all interactively
+} else if(args[1] == 0){
    latest <-  0
 } else if(args[1] == 1){
    latest <- args[1]
@@ -95,11 +97,6 @@ map_sample_type <- c(
    "Sampletype=1 Main sample" = "adult",
    "Sampletype=2 Parent sample" = "child"
 )
-
-
-c(NA, "5 minutes or more, but less than 15 minutes", "Less than 1 minute", 
-  "1 minutes or more, but less than 5 minutes", "1 hour or more", 
-  "15 minutes or more, but less than 1 hour")
 
 
 map_minutes <- c(

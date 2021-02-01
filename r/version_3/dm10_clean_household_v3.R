@@ -19,6 +19,8 @@ source('r/00_setup_filepaths.r')
 args = commandArgs(trailingOnly=TRUE)
 
 if(length(args) == 0){
+  latest <-  1 ## Change to zero if you to test all interactively
+} else if(args[1] == 0){
   latest <-  0
 } else if(args[1] == 1){
   latest <- args[1]
@@ -86,6 +88,14 @@ map_yn_res <- c(
   "Yes, currently infected" = "infected", 
   "Yes, passed away" = "passed away",
   "Yes, recovered" = "recovered"
+)
+
+map_fm_yn <- c(
+  "Yes" = "yes",
+  "No" = "no",
+  "don't know" = "unknown",
+  "0" = "no",
+  "1" = "yes"
 )
 
 
@@ -184,9 +194,8 @@ dt[hh_type_alone == "Yes", hh_type := "Live alone"]
 
 
 ##Copy value to different rows for each participant
-dt[, hh_type := min(hh_type, na.rm = TRUE), 
+dt[, hh_type := first(hh_type, na.rm = TRUE), 
    by = .(country, panel, wave, part_id)]
-
 
 dt[is.na(hh_type), hh_type := "Other"]
 
@@ -241,15 +250,10 @@ dt[, (spss_date_cols) := lapply(.SD, spss_date), .SDcols = spss_date_cols ]
 
 # Symptoms ----------------------------------------------------------------
 
-dt[, hhm_symp_congestion := YesNoNA_Ind(hhm_symp_congestion)]
-dt[, hhm_symp_cough := YesNoNA_Ind(hhm_symp_cough)]
-dt[, hhm_symp_dk := YesNoNA_Ind(hhm_symp_dk)]
-dt[, hhm_symp_fever := YesNoNA_Ind(hhm_symp_fever)]
-dt[, hhm_symp_no_answer := YesNoNA_Ind(hhm_symp_no_answer)]
-dt[, hhm_symp_none := YesNoNA_Ind(hhm_symp_none)]
-dt[, hhm_symp_sob := YesNoNA_Ind(hhm_symp_sob)]
-dt[, hhm_symp_sore_throat := YesNoNA_Ind(hhm_symp_sore_throat)]
 
+hhm_symps <- grep("hhm_symp", names(dt), value = TRUE)
+
+dt[ , (hhm_symps) := lapply(.SD, YesNoNA_Ind), .SDcols = hhm_symps]
 
 
 # Map questions -----------------------------------------------------------
@@ -263,6 +267,17 @@ dt[, hhm_student_nursery := tolower(hhm_student_nursery)]
 dt[, hhm_student_school := tolower(hhm_student_school)]
 dt[, hhm_contact := tolower(hhm_contact)]
 dt[, hhm_student_university := tolower(hhm_student_university)]
+
+
+
+## Risk change from personal to all household from survey round 44
+risk_names <- grep("hhm_.*_risk", names(dt), value = TRUE)
+
+
+if(length(risk_names)>0){
+  dt[, hhm_med_risk_v2 := map_fm_yn[hhm_med_risk_v2]]
+  dt[, hhm_high_risk_v2 := map_fm_yn[hhm_high_risk_v2]]
+}
 
 
 
@@ -285,6 +300,7 @@ id_vars <- c("country",
              "wave",
              "date",
              "survey_date",
+             "survey_round",
              "weekday",
              "part_id",
              "part_uid",

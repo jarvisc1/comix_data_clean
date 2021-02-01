@@ -102,6 +102,8 @@ dt[between(hh_size_int,6,13), hh_size_group := "6+",]
 dt[, hh_size := hh_size_int]
 dt[, hh_size_int := NULL]
 
+dt[, hh_type := first(hh_type), by = .(part_wave_uid)]
+
 ## Switch warnings back on
 options(warn = oldw)
 
@@ -325,6 +327,7 @@ id_vars <- c("country",
              "wave",
              "date",
              "survey_date",
+             "survey_round",
              "weekday",
              "part_id",
              "part_uid",

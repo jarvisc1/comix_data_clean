@@ -1,5 +1,6 @@
 
 ## Take the Ipsos names and standardises the loop and scale variables
+var <- names(dt)
 #var <- unique(allnames)
 standardise_names <- function(var, original_survey = FALSE){
   questions_lists <- sapply(
@@ -137,6 +138,15 @@ standardise_names <- function(var, original_survey = FALSE){
     questions_loop[grepl("q80a", oldname)]
     questions_loop[grepl("q81a", oldname)]
     
+
+    # HH symptoms updated -----------------------------------------------------
+    questions_loop[grepl("q29_new", oldname), ]
+    questions_loop[grepl("q29_new", oldname), newname := paste("q29new", "loop", p3, "scale", p5, sep = "_")]
+    questions_loop[grepl("q28a_|q28b_", oldname), ]
+    questions_loop[grepl("q28a_", oldname), newname := paste("q28anew", "loop", p3, "scale", "1", sep = "_")]
+    questions_loop[grepl("q28b_", oldname), newname := paste("q28bnew", "loop", p3, "scale", "1", sep = "_")]
+
+      
 
 
   

@@ -101,6 +101,8 @@ options(warn = oldw)
 # Fill in for all observations --------------------------------------------
 dt[, hh_size := first(hh_size), by = .(part_wave_uid)]
 dt[, hh_size_group := first(hh_size_group), by = .(part_wave_uid)]
+dt[hh_size == 1, hh_type := "Live alone"]
+dt[, hh_type := first(hh_type), by = .(part_wave_uid)]
 
 # Clean dates -------------------------------------------------------------
 ## Clean and defines dates
@@ -319,6 +321,7 @@ id_vars <- c("country",
              "wave",
              "date",
              "survey_date",
+             "survey_round",
              "weekday",
              "part_id",
              "part_uid",
