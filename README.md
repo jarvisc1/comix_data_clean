@@ -136,68 +136,46 @@ cnty_wkN_yyyymmdd_pN_wvN_extranotes.RDS
 
 ## Multiple countries
 
-**Need to update**
-For multiple countries repeat steps 1 and 2 from the single country section. 
-Then run the for loop to run for multipl countries in **
+
 
 # Reclean old data
 
-* Should these be a bash script where you put in the country code and then it will compile and pull the latest as long as you've updated the spreadsheet.
-* Not a fun task but important to check what data we recieve and that it is present. We can alternate this task and make sure we're all recieving the data.
+
 
 ## Single dataset
 
 ## All datasets single country
-* Need to be able to select for multiple countries. 
-* A bash script where you can pick multiple country code would be great. 
+
 
 ## All datasets all countries
 
-* This is our reproducible analysis. Run from begining to end and output all the data. 
 
 
 # Combine data
 
-* I think combining data should be different from cleaning. 
-* Might want to split sections into combining all data from scratch and just adding a new dataset onto an old one. 
-* Do we want different datasets per country or one for each country?
+
 ## Combine single country
 # Combine all countries
 
 # Add new variables
 
 ## New survey variable
-* Detail where the change was made what question as well
-* Add to code
-* Update codebook
+
 
 ## New analysis variable
 
-* should be done at the combined data level
-* Specify the script where the variable is created
-* Update codebook
-* rerun for all combined data
+*
 
 # Add checks
 
-* Use the validator package
-* do we have a check folder?
-* At what point should the check takes place?
-* checks on raw data
-* checks on coding and created variables
-* sanity checks
+
 
 # Share data
 
-* Need some sort of dates on the files.
-* File naming convention
-* Need to decide what level of summary data would we want? Bootstrapped mean is analysis but mean summaries aren't really good enough here.
-* Calculating R is also not for data cleaning
+
 
 ## Individual level data
-* I think we should create one combined dataset for participants, households, contacts. 
-* Then we can slice it for each country and zip and serve.
-* Can we zip the file and password protect with R and send in an email. ? Surely this is possible and worthwhile as will be doing for lots of countries. 
+
 
 
 
