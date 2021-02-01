@@ -13,17 +13,40 @@ library(stringr)
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
 
+
+# Get arguments -----------------------------------------------------------
+args = commandArgs(trailingOnly=TRUE)
+
+if(length(args) == 0){
+  latest <-  0
+} else if(args[1] == 1){
+  latest <- args[1]
+}
+
+print(paste0("Updating ", ifelse(latest==0, "All", "Latest")))
+
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("combined_10_v3.qs")
+if(latest == 1){
+  input_name <-  paste0("combined_10_v3a.qs")
+  output_name <- paste0("combined_11_v3a.qs")
+  output_parts <- paste0("part_v3a.qs")
+  output_parts_min <- paste0("part_min_v3a.qs")
+} else if(latest ==0){
+  input_name <-  paste0("combined_10_v3.qs")
+  output_name <- paste0("combined_11_v3.qs")
+  output_parts <- paste0("part_v3.qs")
+  output_parts_min <- paste0("part_min_v3.qs")
+}
+
+
+# I/O Data ----------------------------------------------------------------
+
 input_data <-  file.path(dir_data_process, input_name)
-output_name <- paste0("combined_11_v3.qs")
 output_data <- file.path(dir_data_process, output_name)
 
 ## Save participant data
 current_date <- Sys.Date()
-output_parts <- paste0("part_v3.qs")
-output_parts_min <- paste0("part_min_v3.qs")
 output_parts_date <- paste(current_date, output_parts, sep = "_")
 output_data_parts <- file.path("data/clean", output_parts)
 output_data_parts_min <- file.path("data/clean", output_parts_min)

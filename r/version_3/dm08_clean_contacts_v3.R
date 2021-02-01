@@ -13,16 +13,37 @@ library(stringr)
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
 
+# Get arguments -----------------------------------------------------------
+args = commandArgs(trailingOnly=TRUE)
+
+if(length(args) == 0){
+   latest <-  0
+} else if(args[1] == 1){
+   latest <- args[1]
+}
+
+print(paste0("Updating ", ifelse(latest==0, "All", "Latest")))
+
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("combined_7_v3.qs")
+if(latest == 1){
+   input_name <-  paste0("combined_7_v3a.qs")
+   output_name <- paste0("combined_8_v3a.qs")
+   output_cnts <- paste0("contacts_v3a.qs")
+} else if(latest ==0){
+   input_name <-  paste0("combined_7_v3.qs")
+   output_name <- paste0("combined_8_v3.qs")
+   output_cnts <- paste0("contacts_v3.qs")
+}
+
+
+# I/O Data ----------------------------------------------------------------
+
 input_data <-  file.path(dir_data_process, input_name)
-output_name <- paste0("combined_8_v3.qs")
 output_data <- file.path(dir_data_process, output_name)
 
 ## Save contact data
 current_date <- Sys.Date()
-output_cnts <- paste0("contacts_v3.qs")
 output_cnts_date <- paste(current_date, output_cnts, sep = "_")
 output_data_cnts <- file.path("data/clean", output_cnts)
 output_data_cnts_date <- file.path("data/clean/archive", output_cnts_date)

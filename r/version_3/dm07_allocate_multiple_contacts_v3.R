@@ -11,10 +11,25 @@ library(data.table)
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
 
+# Get arguments -----------------------------------------------------------
+args = commandArgs(trailingOnly=TRUE)
+if(length(args) == 0){
+  latest <-  0
+} else if(args[1] == 1){
+  latest <- args[1]
+}
+
+print(paste0("Updating ", ifelse(latest==0, "All", "Latest")))
+
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("combined_6_v3.qs")
-output_name <- paste0("combined_7_v3.qs")
+if(latest == 1){
+ input_name <-  paste0("combined_6_v3a.qs")
+ output_name <- paste0("combined_7_v3a.qs")
+} else if(latest ==0){
+ input_name <-  paste0("combined_6_v3.qs")
+ output_name <- paste0("combined_7_v3.qs")
+}
 input_data <-  file.path(dir_data_process, input_name)
 output_data <- file.path(dir_data_process, output_name)
 
@@ -25,14 +40,14 @@ print(paste0("Opened: ", input_name))
 
 # Find multi contacts columns ---------------------------------------------
 multi <- grep("^multi", names(dt), value =TRUE)
-multi <- grep("phys", multi, value =TRUE, invert = TRUE)
+multi <- grep("phys|precautions|duration", multi, value =TRUE, invert = TRUE)
 multi <- c("country", "part_id", "panel", "wave", multi)
 
 # Reshape to one row per contact per setting type -------------------------------------
 dt_long <- melt(dt[row_id == 0, ..multi], id.vars = c("country", "part_id", "panel", "wave"))
 
 ## Remove those without multiple contacts
-dt_long <- dt_long[!is.na(value) & value > 0]
+dt_long <- dt_long[!is.na(value)]
 
 ## Expand for one row for each contact
 dt_long <- dt_long[rep(seq(.N), value), !"value"]
@@ -83,6 +98,7 @@ dt_cnts[is.na(cnt_prec),cnt_prec := fifelse(cnt_school == "Yes",
 
 ## Needed past survey round 39. May split survey round so move to another part
 
+if("mutiple_contacts_other_duration" %in% names(dt)){  
 dt_cnts[,cnt_total_time  := fifelse(cnt_other == "Yes",
                                     multiple_contacts_other_duration, NA_character_)]
 
@@ -91,7 +107,7 @@ dt_cnts[is.na(cnt_total_time), cnt_total_time := fifelse(cnt_work == "Yes",
 
 dt_cnts[is.na(cnt_total_time), cnt_total_time := fifelse(cnt_school == "Yes",
                                                    multiple_contacts_school_duration, NA_character_)]
-
+}
 
 
 

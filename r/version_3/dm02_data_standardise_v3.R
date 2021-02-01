@@ -16,6 +16,17 @@ source('./r/00_setup_filepaths.r')
 source('./r/version_3/functions/check_cnty_panel_wave_v3.R')
 source('./r/version_3/functions/standardise_names_v3.R')
 
+
+# Get arguments -----------------------------------------------------------
+args = commandArgs(trailingOnly=TRUE)
+
+if(length(args) == 0){
+   latest <-  0
+} else if(args[1] == 1){
+   latest <- args[1]
+}
+
+print(paste0("Updating ", ifelse(latest==0, "All", "Latest")))
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
 country <- "UK"
@@ -24,10 +35,16 @@ country <- "UK"
 
 print(paste0("Start: ", country))
 # Setup input and output data and filepaths -------------------------------
-filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
+filenames <- readxl::read_excel('data/spss_uk.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
                           filenames$survey_version == 3,]
+
+if(latest == 1){
+   filenames <- tail(filenames, 1)
+}
+
 r_names <- filenames$r_name
+
 
 ## This script loads _1.qs files and save them as _2.qs files
 for(r_name in r_names){
@@ -35,10 +52,10 @@ for(r_name in r_names){
    output_name <- paste0(r_name, "_2.qs")
    input_data <-  file.path(dir_data_process, input_name)
    output_data <- file.path(dir_data_process, output_name)
-   
+
    ## Read in _1 data
    dt <- qs::qread(input_data)
-   print(paste0("Opened: ", input_name)) 
+   print(paste0("Opened: ", input_name))
    ## Add wave, panel, and country variables ----------------------------------
 
    ## get country, panel, and wave from filename
@@ -50,39 +67,39 @@ for(r_name in r_names){
    week <- str_extract(r_name, "_wk[0-9]{2}")
    week <- str_extract(week, "[0-9]{2}")
    country <- str_extract(r_name, ".+?(?=_)")
-   
+
    dt[, survey_round := week]
-   
+
    # Country -----------------------------------------------------------------
    dt <- country_checker(dt, country)
-   
+
    # Panel -------------------------------------------------------------------
    dt <- panel_checker(  dt, panel)
-   
+
    # Wave --------------------------------------------------------------------
    dt <- wave_checker(   dt, wave)
-   
+
    # Participant ID -------------------------------------------------------------------------
    # The same participants ID are used for each panel and country.
    ## We do not anticipate a panel having more than 10,000 people.
-   ## Start at 10,000 and add 10,000 for each panel. 
+   ## Start at 10,000 and add 10,000 for each panel.
    ## B starts from 20,000
    ## C starts from 30,000
    dt[respondent_id < 10000, respondent_id := respondent_id + 10000*as.numeric(factor(panel, LETTERS))]
-   
-   
+
+
    # Parent - Child questions ------------------------------------------------
-   
-   ## Panels E and F have parent questions which are asked on behalf of 
-   ## The children. These question comes as qpNN or pcontacts. 
+
+   ## Panels E and F have parent questions which are asked on behalf of
+   ## The children. These question comes as qpNN or pcontacts.
    ## Need to rename them to qNN and contact and append back on
    ## to the main data.
-   
-   # Read in variable names    
-      
+
+   # Read in variable names
+
    dt_child <- dt[sampletype == "Sampletype=2 Parent sample"]
    dt_adult <- dt[sampletype == "Sampletype=1 Main sample"]
-   
+
    ## qp and pcontacts are child questions.
    child_qs <- grep("qp", names(dt), value = T)
    child_cs <- grep("pcontact", names(dt), value = T)
@@ -95,25 +112,25 @@ for(r_name in r_names){
    ## Needed in both
    adult_qs <- grep("^q23|q20", adult_qs, value = T, invert = T)
    adult_cols <- c(adult_qs, adult_cs, adult_vac_qs)
-   
+
    # Subset data
    dt_adult <- dt_adult[, -child_cols, with = F]
    dt_child <- dt_child[, -adult_cols, with = F]
-   
+
    ## First should return a value second should be null
    #grep("qp54", names(dt_child), value = T) # 1
    #grep("q54", names(dt_child), value = T) # 1
-   
+
    ## rename
    names(dt_child) <- gsub("qp", "q", names(dt_child))
    names(dt_child) <- gsub("pcontact", "contact", names(dt_child))
-   
+
    # Combine using names
    dt <- rbindlist(list(dt_child, dt_adult), use.names = TRUE, fill = TRUE)
-   
+
    # Standardise names -------------------------------------------------------
    names(dt) <- standardise_names(names(dt))
-   
+
    # Misspelt name -----------------------------------------------------------
    names(dt) <- gsub("hhcompconfrim","hhcompconfirm", names(dt))
 

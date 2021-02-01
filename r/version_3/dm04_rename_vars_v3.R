@@ -11,6 +11,17 @@ library(data.table)
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
 
+# Get arguments -----------------------------------------------------------
+args = commandArgs(trailingOnly=TRUE)
+
+if(length(args) == 0){
+  latest <-  0
+} else if(args[1] == 1){
+  latest <- args[1]
+}
+
+print(paste0("Updating ", ifelse(latest==0, "All", "Latest")))
+
 # Countries ---------------------------------------------------------------
 country <- "UK"
 
@@ -20,6 +31,11 @@ print(paste0("Start: ", country))
 filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
                          filenames$survey_version == 3,]
+
+if(latest == 1){
+  filenames <- tail(filenames, 1)
+}
+
 r_names <- filenames$r_name
 
 # Load dataname spreadsheet -----------------------------------------------

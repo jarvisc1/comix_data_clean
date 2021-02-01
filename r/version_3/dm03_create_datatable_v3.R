@@ -13,6 +13,17 @@ library(data.table)
 source('./r/00_setup_filepaths.r')
 source('./r/version_3/functions/survey_to_datatable_v3.R')
 
+# Get arguments -----------------------------------------------------------
+args = commandArgs(trailingOnly=TRUE)
+
+if(length(args) == 0){
+  latest <-  0
+} else if(args[1] == 1){
+  latest <- args[1]
+}
+
+print(paste0("Updating ", ifelse(latest==0, "All", "Latest")))
+
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
 country <- "UK"
@@ -23,6 +34,12 @@ print(paste0("Start: ", country))
 filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
                          filenames$survey_version == 3,]
+if(latest == 1){
+  filenames <- tail(filenames, 1)
+}
+
+
+
 r_names <- filenames$r_name
 
 for(r_name in r_names){
