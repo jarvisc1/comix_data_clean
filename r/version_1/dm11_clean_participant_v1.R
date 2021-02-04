@@ -140,7 +140,7 @@ print(paste0("Location vars: ", length(loc_cols)))
 # Clean participants ------------------------------------------------------
 
 
-
+dt[, part_age := as.numeric(part_age)]
 
 ## Removing spaces and lower case ---------------------------------------------------------
 

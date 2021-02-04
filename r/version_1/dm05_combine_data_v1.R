@@ -41,6 +41,10 @@ for(country in country_codes){
 
 dt_combined <- rbindlist(dt_list, use.names = TRUE, fill = TRUE)
 
+## There were duplicates ids in wave 9 panel B in the UK
+source("r/version_3/dm05a_update_dup_ids_panel_b.r")
+dt_combined[panel == "B" & country == "uk" & part_id %in% pids & wave == 9, part_id := part_id + 500000]
+
 ## Save combined file
 qs::qsave(dt_combined, file = output_data)
 print(paste0('Saved:' , output_name))
