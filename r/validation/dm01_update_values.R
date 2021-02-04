@@ -32,7 +32,8 @@ country <- "UK"
 pt_path <- file.path(dir_data_clean, "part.qs")
 part <- qs::qread(pt_path)
 
-change_file <- readxl::read_excel("codebook/validation_list.xlsx", sheet = "changes")
+chg_path <- file.path(dir_data_validate, "validation_list.xlsx")
+change_file <- readxl::read_excel(chg_path, sheet = "changes")
 change_file <- as.data.table(change_file)
 
 
@@ -63,7 +64,7 @@ for (i in 1:nrow(puid_w)){
 
 
 # Some people need new ids ------------------------------------------------
-id_file <- readxl::read_excel("codebook/validation_list.xlsx", sheet = "new_id")
+id_file <- readxl::read_excel(chg_path, sheet = "new_id")
 id_file <- as.data.table(id_file)
 
 # Change age for a specific value -----------------------------------------
