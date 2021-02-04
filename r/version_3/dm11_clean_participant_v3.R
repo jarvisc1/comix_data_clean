@@ -279,10 +279,15 @@ dt[, part_reported_all_contacts := map_report_contacts[part_reported_all_contact
 
 ## Risk change from personal to all household from survey round 44
 risk_names <- grep("part_.*_risk", names(dt), value = TRUE)
+
 if(length(risk_names)>0){
-  dt[, part_med_risk_v2 := map_fm_yn[part_med_risk_v2]]
-  dt[, part_high_risk_v2 := map_fm_yn[part_high_risk_v2]]
+  dt[, part_med_risk_v2 := map_fm_yn[part_med_risk_v2]]	  dt[, part_med_risk_v2_temp := map_fm_yn[part_med_risk_v2]]
+  dt[, part_high_risk_v2 := map_fm_yn[part_high_risk_v2]]	  dt[, part_high_risk_v2_temp := map_fm_yn[part_high_risk_v2]]
+  dt[, part_high_risk_v2 := NULL]
+  dt[, part_med_risk_v2 := NULL]
 }
+
+
 
 
 # Class size --------------------------------------------------------------
@@ -311,9 +316,16 @@ hhmvars_new <- hhmvars_new[!hhmvars_new %in% names(dt)]
 
 setnames(dt, old = hhmvars_old, new = hhmvars_new, skip_absent = TRUE)
 
-dt[, table(part_high_risk_v2)]
-dt[, table(part_med_risk_v2)]
+if(length(risk_names)>0){
+  dt[, table(part_med_risk_v2)]	  dt[is.na(part_high_risk_v2), part_high_risk_v2 := part_high_risk_v2_temp ]
+  dt[is.na(part_med_risk_v2), part_med_risk_v2 := part_med_risk_v2_temp ]
+  dt[, part_high_risk_v2_temp := NULL]
+  dt[, part_med_risk_v2_temp := NULL]
+}
+
+# Create a consistent risk category
 dt[, part_high_risk := ifelse(part_high_risk_v2 == "yes" | part_med_risk_v2 == "yes", "yes", "no")]
+
 
 # Remove variables --------------------------------------------------------
 
