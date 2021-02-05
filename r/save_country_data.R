@@ -10,8 +10,8 @@ dir.create(dir_data_local, showWarnings = F)
 
 # dir_data_clean <- "~/../amygimma/Filr/Net Folders/EPH Shared/Comix_survey/new_do_not_remove/data/clean"
 
-part <- as.data.table(qs::qread(file.path(dir_data_clean, "part_min_v5_g2.qs")))
-contacts <- as.data.table(qs::qread(file.path(dir_data_clean, "contacts_v5_g2.qs")))
+part <- as.data.table(qs::qread(file.path(dir_data_clean, "part_min_v5.qs")))
+contacts <- as.data.table(qs::qread(file.path(dir_data_clean, "contacts_v5.qs")))
 # hh <- qs::qread(file.path(dir_data_clean, "contacts_v5.qs"))
 
 part_cols <- read.csv("codebook/part_names.csv")$cols
