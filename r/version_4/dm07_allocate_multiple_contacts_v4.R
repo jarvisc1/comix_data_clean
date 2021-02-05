@@ -1,8 +1,8 @@
 # Name: dm07_allocate_multiple_contacts.R
 ## Description: Assign each of the multiple contacts to a row
-## Input file: combined_6_v5.qs
+## Input file: combined_6_v4.qs
 ## Functions:
-## Output file: combined_7_v5.qs
+## Output file: combined_7_v4.qs
 
 
 # Packages ----------------------------------------------------------------
