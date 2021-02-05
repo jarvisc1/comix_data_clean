@@ -64,7 +64,7 @@ ha <- rbindlist(households_list , use.names = TRUE, fill = TRUE)
 qs::qsave(pm, file.path(dir_data_clean,"part_min.qs"))
 qs::qsave(pa, file.path(dir_data_clean,"part.qs"))
 qs::qsave(ca, file.path(dir_data_clean,"contacts.qs"))
-qs::qsave(ca, file.path(dir_data_clean,"households.qs"))
+qs::qsave(ha, file.path(dir_data_clean,"households.qs"))
 
 
 
