@@ -1,4 +1,4 @@
-## Name: dm04_rename_vars_v5.R
+## Name: dm04_rename_vars_v4.R
 ## Description: Rename the variables using a csv file
 ## Input file: cnty_wkN_yyyymmdd_pN_wvN_4.qs
 ## Functions: 
@@ -12,14 +12,14 @@ library(data.table)
 source('r/00_setup_filepaths.r')
 
 # Countries ---------------------------------------------------------------
-country <- "Group1"
+country <- "Group2"
 
 print(paste0("Start: ", country))
 
 # Setup input and output data and filepaths -------------------------------
 filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
-                         filenames$survey_version == 5,]
+                         filenames$survey_version == 6,]
 r_names <- filenames$r_name
 
 # Load dataname spreadsheet -----------------------------------------------

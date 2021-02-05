@@ -8,11 +8,11 @@
 
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
-source('r/version_5/functions/save_spss_qs_v5.R')
+source('r/version_5/functions/save_spss_qs_v6.R')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
-country_codes <- "Group1"
+country_codes <- "Group2"
 
 # Open SPSS and save as QS ------------------------------------------------
 

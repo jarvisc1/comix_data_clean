@@ -16,6 +16,7 @@ contacts <- as.data.table(qs::qread(file.path(dir_data_clean, "contacts_v5.qs"))
 
 part_cols <- read.csv("codebook/part_names.csv")$cols
 contact_cols <- read.csv("codebook/contact_names.csv")$cols
+part_cols <- intersect(names(part), part_cols)
 
 ncol(part)
 part <- part[, ..part_cols]
@@ -24,12 +25,16 @@ names(part)[duplicated(names(part))]
 ncol(part)
 
 countries <- unique(part$country)
-
+message(paste(countries, collapse = ", "))
 for (country_name in countries) {
   part_country <- part[country == country_name]
+  part_country <- part_country[, ..part_cols]
+  
   if (unique(part_country$country) != country_name) stop("ERROR: CHECK PART COUNTRY NAME")
   
   contacts_country <- contacts[as.character(country) == country_name]
+  contacts_country <- contacts_country[, ..contact_cols]
+  
   if (unique(contacts_country$country) != country_name) stop("ERROR: CHECK CNT COUNTRY NAME")
   
   # Save local  ---------------

@@ -137,7 +137,7 @@ dt[parent_child == "child", hhm_contact := "No"]
 
 
 # For visual testing
-table(dt$parent_child, dt$panel, useNA = "always")
+table(dt$parent_child, dt$wave, dt$panel, useNA = "always")
 table(dt[sample_type == "child"]$part_public_transport_bus, useNA = "always")
 table(dt[parent_child == "child"]$part_age_group, dt[parent_child == "child"]$wave)
 table(dt[parent_child == "child"]$part_age_group_be, dt[parent_child == "child"]$wave)
@@ -154,9 +154,10 @@ table(dt[parent_child == "parent"]$hhm_symp_fever)
 table(dt[parent_child == "parent"]$hhm_contact,
       dt[parent_child == "parent"]$panel, useNA = "always")
 table(dt[parent_child == "parent"]$row_id)
-table(dt[parent_child == "child"]$multiple_contacts_under_12_school,
+table(dt[parent_child == "child"]$multiple_contacts_child_school,
       dt[parent_child == "child"]$wave, useNA = "always")
-
+table(dt[]$part_age_group, 
+      dt[]$wave, useNA = "always")
 
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)

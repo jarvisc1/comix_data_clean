@@ -27,7 +27,7 @@ spss_names <- paste0(filenames$spss_name, ".sav")
 r_names <- paste0(filenames$r_name, "_1.qs")
   
 for(i in 1:length(spss_names)){
-   print(paste0("Opened: ",spss_names[i]))
+   print(paste0("Opening: ",spss_names[i]))
    ## User written function: read spss file save as qs
    save_spss_qs(spss_names[i], r_names[i], tolower(country))
    print(paste0("Saved: ", r_names[i]))
