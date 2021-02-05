@@ -4,7 +4,7 @@
 ## Functions:
 ## Output file: Same but also an archive file.
 
-
+library(data.table)
 
 
 
@@ -14,7 +14,7 @@ source('r/00_setup_filepaths.r')
 
 
 ## If running latest then check to see if the latest is equal to the most recent in all
-# and then combine, if not then print warning. More uptodate data in all compared to latest.
+# and then combine, if not then print warning. More up to date data in all compared to latest.
 
 # Get arguments -----------------------------------------------------------
 args = commandArgs(trailingOnly=TRUE)
@@ -26,7 +26,7 @@ if(length(args) == 0){
 } else if(args[1] == 1){
   latest <- args[1]
 }
-
+print(latest)
 print(paste0("Updating ", ifelse(latest==0, "All", "Latest")))
 
 # I/O Data ----------------------------------------------------------------
@@ -54,24 +54,24 @@ for(i in seq_along(clean_dta)){
 
     ## Replace new data if full data is not ahead of new data
     if(max(file$survey_round) <=  max(file_new$survey_round)){
-      file[survey_round != max(file_new$survey_round)]
+      file <- file[survey_round != max(file_new$survey_round)]
       print("Updating with new data")
       file <- rbindlist(list(file, file_new), use.names = TRUE, fill = TRUE)
     }
   }
   #Save to local area ------------------------------------------------------
   output <- file.path(dir_data_local, clean_dta[i])
-  
-  qs::qsave(file, output)
-  print(paste0("Copied to: ", output)) 
-  
-
-  # Save an archive ---------------------------------------------------------
-  current_date <- Sys.Date()
-  output_arc <- paste(current_date, clean_dta[i], sep = "_")
-  output_arc_file <- file.path(dir_data_local, "archive", output_arc)
-  qs::qsave(file, output_arc_file)
-  print(paste0("Saved: ", output_arc_file)) 
+  # 
+  # qs::qsave(file, output)
+  # print(paste0("Copied to: ", output)) 
+  # 
+  # 
+  # # Save an archive ---------------------------------------------------------
+  # current_date <- Sys.Date()
+  # output_arc <- paste(current_date, clean_dta[i], sep = "_")
+  # output_arc_file <- file.path(dir_data_local, "archive", output_arc)
+  # qs::qsave(file, output_arc_file)
+  # print(paste0("Saved: ", output_arc_file)) 
 }
 
 

@@ -1,7 +1,7 @@
 
   # 
-sh run_version_1.sh
-sh run_version_2.sh
+#sh run_version_1.sh
+#sh run_version_2.sh
 #sh run_version_3.sh
 #sh run_version_3.sh 'latest'
 # sh run_version_5.sh

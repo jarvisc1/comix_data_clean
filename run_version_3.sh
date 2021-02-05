@@ -16,7 +16,7 @@ elif [ $1 == 'latest' ]
   new_only=1
   echo "Downloading latest data"
   echo "Convert from SPSS to QS for most recent file"
-  #Rscript.exe ".\r\version_3\dm01_resave_spss_as_qs_v3.R" $new_only
+  Rscript.exe ".\r\version_3\dm01_resave_spss_as_qs_v3.R" $new_only
   pwd
 fi
 
@@ -47,11 +47,11 @@ Rscript.exe ".\r\version_3\dm09_clean_locations_v3.R" $new_only
 
 echo "Clean Households"
 Rscript.exe ".\r\version_3\dm10_clean_household_v3.R" $new_only
-
+# 
 echo "Clean Participants"
 Rscript.exe ".\r\version_3\dm11_clean_participant_v3.R" $new_only
 
-echo "Clean Participants"
+echo "Save locally"
 Rscript.exe ".\r\version_3\dm100_save_locally_v3.R" $new_only
 
 echo "Save data on LSHTM server"
