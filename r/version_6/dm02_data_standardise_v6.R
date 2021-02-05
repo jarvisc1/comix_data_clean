@@ -1,4 +1,4 @@
-## Name: dm02_data_standardise_v4.R
+## Name: dm02_data_standardise_v3.R
 ## Description: Check if country, panel, and wave are present, if not add.
 ##              Make the participant id unique across panels but within countries
 ##              Rename child data questions
@@ -13,12 +13,12 @@ library(stringr)
 
 # Source user written scripts ---------------------------------------------
 source('./r/00_setup_filepaths.r')
-source('./r/version_4/functions/check_cnty_panel_wave_v4.R')
-source('./r/version_4/functions/standardise_names_v4.R')
+source('./r/version_5/functions/check_cnty_panel_wave_v6.R')
+source('./r/version_5/functions/standardise_names_v6.R')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
-country <- "BE"
+country <- "Group2"
 
 # Cleaning ----------------------------------------------------------------
 
@@ -26,7 +26,7 @@ print(paste0("Start: ", country))
 # Setup input and output data and filepaths -------------------------------
 filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
-                          filenames$survey_version == 4,]
+                          filenames$survey_version == 6,]
 r_names <- filenames$r_name
 
 ## This script loads _1.qs files and save them as _2.qs files
@@ -38,9 +38,10 @@ for(r_name in r_names){
    
    ## Read in _1 data
    dt <- qs::qread(input_data)
-   print(paste0("Opening: ", input_name)) 
+   print(paste0("Opened: ", input_name)) 
+   
    ## Add wave, panel, and country variables ----------------------------------
-
+   
    ## get country, panel, and wave from filename
    panel <- str_extract(r_name, "_p[A-Z]_")
    panel <- substring(panel, first = 3, last = 3)
@@ -68,7 +69,7 @@ for(r_name in r_names){
    ## Start at 10,000 and add 10,000 for each panel. 
    ## B starts from 20,000
    ## C starts from 30,000
-   dt[respondent_id < 10000, respondent_id := respondent_id + 10000*as.numeric(factor(panel, LETTERS))]
+   dt[respondent_id < 100000, respondent_id := respondent_id + 100000*as.numeric(factor(panel, LETTERS))]
    
    
    # Parent - Child questions ------------------------------------------------

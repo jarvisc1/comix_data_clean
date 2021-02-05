@@ -6,7 +6,7 @@ if [ -z $1 ]
 elif [ $1 == 'download' ]
   then
   echo "Convert from SPSS to QS files"
-  Rscript "./r/version_/dm01_resave_spss_as_qs_v4.R"
+  Rscript "r/version_4/dm01_resave_spss_as_qs_v4.R"
   pwd
 fi
 
@@ -14,7 +14,7 @@ echo "Check and add country panel and wave variables"
 Rscript "r/version_4/dm02_data_standardise_v4.R"
 
 echo "Turn from wide data to long data.table"
-Rscript "/r/version_4/dm03_create_datatable_v.4R"
+Rscript "r/version_4/dm03_create_datatable_v4.R"
 
 echo "Rename the variables"
 Rscript "r/version_4/dm04_rename_vars_v4.R"
