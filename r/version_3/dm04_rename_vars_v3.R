@@ -30,7 +30,7 @@ country <- "UK"
 print(paste0("Start: ", country))
 
 # Setup input and output data and filepaths -------------------------------
-filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
+filenames <- readxl::read_excel('data/spss_uk.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
                          filenames$survey_version == 3,]
 
@@ -41,8 +41,8 @@ if(latest == 1){
 r_names <- filenames$r_name
 
 # Load dataname spreadsheet -----------------------------------------------
-survey2 <- as.data.table(readxl::read_excel("codebook/var_names.xlsx", sheet = "survey_3"))
-survey2 <- survey2[!is.na(newname)]
+survey <- as.data.table(read.csv("codebook/var_names_v3.csv", col.names = c("oldname", "newname")))
+survey <- survey[!is.na(newname)]
   
 for(r_name in r_names){
   input_name <-  paste0(r_name, "_3.qs")
@@ -52,7 +52,7 @@ for(r_name in r_names){
 
   dt <- qs::qread(input_data)
   print(paste0("Opened: ", input_name)) 
-  setnames(dt, survey2$oldname, survey2$newname, skip_absent = TRUE)
+  setnames(dt, survey$oldname, survey$newname, skip_absent = TRUE)
     
   
   if (is.null(dt$q20)){

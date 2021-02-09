@@ -60,18 +60,18 @@ for(i in seq_along(clean_dta)){
     }
   }
   #Save to local area ------------------------------------------------------
-  output <- file.path(dir_data_local, clean_dta[i])
-  # 
-  # qs::qsave(file, output)
-  # print(paste0("Copied to: ", output)) 
-  # 
-  # 
+  output <- file.path("data/clean", clean_dta[i])
+
+  qs::qsave(file, output)
+  print(paste0("Copied to: ", output))
+
+
   # # Save an archive ---------------------------------------------------------
   # current_date <- Sys.Date()
   # output_arc <- paste(current_date, clean_dta[i], sep = "_")
   # output_arc_file <- file.path(dir_data_local, "archive", output_arc)
   # qs::qsave(file, output_arc_file)
-  # print(paste0("Saved: ", output_arc_file)) 
+  # print(paste0("Saved: ", output_arc_file))
 }
 
 

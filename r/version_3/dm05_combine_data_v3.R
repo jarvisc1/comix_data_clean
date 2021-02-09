@@ -34,8 +34,8 @@ dt_list <- list()
 print(paste0("Start: ", country))
 
 # Setup input and output data and filepaths -------------------------------
-filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
-filenames <- filenames[!is.na(filenames$spss_name) &
+filenames <- readxl::read_excel('data/spss_uk.xlsx', sheet = country)
+filenames <- filenames[!is.na(filenames$spss_name) & 
                          filenames$survey_version == 3,]
 
 ## create a version a if just for the latest data
