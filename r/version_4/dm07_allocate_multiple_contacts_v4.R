@@ -59,8 +59,10 @@ dt_cnts$cnt_id <- NULL
 # Add in precautions ------------------------------------------------------
 
 multi_prec <- grep("multiple_cont", names(dt), value =TRUE)
+multi_prec <- grep("precaution|duration", names(dt), value =TRUE)
+
 multi_prec <- c("country", "part_id", "panel", "wave", multi_prec)
-dt_prec <- dt[, ..multi_prec]
+dt_prec <- dt[row_id == 0, ..multi_prec]
 dt_prec <- dt_prec[
   !is.na(multiple_contacts_other_precautions) |
     !is.na(multiple_contacts_work_precautions) |
