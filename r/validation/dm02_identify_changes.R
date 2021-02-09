@@ -23,20 +23,23 @@ if(length(args) == 0){
 
 print(paste0("Downloading ", ifelse(latest==0, "All", "Latest")))
 
-# Countries ---------------------------------------------------------------
-# in case running for certain countries only
-country <- "UK"
 
-# Open SPSS and save as QS ------------------------------------------------
 
-part <- qs::qread("data/validated/test/part_101.qs")
+# Load in updated data ----------------------------------------------------
+
+part <- qs::qread("data/validated/part_101.qs")
+households <- qs::qread("data/validated/households_101.qs")
+contacts <- qs::qread("data/validated/contacts_101.qs")
 
 
 # For the moment focus on UK ----------------------------------------------
-part <-  part[country == "uk" & panel %in% c("E", "F") & sample_type == "adult"]
+part <-  part[country == "uk" & panel %in% c("A", "B") & sample_type == "adult"]
 
 part[, n := .N, by = part_uid]
-
+part[, max_wave := max(wave), by = part_uid]
+part[, min_wave := max(wave), by = part_uid]
+## For E and F - Ignore for non-continuous panels
+#part <- part[min_wave < (max(wave) - 8)] ## Only include people who have started more than 8 rounds ago
 
 # Check for changes in age ------------------------------------------------
 part[, t_age_chge_gt1 := (max(as.numeric(part_age)) - min(as.numeric(part_age))) > 1, by="part_uid"]
@@ -51,7 +54,12 @@ check_age <- part[t_age_chge_gt1 == TRUE,
 
 check_age <- check_age[order(-t_age_chge_gt1, panel, -n, part_uid,  wave,)]
 
-write.csv(check_age, file = 'data/validated/test/01_check_ages.csv', row.names = FALSE)
+#write.csv(check_age, file = 'data/validated/test/01_check_ages.csv', row.names = FALSE)
+
+names(households)
+
+
+
 
 
 # # End age check -----------------------------------------------------------
