@@ -27,9 +27,9 @@ print(paste0("Downloading ", ifelse(latest==0, "All", "Latest")))
 
 # Load in updated data ----------------------------------------------------
 
-part <- qs::qread("data/validated/part_101.qs")
-households <- qs::qread("data/validated/households_101.qs")
-contacts <- qs::qread("data/validated/contacts_101.qs")
+part <- qs::qread("data/validated/part_valid.qs")
+households <- qs::qread("data/validated/households_valid.qs")
+contacts <- qs::qread("data/validated/contacts_valid.qs")
 
 
 # For the moment focus on UK ----------------------------------------------
@@ -54,7 +54,7 @@ check_age <- part[t_age_chge_gt1 == TRUE,
 
 check_age <- check_age[order(-t_age_chge_gt1, panel, -n, part_uid,  wave,)]
 
-#write.csv(check_age, file = 'data/validated/test/01_check_ages.csv', row.names = FALSE)
+write.csv(check_age, file = 'data/validated/test/01_check_ages.csv', row.names = FALSE)
 
 names(households)
 
