@@ -12,3 +12,10 @@ codebook/*
 reports/*
 *DS_Store
 
+## Remove these and check what should be included
+r/tests/*
+r/temp/*
+data/tests/*
+r/post_processing/*
+data/validated/*
+
