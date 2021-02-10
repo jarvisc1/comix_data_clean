@@ -35,8 +35,8 @@ names(map_area_3_name) <- locations[variable == "area_3_name",]$oldname
 
 
 ## Update locations
-dt[, area_2_name := first(area_2_name), by = .(country, panel, wave, part_id)]
-dt[, area_2_name := map_area_2_name[area_2_name]]
+# dt[, area_2_name := first(area_2_name), by = .(country, panel, wave, part_id)]
+# dt[, area_2_name := map_area_2_name[area_2_name]]
 dt[, area_3_name := first(area_3_name), by = .(country, panel, wave, part_id)]
 dt[, area_3_name := map_area_3_name[area_3_name]]
 

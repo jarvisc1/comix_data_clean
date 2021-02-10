@@ -47,23 +47,6 @@ for(i in seq_along(households_files)){
 }
 
 
-## Vaccine data is not a data in BE and new EU data. 
-## fr02occr
-part_list[[4]][,126] <- NULL
-part_list[[4]][,127] <- NULL
-part_list[[4]][,156] <- NULL
-part_list[[4]][,169] <- NULL
-part_list[[4]][,183] <- NULL
-part_list[[4]][,183] <- NULL
-part_list[[4]][,182] <- NULL
-part_list[[4]][,184] <- NULL
-part_list[[4]][,124] <- NULL
-
-part_list[[5]][,164]<- NULL
-part_list[[5]][,187] <- NULL
-part_list[[5]][,188] <- NULL
-part_list[[5]][,186] <- NULL
-
 pa <- rbindlist(part_list , use.names = TRUE, fill = TRUE)
 
 pm <- rbindlist(part_min_list , use.names = TRUE, fill = TRUE)

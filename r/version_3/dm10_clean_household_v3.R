@@ -229,23 +229,7 @@ options(warn = oldw)
 dt[, hh_size := first(hh_size), by = .(part_wave_uid)]
 dt[, hh_size_group := first(hh_size_group), by = .(part_wave_uid)]
 
-# Clean dates -------------------------------------------------------------
-## Clean and defines dates
 
-# Extract date columns
-date_cols <- str_subset(names(dt), "date")
-print(paste0("Date vars: ", length(date_cols)))
-
-# SPSS dates --------------------------------------------------------------
-## SPSS dates start at "1582-10-14 and are recorded in seconds
-
-## Will be relevant for vaccination but not for much else
-
-
-spss_date_cols <- grep("part_vacc_.*_date$", names(dt), value = TRUE)
-
-spss_date <- function(x) as.Date(as.numeric(x)/86400, origin = "1582-10-14")
-dt[, (spss_date_cols) := lapply(.SD, spss_date), .SDcols = spss_date_cols ]
 
 
 # Symptoms ----------------------------------------------------------------

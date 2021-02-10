@@ -60,7 +60,7 @@ dt_cnts$cnt_id <- NULL
 
 multi_prec <- grep("multiple_cont", names(dt), value =TRUE)
 multi_prec <- c("country", "part_id", "panel", "wave", multi_prec)
-dt_prec <- dt[, ..multi_prec]
+dt_prec <- dt[row_id == 0, ..multi_prec]
 dt_prec <- dt_prec[
   !is.na(multiple_contacts_other_precautions) |
     !is.na(multiple_contacts_work_precautions) |
@@ -79,6 +79,19 @@ dt_cnts[is.na(cnt_prec),cnt_prec := fifelse(cnt_work == "Yes",
 
 dt_cnts[is.na(cnt_prec),cnt_prec := fifelse(cnt_school == "Yes",
                                             multiple_contacts_school_precautions, NA_character_)]
+
+
+if("mutiple_contacts_other_duration" %in% names(dt)){  
+  dt_cnts[,cnt_total_time  := fifelse(cnt_other == "Yes",
+                                      multiple_contacts_other_duration, NA_character_)]
+  
+  dt_cnts[is.na(cnt_total_time), cnt_total_time := fifelse(cnt_work == "Yes",
+                                                           multiple_contacts_work_duration, NA_character_)]
+  
+  dt_cnts[is.na(cnt_total_time), cnt_total_time := fifelse(cnt_school == "Yes",
+                                                           multiple_contacts_school_duration, NA_character_)]
+}
+
 
 dt[(!is.na(cnt_age) | hhm_contact == "Yes"), cnt_mass := "individual"]
 # Append on to main data --------------------------------------------------

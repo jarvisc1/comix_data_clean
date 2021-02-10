@@ -1,4 +1,4 @@
-## Name: dm02_data_standardise_v3.R
+## Name: dm02_data_standardise_v6.R
 ## Description: Check if country, panel, and wave are present, if not add.
 ##              Make the participant id unique across panels but within countries
 ##              Rename child data questions
@@ -13,8 +13,8 @@ library(stringr)
 
 # Source user written scripts ---------------------------------------------
 source('./r/00_setup_filepaths.r')
-source('./r/version_5/functions/check_cnty_panel_wave_v6.R')
-source('./r/version_5/functions/standardise_names_v6.R')
+source('./r/version_6/functions/check_cnty_panel_wave_v6.R')
+source('./r/version_6/functions/standardise_names_v6.R')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
