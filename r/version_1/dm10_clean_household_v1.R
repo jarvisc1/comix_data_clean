@@ -84,8 +84,8 @@ oldw <- getOption("warn")
 options(warn = -1)
 
 dt[, hh_size_int := as.numeric(hh_size) + 1]
-dt[, hh_size_int := as.numeric(hh_size)]
-dt[hh_size == "none", hh_size_int := 1]
+#dt[, hh_size_int := as.numeric(hh_size)]
+dt[tolower(hh_size) == "none", hh_size_int := 0 + 1]
 dt[hh_size == "11 or more", hh_size_int := 12]
 dt[hh_size_int == 1, hh_size_group := "1",]
 dt[hh_size_int == 2, hh_size_group := "2",]
