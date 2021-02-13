@@ -1,9 +1,9 @@
 ## Name: dm06_swap_parent_child_info.R
 ## Description: Parent's answer on behalf of children. Therefore need to swap
 ##              their information for age and gender.
-## Input file: combined_5_v3.qs
+## Input file: combined_5_v7.qs
 ## Functions:
-## Output file: combined_6_v3.qs
+## Output file: combined_6_v7.qs
 
 # 
 # Children's data notes (panel E and F)
@@ -37,29 +37,11 @@ library(data.table)
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
 
-# Get arguments -----------------------------------------------------------
-args = commandArgs(trailingOnly=TRUE)
-
-if(length(args) == 0){
-  latest <-  1 ## Change to zero if you to test all interactively
-} else if(args[1] == 0){
-  latest <-  0
-} else if(args[1] == 1){
-  latest <- args[1]
-}
-
-print(paste0("Updating ", ifelse(latest==0, "All", "Latest")))
 
 # I/O Data ----------------------------------------------------------------
 
-## create a version a if just for the latest data
-if(latest == 1){
-  input_name <-  paste0("combined_5_v3a.qs")
-  output_name <- paste0("combined_6_v3a.qs")
-} else if(latest ==0){
-  input_name <-  paste0("combined_5_v3.qs")
-  output_name <- paste0("combined_6_v3.qs")
-}
+input_name <-  paste0("combined_5_v7.qs")
+output_name <- paste0("combined_6_v7.qs")
 
 input_data <-  file.path(dir_data_process, input_name)
 output_data <- file.path(dir_data_process, output_name)
@@ -119,7 +101,9 @@ for(hhm_col in hhm_cols) {
 }
 
 # Step 6. Move relevant parent part data to hhm data columns ----
-part_cols <- c("part_gender", "part_age", "part_social_group", "part_income")
+
+# note to add social group if any
+part_cols <- c("part_gender", "part_age", "part_income")
 for(part_col in part_cols) {
   hhm_col <- gsub("part_", "hhm_", part_col)
   dt[parent_child %in% c("parent", "child"),
