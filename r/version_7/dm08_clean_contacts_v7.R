@@ -197,7 +197,7 @@ dt[, part_report_ind_contacts := map_report_ind_contacts[part_reported_all_conta
 ## Fill in participant information
 dt[, part_gender := first(part_gender), by = .(part_wave_uid)]
 dt[, part_gender_nb := first(part_gender_nb), by = .(part_wave_uid)]
-dt[, part_age := first(part_age), by = .(part_wave_uid)]
+dt[parent_child == "child", part_age := first(part_age), by = .(part_wave_uid)]
 dt[, currentday := first(currentday), by = .(part_wave_uid)]
 dt[, currentmonth := first(currentmonth), by = .(part_wave_uid)]
 dt[, currentyear := first(currentyear), by = .(part_wave_uid)]
@@ -266,13 +266,13 @@ dt[part_age == "Prefer not to answer", part_age := NA]
 
 dt[, part_age_est_min := part_age_int]
 dt[, part_age_est_max := part_age_int]
-dt[part_age == "Under 1", part_age_est_min := 0]
-dt[part_age == "Under 1", part_age_est_max := 1]
+dt[part_age_group == "Under 1", part_age_est_min := 0]
+dt[part_age_group == "Under 1", part_age_est_max := 1]
 
-dt[is.na(part_age_est_min), part_age_est_min := as.numeric(str_replace_all(part_age, "-.*", ""))]
-dt[is.na(part_age_est_max), part_age_est_max := as.numeric(str_replace_all(part_age, ".*-", ""))]
-dt[is.na(part_age_est_min), part_age_est_min := as.numeric(str_replace_all(part_age, "\\+", ""))]
-dt[is.na(part_age_est_max), part_age_est_max := as.numeric(str_replace_all(part_age, ".*\\+", "120"))]
+dt[is.na(part_age_est_min), part_age_est_min := as.numeric(str_replace_all(part_age_group, "-.*", ""))]
+dt[is.na(part_age_est_max), part_age_est_max := as.numeric(str_replace_all(part_age_group, ".*-", ""))]
+dt[is.na(part_age_est_min), part_age_est_min := as.numeric(str_replace_all(part_age_group, "\\+", ""))]
+dt[is.na(part_age_est_max), part_age_est_max := as.numeric(str_replace_all(part_age_group, ".*\\+", "120"))]
 
 ## Switch warnings back on
 options(warn = oldw)

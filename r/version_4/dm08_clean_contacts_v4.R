@@ -435,24 +435,25 @@ dt[, cnt_prec_none := YesNoNA_Ind(cnt_prec_none)]
 dt[, cnt_prec_dk := YesNoNA_Ind(cnt_prec_dk)]
 dt[, cnt_prec_1_and_half_m_plus := YesNoNA_Ind(cnt_prec_1_and_half_m_plus)]
 # dt[, cnt_prec_1m_plus := YesNoNA_Ind(cnt_prec_1m_plus)]
-dt[, cnt_prec_within_1_and_half_m := YesNoNA_Ind(cnt_prec_within_1_and_half_m)]
+# dt[, cnt_prec_within_1_and_half_m := YesNoNA_Ind(cnt_prec_within_1_and_half_m)]
 dt[, cnt_prec_mask := YesNoNA_Ind(cnt_prec_mask)]
 dt[, cnt_prec_wash_before := YesNoNA_Ind(cnt_prec_wash_before)]
 dt[, cnt_prec_wash_after := YesNoNA_Ind(cnt_prec_wash_after)]
 dt[, cnt_prec_prefer_not_to_say := YesNoNA_Ind(cnt_prec_prefer_not_to_say)]
 dt[, cnt_household := YesNoNA_Ind(hhm_contact)]
 
-
-both_indoors_outdoors <- "Both indoors and outdoors"
-dt[, cnt_inside := 
-      ifelse(cnt_indoor_outdoor %in% c("Indoors", both_indoors_outdoors), 1, 0)]
-dt[, cnt_outside := 
-   ifelse(cnt_indoor_outdoor %in% c("Outdoors", both_indoors_outdoors), 1, 0)]
-dt[cnt_indoor_outdoor == "Don’t know", cnt_inside_outside_dk := 1]
-dt[cnt_indoor_outdoor != "Don’t know" | is.na(cnt_indoor_outdoor), cnt_inside_outside_dk := 0]
-dt[cnt_indoor_outdoor == "Don’t know", cnt_inside := NA]
-dt[cnt_indoor_outdoor == "Don’t know", cnt_outside := NA]
-
+if ("be" %in% dt$country) {
+   both_indoors_outdoors <- "Both indoors and outdoors"
+   
+   dt[cnt_indoor_outdoor == "Don’t know", cnt_inside_outside_dk := 1]
+   dt[cnt_indoor_outdoor != "Don’t know" | is.na(cnt_indoor_outdoor), cnt_inside_outside_dk := 0]
+   dt[cnt_indoor_outdoor == "Don’t know", cnt_inside := NA]
+   dt[cnt_indoor_outdoor == "Don’t know", cnt_outside := NA]
+   dt[, cnt_inside := 
+         ifelse(cnt_indoor_outdoor %in% c("Indoors", both_indoors_outdoors), 1, 0)]
+   dt[, cnt_outside := 
+         ifelse(cnt_indoor_outdoor %in% c("Outdoors", both_indoors_outdoors), 1, 0)]
+}
 
 
 dt[is.na(cnt_prec), cnt_prec := fifelse(cnt_prec_none == 0, "Yes", "No")]

@@ -13,7 +13,7 @@ source('./r/version_4/functions/save_spss_qs_v4.R')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
-country <- "BE"
+country <- "NL"
 
 # Open SPSS and save as QS ------------------------------------------------
 

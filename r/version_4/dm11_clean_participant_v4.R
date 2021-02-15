@@ -180,8 +180,8 @@ dt[, part_att_spread := factor(part_att_spread, levels = att_levels)]
 
 ## Map the vars to more readable answers
 
-dt[, part_visit_restaurant_int := map_visits[part_visit_restaurant_int]]
-dt[, part_visit_religious_event_int := map_visits[part_visit_religious_event_int]]
+# dt[, part_visit_restaurant_int := map_visits[part_visit_restaurant_int]]
+# dt[, part_visit_religious_event_int := map_visits[part_visit_religious_event_int]]
 # dt[, part_visit_another_home_int := map_visits_yn[part_visit_another_home_int]]
 # dt[, part_visit_essential_shop_int := map_visits_yn[part_visit_essential_shop_int]]
 # dt[, part_visit_healthcare_int := map_visits_yn[part_visit_healthcare_int]]
@@ -192,8 +192,8 @@ dt[, part_visit_religious_event_int := map_visits[part_visit_religious_event_int
 # dt[, part_visit_outdoors_int := map_visits_yn[part_visit_outdoors_int]]
 
 ## Create yes no versions
-dt[, part_visit_restaurant := map_visits_yn[part_visit_restaurant_int]]
-dt[, part_visit_religious_event := map_visits_yn[part_visit_religious_event_int]]
+# dt[, part_visit_restaurant := map_visits_yn[part_visit_restaurant_int]]
+# dt[, part_visit_religious_event := map_visits_yn[part_visit_religious_event_int]]
 # dt[, part_visit_another_home := map_visits_yn[part_visit_another_home_int]]
 # dt[, part_visit_essential_shop := map_visits_yn[part_visit_essential_shop_int]]
 # dt[, part_visit_healthcare := map_visits_yn[part_visit_healthcare_int]]
@@ -270,6 +270,13 @@ dt[, part_furloughed := map_fm_yn[part_furloughed]]
 # dt[, part_high_risk_v2 := map_fm_yn[part_high_risk_v2]]
 dt[, part_isolation_quarantine := map_fm_yn[part_isolation_quarantine]]
 dt[, part_pregnant := map_fm_yn[part_pregnant]]
+  dt[country == "nl", part_education := nleducate]
+  dt[country == "nl", part_social_group := nl01sg]
+if (!is.null(dt$part_social_group_be)) {
+  dt[!is.na(part_social_group_be), part_social_group := part_social_group_be]
+} 
+if (is.null(dt$part_income)) dt$part_income <- NA_character_
+dt[is.na(part_income), part_income := income3]
 dt[, part_income := tolower(part_income)]
 dt[, part_no_contacts := tolower(part_no_contacts)]
 dt[, part_reported_all_contacts := map_report_contacts[part_reported_all_contacts]]
@@ -384,9 +391,8 @@ vars_names <- c("part_id",
                 "part_age",
                 # "part_ethnicity",
                 "country_origin",
-                "part_social_group_be",
+                "part_social_group",
                 "part_age_group", 
-                "part_age_group_be",
                 "part_age_est_min",
                 "part_age_est_max",
                 "hh_size",

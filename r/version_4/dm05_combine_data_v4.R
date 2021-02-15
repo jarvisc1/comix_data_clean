@@ -13,7 +13,12 @@ source('r/00_setup_filepaths.r')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
-country <- "BE"
+args <- commandArgs(trailingOnly=TRUE) 
+print(args)
+if (!exists("country")) country <- "BE"
+if(length(args) == 1) country <- args
+print(paste0("Start: ", country))
+
 
 # Cleaning ----------------------------------------------------------------
 dt_list <- list()

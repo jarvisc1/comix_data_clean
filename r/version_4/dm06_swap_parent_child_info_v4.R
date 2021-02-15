@@ -46,6 +46,7 @@ output_data <- file.path(dir_data_process, output_name)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
+print(paste(unique(dt$country), collapse = ", "))
 
 # Standardize child age groups for Belgium
 
@@ -60,7 +61,7 @@ map_sample_type <- c(
   "Sampletype=2 Parent sample" = "child"
 )
 dt[,sample_type := map_sample_type[sample_type]]
-table(dt$sample_type)
+table(dt$sample_type, dt$wave)
 
 dt[, sample_type := first(sample_type), by = .(country, panel, wave, part_id)]
 original_child_nrow <- nrow(dt)
@@ -154,8 +155,8 @@ table(dt[parent_child == "parent"]$hhm_symp_fever)
 table(dt[parent_child == "parent"]$hhm_contact,
       dt[parent_child == "parent"]$panel, useNA = "always")
 table(dt[parent_child == "parent"]$row_id)
-table(dt[parent_child == "child"]$multiple_contacts_child_school,
-      dt[parent_child == "child"]$wave, useNA = "always")
+# table(dt[parent_child == "child"]$multiple_contacts_child_school,
+      # dt[parent_child == "child"]$wave, useNA = "always")
 table(dt[]$part_age_group, 
       dt[]$wave, useNA = "always")
 

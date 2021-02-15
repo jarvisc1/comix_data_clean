@@ -18,7 +18,10 @@ source('./r/version_4/functions/standardise_names_v4.R')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
-country <- "BE"
+args <- commandArgs(trailingOnly=TRUE)
+print(args)
+if (!exists("country")) country <- "BE"
+if(length(args) == 1) country <- args
 
 # Cleaning ----------------------------------------------------------------
 

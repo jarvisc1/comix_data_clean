@@ -102,8 +102,11 @@ for(hhm_col in hhm_cols) {
 
 # Step 6. Move relevant parent part data to hhm data columns ----
 
-# note to add social group if any
-part_cols <- c("part_gender", "part_age", "part_income")
+# note to add social group (sg), occupation (oc), & income (inc) if anyincome_cols <- grep("inc", names(dt), value = T)
+sg_cols <- grep("sg", names(dt), value = T)
+oc_cols <- grep("oc", names(dt), value = T)
+reg_cols <- grep("reg", names(dt), value = T)
+part_cols <- c("part_gender", "part_age", income_cols, sg_cols, oc_cols, reg_cols)
 for(part_col in part_cols) {
   hhm_col <- gsub("part_", "hhm_", part_col)
   dt[parent_child %in% c("parent", "child"),
@@ -128,7 +131,7 @@ dt[between(hhm_age, 65, 69) & parent_child == "parent", hhm_age_group := "65-69"
 dt[between(hhm_age, 70, 120) & parent_child == "parent", hhm_age_group := "70+"]
 
 
-## STEP 8. Remove now-reduntant child hhm row and assign mixed_data row (row_id == 0) to child 
+## Step 8. Remove now-reduntant child hhm row and assign mixed_data row (row_id == 0) to child -----
 dt[parent_child == "parent", row_id := 999]
 dt[parent_child == "child", row_id := 0]
 
@@ -136,23 +139,25 @@ dt[parent_child == "child", row_id := 0]
 dt[parent_child == "child", hhm_contact := "No"]
 
 
+## Step 9. Remove part_age (adult's age) from child part
+dt[parent_child == "child", part_age := NA_character_]
+
 # For visual testing
-# table(dt$parent_child, dt$panel, useNA = "always")
-# table(dt[sample_type == "child"]$part_public_transport_bus, useNA = "always")
-# table(dt[parent_child == "child"]$part_age_group, dt[parent_child == "child"]$wave)
-# table(dt[mixed_data == T]$part_age_group, dt[mixed_data == T]$wave)
-# original_child_nrow  == nrow(dt[panel %in% c("E", "F")])
-# 
-# table(dt[row_id == 999]$hhm_gender, useNA = "always")
-# table(dt[row_id == 0]$part_gender, useNA = "always")
-# table(dt[parent_child == "parent"]$hhm_age_group, 
-#       dt[parent_child == "parent"]$wave)
-# table(dt[parent_child == "parent"]$hhm_symp_fever)
-# table(dt[parent_child == "parent"]$hhm_contact,
-#       dt[parent_child == "parent"]$panel, useNA = "always")
-# table(dt[parent_child == "parent"]$row_id)
-# table(dt[parent_child == "child"]$multiple_contacts_child_school,
-#       dt[parent_child == "child"]$wave, useNA = "always")
+table(dt$parent_child, dt$panel, useNA = "always")
+table(dt[sample_type == "child"]$part_public_transport_bus, useNA = "always")
+table(dt[parent_child == "child"]$part_age_group, dt[parent_child == "child"]$wave)
+table(dt[mixed_data == T]$part_age_group, dt[mixed_data == T]$wave)
+original_child_nrow  == nrow(dt[panel %in% c("C")])
+table(dt[row_id == 999]$hhm_gender, useNA = "always")
+table(dt[row_id == 0]$part_gender, useNA = "always")
+table(dt[parent_child == "parent"]$hhm_age_group,
+      dt[parent_child == "parent"]$wave)
+table(dt[parent_child == "parent"]$hhm_symp_fever)
+table(dt[parent_child == "parent"]$hhm_contact,
+      dt[parent_child == "parent"]$panel, useNA = "always")
+table(dt[parent_child == "parent"]$row_id)
+table(dt[parent_child == "child"]$multiple_contacts_child_school,
+      dt[parent_child == "child"]$wave, useNA = "always")
 
 
 # Save data ---------------------------------------------------------------
