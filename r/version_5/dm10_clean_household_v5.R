@@ -30,6 +30,7 @@ output_data_hhms_date <- file.path("data/clean/archive", output_hhms_date)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
+print(paste(unique(dt$country), collapse = ","))
 
 # Map objects for labels --------------------------------------------------
 

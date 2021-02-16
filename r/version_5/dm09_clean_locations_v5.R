@@ -21,6 +21,7 @@ output_data <- file.path(dir_data_process, output_name)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
+print(paste(unique(dt$country), collapse = "\n"))
 
 # Maps for locations ---------------------------------------------------------------
 

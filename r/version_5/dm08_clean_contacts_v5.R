@@ -29,6 +29,7 @@ output_data_cnts_date <- file.path("data/clean/archive", output_cnts_date)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
+print(paste(unique(dt$country), collapse = ","))
 
 
 # Remove variables not needed ---------------------------------------------
