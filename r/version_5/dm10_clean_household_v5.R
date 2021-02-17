@@ -283,6 +283,7 @@ id_vars <- c("country",
              "part_id",
              "part_uid",
              "part_wave_uid",
+             "hhld_wave_uid",
              "contact_flag",
              "part_flag",
              "contact")
