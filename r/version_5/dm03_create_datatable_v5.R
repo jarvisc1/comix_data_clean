@@ -17,7 +17,7 @@ source('./r/version_5/functions/survey_to_datatable_v5.R')
 # in case running for certain countries only
 args <- commandArgs(trailingOnly=TRUE)
 print(args)
-if (!exists("group")) group <- "Group1"
+if (!exists("group")) group <- "G1"
 if(length(args) == 1) group <- args
 
 # Setup input and output data and filepaths -------------------------------

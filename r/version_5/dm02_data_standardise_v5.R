@@ -20,7 +20,7 @@ source('./r/version_5/functions/standardise_names_v5.R')
 # in case running for certain countries only
 args <- commandArgs(trailingOnly=TRUE)
 print(args)
-if (!exists("group") ) group <- "Group1"
+if (!exists("group") ) group <- "G1"
 if(length(args) == 1) group <- args
 
 # Cleaning ----------------------------------------------------------------

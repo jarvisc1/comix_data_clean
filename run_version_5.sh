@@ -2,15 +2,15 @@
 if [ -z $1 ]
   then
   echo "Running local code run 'sh run_version_5.sh Group1' or sh 'run_version_5.sh Group1download' to download Group1 data"
-elif [ $1 == 'Group1download' ]
+elif [ $1 == 'G1download' ]
   then
-  group="Group1"
+  group="G1"
   echo "Convert from SPSS to QS files"
   Rscript.exe "./r/version_5/dm01_resave_spss_as_qs_V5.R" $group
   pwd
-elif [ $1 == 'Group2download' ]
+elif [ $1 == 'G2download' ]
   then
-  group="Group2"
+  group="G2"
   echo "Convert from SPSS to QS files"
   Rscript.exe "./r/version_5/dm01_resave_spss_as_qs_V5.R" $group
   pwd

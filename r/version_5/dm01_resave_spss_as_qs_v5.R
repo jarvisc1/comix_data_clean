@@ -14,7 +14,7 @@ source('r/version_5/functions/save_spss_qs_v5.R')
 # in case running for certain countries only
 args <- commandArgs(trailingOnly=TRUE)
 print(args)
-if (!exists("groups")) groups <- "Group1"
+if (!exists("groups")) groups <- "G1"
 if(length(args) == 1) groups <- args
 
 # Open SPSS and save as QS ------------------------------------------------
