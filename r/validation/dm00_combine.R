@@ -48,7 +48,6 @@ for(i in seq_along(households_files)){
 
 
 pa <- rbindlist(part_list , use.names = TRUE, fill = TRUE)
-
 pm <- rbindlist(part_min_list , use.names = TRUE, fill = TRUE)
 ca <- rbindlist(contacts_list , use.names = TRUE, fill = TRUE)
 ha <- rbindlist(households_list , use.names = TRUE, fill = TRUE)
