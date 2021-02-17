@@ -14,6 +14,8 @@ elif [ $1 == 'NLdownload' ]
   echo "Convert from SPSS to QS files"
   Rscript.exe "./r/version_4/dm01_resave_spss_as_qs_v4.R" $country
   pwd
+else
+  country=$1
 fi
 
 echo "Check and add country panel and wave variables"
