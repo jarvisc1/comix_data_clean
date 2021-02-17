@@ -18,8 +18,8 @@ else
   group=$1
 fi
 
-# 
-# echo "Check and add country panel and wave variables"
+
+echo "Check and add country panel and wave variables"
 Rscript "r/version_5/dm02_data_standardise_V5.R" $group
 
 echo "Turn from wide data to long data.table"
