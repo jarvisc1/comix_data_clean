@@ -18,13 +18,16 @@ source('./r/version_5/functions/standardise_names_v5.R')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
-country <- "Group1"
+args <- commandArgs(trailingOnly=TRUE)
+print(args)
+if (!exists("group") ) group <- "Group1"
+if(length(args) == 1) group <- args
 
 # Cleaning ----------------------------------------------------------------
 
-print(paste0("Start: ", country))
+print(paste0("Start: ", group))
 # Setup input and output data and filepaths -------------------------------
-filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
+filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = group)
 filenames <- filenames[!is.na(filenames$spss_name) & 
                           filenames$survey_version == 5,]
 r_names <- filenames$r_name
@@ -38,8 +41,8 @@ for(r_name in r_names){
    
    ## Read in _1 data
    dt <- qs::qread(input_data)
+   dt <- as.data.table(dt)
    print(paste0("Opened: ", input_name)) 
-   
    ## Add wave, panel, and country variables ----------------------------------
    
    ## get country, panel, and wave from filename
@@ -53,16 +56,23 @@ for(r_name in r_names){
    country <- str_extract(r_name, ".+?(?=_)")
    
    dt[, survey_round := week]
-   
    # Country -----------------------------------------------------------------
    dt <- country_checker(dt, country)
    
    # Panel -------------------------------------------------------------------
+   
+   # For Kids panel G was used by Ipsos.
+   if("panel" %in% names(dt)){
+      dt[, panel := as.character(panel)]
+      dt[panel == "Panel G", panel := "Panel C"]
+   }
+   
+   
    dt <- panel_checker(  dt, panel)
    
    # Wave --------------------------------------------------------------------
    dt <- wave_checker(   dt, wave)
-   
+
    # Participant ID -------------------------------------------------------------------------
    # The same participants ID are used for each panel and country.
    ## We do not anticipate a panel having more than 10,000 people.

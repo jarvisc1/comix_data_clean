@@ -12,8 +12,11 @@ library(data.table)
 source('r/00_setup_filepaths.r')
 
 # Countries ---------------------------------------------------------------
-country <- "BE"
-
+# in case running for certain countries only
+args <- commandArgs(trailingOnly=TRUE)
+print(args)
+if (!exists("country")) country <- "BE"
+if (length(args) == 1) country <- args
 print(paste0("Start: ", country))
 
 # Setup input and output data and filepaths -------------------------------
@@ -23,7 +26,9 @@ filenames <- filenames[!is.na(filenames$spss_name) &
 r_names <- filenames$r_name
 
 # Load dataname spreadsheet -----------------------------------------------
-survey4 <- as.data.table(readxl::read_excel("codebook/var_names.xlsx", sheet = "survey_4"))
+survey4 <- as.data.table(
+  readxl::read_excel("codebook/var_names.xlsx", 
+                     sheet = paste("survey_4", tolower(country), sep = "_")))
 survey4 <- survey4[!is.na(newname)]
   
   for(r_name in r_names){
@@ -38,7 +43,14 @@ survey4 <- survey4[!is.na(newname)]
     if (is.null(dt$q20)) dt$q20 <- dt$q20_new
     
     setnames(dt, survey4$oldname, survey4$newname, skip_absent = TRUE)
-      
+    
+    missing_colnames <- sort(grep("q[0-9]", names(dt), value = T))
+    message(paste(c(r_name,missing_colnames), collapse = "\n"))    
+    mult_cols <- "q79|q80|q81"
+    if (any(grepl(mult_cols, names(dt)))) {
+      stop(paste("Check multiple contact colnames:", r_name))
+    }
+    
     
     # Save temp data ----------------------------------------------------------
     qs::qsave(dt, file = output_data)

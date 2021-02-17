@@ -13,7 +13,10 @@ source('./r/version_4/functions/save_spss_qs_v4.R')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
-country <- "BE"
+args <- commandArgs(trailingOnly=TRUE)
+print(args)
+if (!exists("country")) country <- "BE"
+if(length(args) == 1) country <- args
 
 # Open SPSS and save as QS ------------------------------------------------
 

@@ -31,6 +31,7 @@ output_data_parts_date <- file.path("data/clean/archive", output_parts_date)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
+print(paste(unique(dt$country), collapse = ","))
 
 
 # Map objects for labels --------------------------------------------------
@@ -294,6 +295,16 @@ remove_vars <- remove_vars[remove_vars %in% names(dt)]
 set(dt, j = remove_vars, value = NULL)
 
 
+# Country specific cols ---------------------------------------------------
+
+# social group (sg), occupation (oc), & income (inc) if any
+income_cols <- grep("inc", names(dt), value = T)
+sg_cols <- grep("sg", names(dt), value = T)
+oc_cols <- grep("oc", names(dt), value = T)
+reg_cols <- grep("reg", names(dt), value = T)
+country_specific_cols <- c(income_cols, sg_cols, oc_cols, reg_cols)
+
+
 # Filter to relevant columns -------------------------------------------------------
 
 parts_names <- grep("part", names(dt), value = TRUE)
@@ -313,8 +324,8 @@ additional_part_names <- c("country_mother_origin",
 
 
 id_vars <- c("country",
-             "area_2_name", 
-             "area_3_name", 
+             # "area_2_name", 
+             # "area_3_name", 
              "panel",
              "wave",
              "date",
@@ -336,9 +347,9 @@ vars_names <- c("part_id",
                 "sample_type",
                 "date",
                 "weekday",
-                "area_2_name", 
+                # "area_2_name", 
                 # "area_3_name", 
-                "part_age",
+                # "part_age",
                 # "part_ethnicity",
                 # "country_origin",
                 # "part_social_group_be",
@@ -347,12 +358,11 @@ vars_names <- c("part_id",
                 "part_age_est_min",
                 "part_age_est_max",
                 "hh_size",
-                "hh_size_group"
+                "hh_size_group",
+                country_specific_cols 
 )
 
 dt_min = dt[, ..vars_names]
-
-
 
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)

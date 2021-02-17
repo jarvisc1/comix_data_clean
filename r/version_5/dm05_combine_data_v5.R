@@ -13,15 +13,18 @@ source('r/00_setup_filepaths.r')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
-country <- "Group1"
+args <- commandArgs(trailingOnly=TRUE)
+print(args)
+if (!exists("group")) group <- "Group1"
+if(length(args) == 1) group <- args
 
 # Cleaning ----------------------------------------------------------------
 dt_list <- list()
 
-print(paste0("Start: ", country))
+print(paste0("Start: ", group))
 
 # Setup input and output data and filepaths -------------------------------
-filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
+filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = group)
 filenames <- filenames[!is.na(filenames$spss_name) & 
                          filenames$survey_version == 5,]
 r_names <- filenames$r_name
@@ -33,7 +36,7 @@ for(r_name in r_names){
   output_data <- file.path(dir_data_process, output_name)
 
   dt <- qs::qread(input_data)
-  #print(paste0("Opened: ", input_name)) 
+  print(paste0("Opened: ", input_name))
   
   dt_list[[r_name]] <- dt
 }

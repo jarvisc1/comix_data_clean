@@ -12,12 +12,14 @@ library(data.table)
 source('r/00_setup_filepaths.r')
 
 # Countries ---------------------------------------------------------------
-country <- "Group1"
-
-print(paste0("Start: ", country))
-
+# in case running for certain countries only
+args <- commandArgs(trailingOnly=TRUE)
+print(args)
+if (!exists("group")) group <- "Group1"
+if(length(args) == 1) group <- args
+print(group)
 # Setup input and output data and filepaths -------------------------------
-filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
+filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = group)
 filenames <- filenames[!is.na(filenames$spss_name) & 
                          filenames$survey_version == 5,]
 r_names <- filenames$r_name

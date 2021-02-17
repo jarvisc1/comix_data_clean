@@ -20,6 +20,7 @@ output_data <- file.path(dir_data_process, output_name)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
+print(paste(unique(dt$country), collapse = ","))
 
 
 
@@ -59,8 +60,9 @@ dt_cnts$cnt_id <- NULL
 # Add in precautions and duration------------------------------------------------------
 
 multi_prec <- grep("multiple_cont", names(dt), value =TRUE)
+multi <- grep("precautions|duration", multi, value =TRUE)
 multi_prec <- c("country", "part_id", "panel", "wave", multi_prec)
-dt_prec <- dt[, ..multi_prec]
+dt_prec <- dt[row_id == 0, ..multi_prec]
 dt_prec <- dt_prec[
   !is.na(multiple_contacts_other_precautions) |
     !is.na(multiple_contacts_work_precautions) |

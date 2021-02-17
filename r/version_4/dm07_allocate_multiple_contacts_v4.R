@@ -20,6 +20,7 @@ output_data <- file.path(dir_data_process, output_name)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
+print(paste(unique(dt$country), collapse = ", "))
 
 
 
@@ -46,6 +47,15 @@ dt_long[variable %like% "other", setting := "cnt_other"]
 dt_long[variable %like% "school", setting := "cnt_school"]
 dt_long[variable %like% "work", setting := "cnt_work"]
 dt_long[, value := "Yes"]
+
+if("be" %in% unique(dt$country)) {
+  dt_long[variable %like% "^child_0_11", cnt_age := "0-11"]
+  dt_long[variable %like% "^child_12_17", cnt_age := "12-17"]
+  
+  cnt_ages <- sort(unique(dt_long$cnt_age))
+  age_grps <- c("0-11", "12-17", "18-64", "65+")
+  if (!all(cnt_ages == age_grps)) stop("Check multiple contact age groups")
+}
 
 # Reshape to wide for merging ---------------------------------------------
 dt_long[, cnt_id := 1:.N, by = .(country, panel, wave, part_id)]

@@ -11,7 +11,7 @@
 #    child's row_id (hhm_gender, hhm_age_group)
 # 2. Reference to the chosen child's id is stored in child_hhm_select_raw
 # 3. The parent's demographics and contact with the chosen child data 
-#    are stored with row_id == 999 
+#    are stored with row_id == 0 
 #    (part_age, part_gender, part_gender_nb, part_social_group, part_occupation, part_income, etc)
 # 4. Some child's information is stored in row_id == 0 (uk_region1, etc)
 
@@ -21,7 +21,7 @@
 # 1. Identify children's EF data
 # 2. Identify chosen's child's id with a regex from child_hhm_select raw,
 #    create <child_id> column
-# 3. Identify parent contact row (row_id == 999)
+# 3. Identify parent contact row (row_id == 0)
 # 4. Fill child's demographic data in TO row_id == 0 FROM the child_id row's
 #    household info (example: use data FROM row_id == 0 <uk_region1> and 
 #    <part_occupation> to fill in the same cols TO row_id == 4)
