@@ -20,7 +20,7 @@ source('./r/version_5/functions/standardise_names_v5.R')
 # in case running for certain countries only
 args <- commandArgs(trailingOnly=TRUE)
 print(args)
-if (!exists("group") ) group <- "Group2"
+if (!exists("group") ) group <- "Group1"
 if(length(args) == 1) group <- args
 
 # Cleaning ----------------------------------------------------------------
@@ -42,8 +42,6 @@ for(r_name in r_names){
    ## Read in _1 data
    dt <- qs::qread(input_data)
    dt <- as.data.table(dt)
-   dt[, panel := as.character(panel)]
-   dt[panel == "Panel G", panel := "Panel C"]
    print(paste0("Opened: ", input_name)) 
    ## Add wave, panel, and country variables ----------------------------------
    
@@ -62,11 +60,19 @@ for(r_name in r_names){
    dt <- country_checker(dt, country)
    
    # Panel -------------------------------------------------------------------
+   
+   # For Kids panel G was used by Ipsos.
+   if("panel" %in% names(dt)){
+      dt[, panel := as.character(panel)]
+      dt[panel == "Panel G", panel := "Panel C"]
+   }
+   
+   
    dt <- panel_checker(  dt, panel)
    
    # Wave --------------------------------------------------------------------
    dt <- wave_checker(   dt, wave)
-   
+
    # Participant ID -------------------------------------------------------------------------
    # The same participants ID are used for each panel and country.
    ## We do not anticipate a panel having more than 10,000 people.
