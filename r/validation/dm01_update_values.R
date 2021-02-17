@@ -65,9 +65,30 @@ for (i in 1:nrow(puid_w)){
   set(part, i = which(part$part_wave_uid %in% uid), j = var, value = new_value )
 }
 
+##update part_age_group, part_age_est_min, part_age_est_max
+part[sample_type=="adult" & between(part_age,18,29), part_age_group := "18-29"]
+part[sample_type=="adult" & between(part_age,30,39), part_age_group := "30-39"]
+part[sample_type=="adult" & between(part_age,40,49), part_age_group := "40-49"]
+part[sample_type=="adult" & between(part_age,50,59), part_age_group := "50-59"]
+part[sample_type=="adult" & between(part_age,60,69), part_age_group := "60-69"]
+part[sample_type=="adult" & between(part_age,70,120), part_age_group := "70-120"]
+
+part[sample_type=="adult" & between(part_age,18,29), part_age_est_min := 18]
+part[sample_type=="adult" & between(part_age,30,39), part_age_est_min := 30]
+part[sample_type=="adult" & between(part_age,40,49), part_age_est_min := 40]
+part[sample_type=="adult" & between(part_age,50,59), part_age_est_min := 50]
+part[sample_type=="adult" & between(part_age,60,69), part_age_est_min := 60]
+part[sample_type=="adult" & between(part_age,70,120), part_age_est_min := 70]
+
+part[sample_type=="adult" & between(part_age,18,29), part_age_est_max := 29]
+part[sample_type=="adult" & between(part_age,30,39), part_age_est_max := 39]
+part[sample_type=="adult" & between(part_age,40,49), part_age_est_max := 49]
+part[sample_type=="adult" & between(part_age,50,59), part_age_est_max := 59]
+part[sample_type=="adult" & between(part_age,60,69), part_age_est_max := 69]
+part[sample_type=="adult" & between(part_age,70,120), part_age_est_min := 120]
 
 
-# Some people need new ids ------------------------------------------------
+# Some people need new ids (B9) ------------------------------------------------
 id_file <- readxl::read_excel(chg_path, sheet = "new_id")
 id_file <- as.data.table(id_file)
 
@@ -83,6 +104,39 @@ contacts[, part_wave_uid := paste(country, paste0(panel,wave), part_id, sep = "_
 households[part_wave_uid %in% puid_w, part_id := part_id + 500000]
 households[, part_uid := paste(country, part_id, sep = "_")]
 households[, part_wave_uid := paste(country, paste0(panel,wave), part_id, sep = "_")]
+
+# Some people need new ids (non B9) ------------------------------------------------
+id_file <- readxl::read_excel(chg_path, sheet = "other_new_id")
+id_file <- as.data.table(id_file)
+
+# Change age for a specific value -----------------------------------------
+puid_w <- id_file$part_wave_uid
+
+part[part_wave_uid %in% puid_w, part_id := part_id + 600000]
+part[, part_uid := paste(country, part_id, sep = "_")]
+part[, part_wave_uid := paste(country, paste0(panel,wave), part_id, sep = "_")]
+contacts[part_wave_uid %in% puid_w, part_id := part_id + 600000]
+contacts[, part_uid := paste(country, part_id, sep = "_")]
+contacts[, part_wave_uid := paste(country, paste0(panel,wave), part_id, sep = "_")]
+households[part_wave_uid %in% puid_w, part_id := part_id + 600000]
+households[, part_uid := paste(country, part_id, sep = "_")]
+households[, part_wave_uid := paste(country, paste0(panel,wave), part_id, sep = "_")]
+
+
+# Mark some obs as use_with_care
+use_with_care <- readxl::read_excel(chg_path, sheet = "use_with_care")
+use_with_care <- as.data.table(use_with_care)
+
+puid_w <- use_with_care$id
+
+part[part_wave_uid %in% puid_w, use_with_care := TRUE]
+part[part_id %in% puid_w, use_with_care := TRUE]
+contacts[part_wave_uid %in% puid_w, use_with_care := TRUE]
+contacts[part_id %in% puid_w, use_with_care := TRUE]
+households[part_wave_uid %in% puid_w, use_with_care := TRUE]
+households[part_id %in% puid_w, use_with_care := TRUE]
+
+
 
 
 
