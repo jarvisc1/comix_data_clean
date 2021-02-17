@@ -33,7 +33,7 @@ for(group in groups){
     # for latest data.  
     #for(i in length(spss_names)){
     print(paste0("Opening: ",spss_names[i]))
-    ## User written function: read sspss file save as qs
+    ## User written function: read spss file save as qs
     save_spss_qs(spss_names[i], r_names[i], tolower(group), current_country[i])
     print(paste0("Saved: ", r_names[i]))
   }  

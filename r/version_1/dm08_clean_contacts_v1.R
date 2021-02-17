@@ -178,6 +178,7 @@ dt[, survey_round := first(survey_round), by = .(country, panel, wave)]
 
 dt[, part_uid := paste0(country,"_", part_id)]
 dt[, part_wave_uid := paste0(country,"_", panel, wave,"_", part_id)]
+dt[, hhld_wave_uid := paste0(country,"_", panel,"_H_", part_id)]
 
 ## Gender
 dt[, part_gender    := map_gender[part_gender]]
@@ -466,8 +467,10 @@ cnt_early <- c("cnt_age_group", "cnt_age_est_min","cnt_age_est_max",
                "cnt_minutes_min","cnt_minutes_max","cnt_household",
                "cnt_mass", "cnt_phys") 
 cnt_names <- cnt_names[!cnt_names %in% cnt_early]
-id_vars <- c("part_wave_uid",
-             "part_id",
+id_vars <- c("part_id",
+             "part_uid",
+             "part_wave_uid",
+             "hhld_wave_uid",
              "date",
              "weekday",
              "survey_round",
