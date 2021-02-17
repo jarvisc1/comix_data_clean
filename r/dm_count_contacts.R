@@ -14,11 +14,11 @@ source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 
-
+  
 ## Save participant data
 
-pt <- qs::qread("data/clean/part_min.qs")
-ct <- qs::qread("data/clean/contacts.qs")
+pt <- qs::qread("../comix/data/apart_min.qs")
+ct <- qs::qread("../comix/data/contacts.qs")
 
 
 # Map objects for labels --------------------------------------------------
