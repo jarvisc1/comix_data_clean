@@ -1,14 +1,22 @@
-country="NL"
+
 
 if [ -z $1 ]
   then
-  echo "Running local code run 'sh run_version_4.sh download' to download data."
-elif [ $1 == 'download' ]
+  echo "Running local code run 'sh run_version_4_mac.sh BEdownload' to download data for BE NL for NL."
+elif [ $1 == 'BEdownload' ]
   then
+  country="BE"
+  echo "Convert from SPSS to QS files"
+  Rscript "r/version_4/dm01_resave_spss_as_qs_v4.R" $country
+  pwd
+elif [ $1 == 'NLdownload' ]
+  then
+  country="NL"
   echo "Convert from SPSS to QS files"
   Rscript "r/version_4/dm01_resave_spss_as_qs_v4.R" $country
   pwd
 fi
+
 
 echo "Check and add country panel and wave variables"
 Rscript "r/version_4/dm02_data_standardise_v4.R" $country
