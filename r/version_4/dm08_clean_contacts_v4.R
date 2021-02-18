@@ -455,6 +455,10 @@ if ("be" %in% dt$country) {
          ifelse(cnt_indoor_outdoor %in% c("Indoors", both_indoors_outdoors), 1, 0)]
    dt[, cnt_outside := 
          ifelse(cnt_indoor_outdoor %in% c("Outdoors", both_indoors_outdoors), 1, 0)]
+} else{
+   
+   dt[, cnt_inside := YesNoNA_Ind(cnt_inside)]
+   dt[, cnt_outside := YesNoNA_Ind(cnt_outside)]
 }
 
 
