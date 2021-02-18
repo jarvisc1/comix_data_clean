@@ -17,7 +17,7 @@ source('r/00_setup_filepaths.r')
   
 ## Save participant data
 
-pt <- qs::qread("../comix/data/apart_min.qs")
+pt <- qs::qread("../comix/data/part_min.qs")
 ct <- qs::qread("../comix/data/contacts.qs")
 
 

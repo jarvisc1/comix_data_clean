@@ -434,6 +434,9 @@ dt[, cnt_worship := YesNoNA_Ind(cnt_worship)]
 dt[, cnt_bar_rest := YesNoNA_Ind(cnt_bar_rest)]
 # dt[, cnt_public_market := YesNoNA_Ind(cnt_public_market)] ## BE only
 dt[, cnt_other_place := YesNoNA_Ind(cnt_other_place)]
+dt[, cnt_inside := YesNoNA_Ind(cnt_inside)]
+dt[, cnt_outside := YesNoNA_Ind(cnt_outside)]
+dt[, cnt_inside_outside_dk  := YesNoNA_Ind(cnt_inside_outside_dk)]
 dt[, cnt_other := YesNoNA_Ind(cnt_other)]
 
 
