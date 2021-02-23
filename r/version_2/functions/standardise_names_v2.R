@@ -15,14 +15,11 @@ standardise_names <- function(var, original_survey = FALSE){
   )
   # Change from V1 to p1 where p = part and number is the part of the questions
   setnames(questions_loop, 
-           old = c("V1"     , "V2", "V3", "V4", "V5", "V6", "V7", "V8") , 
+           old = c("V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8") , 
            new = c("oldname", "p1", "p2", "p3", "p4", "p5", "p6", "p7"),
            skip_absent = TRUE)
   
-  
-
   # Loop questions overall --------------------------------------------------
-
   
   ## Useful for all loops
   ## Sometimes the question number is in part 2 or part 4
@@ -37,7 +34,6 @@ standardise_names <- function(var, original_survey = FALSE){
   questions_loop[grepl("loop", p2), scale := NA_character_]
   questions_loop[grepl("loop", p2) & grepl("^[0-9].*", p5), scalenum := p5]
   
-  
   ## There is extra text of date, codes, filter in parts 4, 5, and 6
   questions_loop[grepl("loop", p2) & !grepl("[0-9].*", p5) & !is.na(p5), text1 := p5]
   questions_loop[grepl("loop", p2) & !grepl("[0-9].*", p5) & !is.na(p5), text2 := p6]
@@ -45,7 +41,6 @@ standardise_names <- function(var, original_survey = FALSE){
   
   #unique(questions_loop$text2)
   #questions_loop[grepl("loop", p2) & !grepl("q[0-9].*", p5) & !is.na(p5),]
-  
 
   # Loops with scale in p4 --------------------------------------------------
   ## Loop scale single scale in part 4
@@ -53,7 +48,6 @@ standardise_names <- function(var, original_survey = FALSE){
 
   #questions_loop[grepl("scale", p4)]
   
-
   # Loops with scale in part 6 ----------------------------------------------
     
   ## Loop scale multi scale in part 6
@@ -65,7 +59,6 @@ standardise_names <- function(var, original_survey = FALSE){
   #questions_loop[grepl("scale", p6) & !is.na(text1)]
   #questions_loop[grepl("scale", p6) & is.na(text1)]
   
-
   # Scale question without loop ---------------------------------------------
   
   ## Scale had a number before which is the row_id
@@ -92,8 +85,6 @@ standardise_names <- function(var, original_survey = FALSE){
   questions_loop[grepl(hhcomps, oldname), loopnum := as.numeric(p2)]
   questions_loop[grepl(hhcomps, oldname), qnum:= p1]
   #questions_loop[grepl("contact", oldname)]
-  
-  
   
     # Exceptions --------------------------------------------------------------
 
@@ -131,20 +122,12 @@ standardise_names <- function(var, original_survey = FALSE){
     questions_loop[grepl("q79a", oldname)]
     questions_loop[grepl("q80a", oldname)]
     questions_loop[grepl("q81a", oldname)]
-    
-
-
-  
   
   ## Get rid of the spaces.
-  
   questions_loop[!is.na(qnum) & is.na(newname), newname := paste(qnum,loop,
                                                 loopnum,scale, 
                                                 scalenum,text1,text2, 
                                                 sep = "_")]
-  
-  
-  
   
   #table(questions_loop[grepl("q72", p4)]$newname)
   #table(questions_loop[grepl("q48", p1)]$newname)
