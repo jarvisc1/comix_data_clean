@@ -2,7 +2,7 @@
 ## Description: Combine all of the temporary cleaning data into one qs file
 ## Input file: cnty_wkN_yyyymmdd_pN_wvN_4.qs
 ## Functions:
-## Output file: combined_5_v5.qs
+## Output file: combined_5_v3.qs
 
 
 # Packages ----------------------------------------------------------------
@@ -13,18 +13,16 @@ source('r/00_setup_filepaths.r')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
-args <- commandArgs(trailingOnly=TRUE)
-print(args)
-if (!exists("group")) group <- "G1"
-if(length(args) == 1) group <- args
+country <- "BE"
+
 
 # Cleaning ----------------------------------------------------------------
 dt_list <- list()
 
-print(paste0("Start: ", group))
+print(paste0("Start: ", country))
 
 # Setup input and output data and filepaths -------------------------------
-filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = group)
+filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
                          filenames$survey_version == 5,]
 r_names <- filenames$r_name
@@ -36,10 +34,11 @@ for(r_name in r_names){
   output_data <- file.path(dir_data_process, output_name)
 
   dt <- qs::qread(input_data)
-  print(paste0("Opened: ", input_name))
+  #print(paste0("Opened: ", input_name)) 
   
   dt_list[[r_name]] <- dt
 }
+
 
 dt_combined <- rbindlist(dt_list, use.names = TRUE, fill = TRUE)
 

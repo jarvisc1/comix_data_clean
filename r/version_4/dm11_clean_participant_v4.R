@@ -31,6 +31,7 @@ output_data_parts_date <- file.path("data/clean/archive", output_parts_date)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
+print(paste(unique(dt$country), collapse = ","))
 
 
 # Map objects for labels --------------------------------------------------
@@ -60,6 +61,8 @@ map_test <- c(
   "Prefer not to answer"  = "no answer",
   "Not tested" = "not tested", 
   "Tested and the test showed {#i_they.response.label} have or had Coronavirus" = "positive", 
+  "Tested and the test showed {#i_they.response.label} have Coronavirus currently" = "positive",
+  "Tested, and the test showed {#i_they.response.label} do not have Coronavirus currently" = "negative",
   "Tested, and the test showed {#i_they.response.label} have not had Coronavirus" = "negative", 
   "Yes, and {#im_are.response.label} still waiting to hear the result" = "waiting for result",
   "Tested and the test showed {#i_they.response.label} did have Coronavirus at the time" = "positive", 
@@ -138,15 +141,15 @@ loc_cols <- grep("area|region", names(dt), value = TRUE)
 print(paste0("Location vars: ", length(loc_cols)))
 
 # Country of Origin  ------------------------------------------------------
-#table(dt$country_origin, useNA = "always")
-dt[is.na(country_origin), country_origin := country_origin_imported]
-dt[is.na(country_father_origin), country_father_origin := country_father_origin_imported]
-dt[is.na(country_mother_origin), country_mother_origin := country_mother_origin_imported]
-#table(dt$country_origin, useNA = "always")
-
-dt[is.na(country_origin), country_origin := country_origin_other]
-dt[is.na(country_father_origin), country_father_origin := country_father_origin_other]
-dt[is.na(country_mother_origin), country_mother_origin := country_mother_origin_other]
+# table(dt$country_origin, useNA = "always")
+# dt[is.na(country_origin), country_origin := country_origin_imported]
+# dt[is.na(country_father_origin), country_father_origin := country_father_origin_imported]
+# dt[is.na(country_mother_origin), country_mother_origin := country_mother_origin_imported]
+# table(dt$country_origin, useNA = "always")
+# 
+# dt[is.na(country_origin), country_origin := country_origin_other]
+# dt[is.na(country_father_origin), country_father_origin := country_father_origin_other]
+# dt[is.na(country_mother_origin), country_mother_origin := country_mother_origin_other]
 
 
 # Clean participants ------------------------------------------------------
@@ -176,49 +179,6 @@ dt[, part_att_likely := factor(part_att_likely, levels = att_levels)]
 dt[, part_att_serious := factor(part_att_serious, levels = att_levels)]
 dt[, part_att_spread := factor(part_att_spread, levels = att_levels)]
 
-# Visits ------------------------------------------------------------------
-
-## Map the vars to more readable answers
-
-# dt[, part_visit_restaurant_int := map_visits[part_visit_restaurant_int]]
-# dt[, part_visit_religious_event_int := map_visits[part_visit_religious_event_int]]
-# dt[, part_visit_another_home_int := map_visits_yn[part_visit_another_home_int]]
-# dt[, part_visit_essential_shop_int := map_visits_yn[part_visit_essential_shop_int]]
-# dt[, part_visit_healthcare_int := map_visits_yn[part_visit_healthcare_int]]
-# dt[, part_visit_non_essential_shop_int := map_visits_yn[part_visit_non_essential_shop_int]]
-# dt[, part_visit_none_int := map_visits_yn[part_visit_none_int]]
-# dt[, part_visit_public_transport_int := map_visits_yn[part_visit_public_transport_int]]
-# dt[, part_visit_salon_int := map_visits_yn[part_visit_salon_int]]
-# dt[, part_visit_outdoors_int := map_visits_yn[part_visit_outdoors_int]]
-
-## Create yes no versions
-# dt[, part_visit_restaurant := map_visits_yn[part_visit_restaurant_int]]
-# dt[, part_visit_religious_event := map_visits_yn[part_visit_religious_event_int]]
-# dt[, part_visit_another_home := map_visits_yn[part_visit_another_home_int]]
-# dt[, part_visit_essential_shop := map_visits_yn[part_visit_essential_shop_int]]
-# dt[, part_visit_healthcare := map_visits_yn[part_visit_healthcare_int]]
-# dt[, part_visit_non_essential_shop := map_visits_yn[part_visit_non_essential_shop_int]]
-# dt[, part_visit_none := map_visits_yn[part_visit_none_int]]
-# dt[, part_visit_public_transport := map_visits_yn[part_visit_public_transport_int]]
-# dt[, part_visit_salon := map_visits_yn[part_visit_salon_int]]
-# dt[, part_visit_outdoors := map_visits_yn[part_visit_outdoors_int]]
-
-# Could add in don't know to the above ------------------------------------
-# dt[, table(part_visit_cinema_not_attend_times_dk)]
-# dt[, table(part_visit_concert_not_attend_times_dk)]
-# dt[, table(part_visit_pub_not_attend_times_dk)]
-# dt[, table(part_visit_restaurant_not_attend_times_dk)]
-# dt[, table(part_visit_sportevent_attendee_not_attend_times_dk)]
-# dt[, table(part_visit_sportevent_participant_not_attend_times_dk)]
-# dt[, table(part_visit_supermarket_not_attend_times_dk)]
-# dt[, table(part_visit_religious_event_not_attend_times_dk)]
-# 
-# dt[, table(part_visit_indoor_event_not_attend_times_reason_1)]
-# dt[, table(part_visit_indoor_event_not_attend_times_reason_1_dk)]
-# dt[, table(part_visit_indoor_event_not_attend_times_reason_2)]
-# dt[, table(part_visit_outdoor_event_not_attend_times_dk)]
-# dt[, table(part_visit_outdoor_event_not_attend_times_reason_1)]
-# dt[, table(part_visit_outdoor_event_not_attend_times_reason_2)]
 
 # Facemasks --------------------------------------------------------------
 dt[, part_face_mask := map_fm_yn[part_face_mask]]
@@ -259,7 +219,7 @@ dt[, part_attend_work_week := map_attend_work_educ[part_attend_work_week]]
 
 dt[, part_attend_education_yesterday := map_fm_yn[part_attend_education_yesterday]]
 dt[, part_attend_work_yesterday := map_fm_yn[part_attend_work_yesterday]]
-dt[, part_attend_school_yesterday := map_status[part_attend_school_yesterday]]
+# dt[, part_attend_school_yesterday := map_status[part_attend_school_yesterday]]
 dt[, part_employstatus := tolower(part_employstatus)]
 dt[, part_student_employed := tolower(part_student_employed)]
 dt[, part_employed_attends_education := tolower(part_employed_attends_education)]
@@ -270,20 +230,9 @@ dt[, part_furloughed := map_fm_yn[part_furloughed]]
 # dt[, part_high_risk_v2 := map_fm_yn[part_high_risk_v2]]
 dt[, part_isolation_quarantine := map_fm_yn[part_isolation_quarantine]]
 dt[, part_pregnant := map_fm_yn[part_pregnant]]
-if (!is.null(dt$nleducate)) {
-  dt[country == "nl", part_education := nleducate]
-  dt[country == "nl", part_social_group := nl01sg]
-}
-if (!is.null(dt$part_social_group_be)) {
-  dt[!is.na(part_social_group_be), part_social_group := part_social_group_be]
-} 
-if (is.null(dt$part_income)) dt$part_income <- NA_character_
-dt[is.na(part_income), part_income := income3]
-dt[, part_income := tolower(part_income)]
+# dt[, part_income := tolower(part_income)]
 dt[, part_no_contacts := tolower(part_no_contacts)]
 dt[, part_reported_all_contacts := map_report_contacts[part_reported_all_contacts]]
-
-
 
 # Clean dates -------------------------------------------------------------
 ## Clean and defines dates
@@ -300,8 +249,10 @@ print(paste0("Date vars: ", length(date_cols)))
 
 spss_date_cols <- grep("part_vacc_.*_date$", names(dt), value = TRUE)
 
-spss_date <- function(x) as.Date(as.numeric(x)/86400, origin = "1582-10-14")
-dt[, (spss_date_cols) := lapply(.SD, spss_date), .SDcols = spss_date_cols ]
+#spss_date <- function(x) as.Date(as.numeric(x)/86400, origin = "1582-10-14")
+dt[, (spss_date_cols) := lapply(.SD, as.Date), .SDcols = spss_date_cols ]
+
+
 
 
 # Class size --------------------------------------------------------------
@@ -311,7 +262,7 @@ cut_class <- function(x) {
 }
 
 
-dt[, part_school_class_size := cut_class(part_school_class_size)]
+# dt[, part_school_class_size := cut_class(part_school_class_size)]
 
 # Hand washing ------------------------------------------------------------
 
@@ -332,8 +283,6 @@ setnames(dt, old = hhmvars_old, new = hhmvars_new, skip_absent = TRUE)
 
 
 
-
-
 # Remove variables --------------------------------------------------------
 
 q21vars <- grep("q21", names(dt), value = TRUE)
@@ -344,6 +293,16 @@ remove_vars <- c(q21vars, q23vars, vars_remove$remove)
 remove_vars <- remove_vars[remove_vars %in% names(dt)]
 
 set(dt, j = remove_vars, value = NULL)
+
+
+# Country specific cols ---------------------------------------------------
+
+# social group (sg), occupation (oc), & income (inc) if any
+income_cols <- grep("inc", names(dt), value = T)
+sg_cols <- grep("sg", names(dt), value = T)
+oc_cols <- grep("oc", names(dt), value = T)
+reg_cols <- grep("reg", names(dt), value = T)
+country_specific_cols <- c(income_cols, sg_cols, oc_cols, reg_cols)
 
 
 # Filter to relevant columns -------------------------------------------------------
@@ -365,8 +324,8 @@ additional_part_names <- c("country_mother_origin",
 
 
 id_vars <- c("country",
-             "area_2_name", 
-             "area_3_name", 
+             # "area_2_name", 
+             # "area_3_name", 
              "panel",
              "wave",
              "date",
@@ -390,22 +349,22 @@ vars_names <- c("part_id",
                 "sample_type",
                 "date",
                 "weekday",
-                "area_2_name", 
-                "area_3_name", 
-                "part_age",
+                # "area_2_name", 
+                # "area_3_name", 
+                # "part_age",
                 # "part_ethnicity",
-                "country_origin",
-                "part_social_group",
+                # "country_origin",
+                # "part_social_group_be",
                 "part_age_group", 
+                # "part_age_group_be",
                 "part_age_est_min",
                 "part_age_est_max",
                 "hh_size",
-                "hh_size_group"
+                "hh_size_group",
+                country_specific_cols 
 )
 
 dt_min = dt[, ..vars_names]
-
-
 
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)

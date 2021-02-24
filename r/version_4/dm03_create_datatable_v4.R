@@ -17,13 +17,11 @@ source('./r/version_4/functions/survey_to_datatable_v4.R')
 # in case running for certain countries only
 args <- commandArgs(trailingOnly=TRUE)
 print(args)
-if (!exists("country")) country <- "BE"
-if(length(args) == 1) country <- args
-
-print(paste0("Start: ", country))
+if (!exists("group")) group <- "G1"
+if(length(args) == 1) group <- args
 
 # Setup input and output data and filepaths -------------------------------
-filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
+filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = group)
 filenames <- filenames[!is.na(filenames$spss_name) & 
                          filenames$survey_version == 4,]
 r_names <- filenames$r_name

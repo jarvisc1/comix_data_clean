@@ -1,6 +1,6 @@
-## Name: dm101_save_remote_v4.R
+## Name: dm101_save_remote_v6.R
 ## Description: Save the comix data to my remote filer machine for version 1
-## Input file: "part_v4_*.qs", "part_min_v4_*.qs", "households_v4_*.qs", "contacts_v4_*.qs"
+## Input file: "part.qs", "part_min.qs", "households.qs", "contacts.qs"
 ## Functions:
 ## Output file: Same but also an archive file.
 
@@ -15,13 +15,13 @@ source('r/00_setup_filepaths.r')
 # in case running for certain countries only
 args <- commandArgs(trailingOnly=TRUE)
 print(args)
-if (!exists("group")) group <- "Group1"
-if (length(args) == 1) group <- args
-print(paste0("Start: ", group))
+if (!exists("country")) country <- "BE"
+if (length(args) == 1) country <- args
+print(paste0("Start: ", country))
 
-clean_dta <- c("part_v4", "part_min_v4", "households_v4", "contacts_v4")
+clean_dta <- c("part_v6", "part_min_v6", "households_v6", "contacts_v6")
 input_clean_dta <- paste0(clean_dta, ".qs")
-output_clean_dta <- paste0(clean_dta, "_", tolower(group), ".qs")
+output_clean_dta <- paste0(clean_dta, "_", tolower(country), ".qs")
 
 
 for(i in 1:length(clean_dta)){
@@ -29,14 +29,14 @@ for(i in 1:length(clean_dta)){
   file <- qs::qread(input)
   print(paste0("Opened: ", input_clean_dta[i])) 
   
-  
+
   # Save to local area ------------------------------------------------------
   output <- file.path(dir_data_clean, output_clean_dta[i])
   
   qs::qsave(file, output)
   print(paste0("Copied to: ", output)) 
   
-  
+
   # Save an archive ---------------------------------------------------------
   current_date <- Sys.Date()
   output_arc <- paste(current_date, output_clean_dta[i], sep = "_")

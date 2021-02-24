@@ -1,8 +1,8 @@
-## Name: dm11_clean_participants_v5.R
+## Name: dm11_clean_participants_v6.R
 ## Description: Clean variables nrelated to particiapants
-## Input file: combined_10_v5.qs
+## Input file: combined_10_v6.qs
 ## Functions:
-## Output file: combined_11_v5.qs, part_v5.qs, part_min_v5.qs
+## Output file: combined_11_v6.qs, part_v6.qs, part_min_v6.qs
 
 
 
@@ -15,15 +15,15 @@ source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("combined_10_v5.qs")
+input_name <-  paste0("combined_10_v6.qs")
 input_data <-  file.path(dir_data_process, input_name)
-output_name <- paste0("combined_11_v5.qs")
+output_name <- paste0("combined_11_v6.qs")
 output_data <- file.path(dir_data_process, output_name)
 
 ## Save participant data
 current_date <- Sys.Date()
-output_parts <- paste0("part_v5.qs")
-output_parts_min <- paste0("part_min_v5.qs")
+output_parts <- paste0("part_v6.qs")
+output_parts_min <- paste0("part_min_v6.qs")
 output_parts_date <- paste(current_date, output_parts, sep = "_")
 output_data_parts <- file.path("data/clean", output_parts)
 output_data_parts_min <- file.path("data/clean", output_parts_min)

@@ -1,8 +1,8 @@
 ## Name: dm09_clean_other_vars_v3.R
 ## Description: Clean variables not need for the contacts - less important for R.
-## Input file: combined_8_v5.qs
+## Input file: combined_8_v6.qs
 ## Functions:
-## Output file: combined_9_v5.qs
+## Output file: combined_9_v6.qs
 
 
 
@@ -14,8 +14,8 @@ source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("combined_8_v5.qs")
-output_name <- paste0("combined_9_v5.qs")
+input_name <-  paste0("combined_8_v6.qs")
+output_name <- paste0("combined_9_v6.qs")
 input_data <-  file.path(dir_data_process, input_name)
 output_data <- file.path(dir_data_process, output_name)
 

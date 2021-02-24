@@ -1,8 +1,8 @@
 # Name: dm07_allocate_multiple_contacts.R
 ## Description: Assign each of the multiple contacts to a row
-## Input file: combined_6_v4.qs
+## Input file: combined_6_v6.qs
 ## Functions:
-## Output file: combined_7_v4.qs
+## Output file: combined_7_v6.qs
 
 
 # Packages ----------------------------------------------------------------
@@ -13,14 +13,14 @@ source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("combined_6_v4.qs")
-output_name <- paste0("combined_7_v4.qs")
+input_name <-  paste0("combined_6_v6.qs")
+output_name <- paste0("combined_7_v6.qs")
 input_data <-  file.path(dir_data_process, input_name)
 output_data <- file.path(dir_data_process, output_name)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
-print(paste(unique(dt$country), collapse = ","))
+print(paste(unique(dt$country), collapse = ", "))
 
 
 
@@ -48,6 +48,15 @@ dt_long[variable %like% "school", setting := "cnt_school"]
 dt_long[variable %like% "work", setting := "cnt_work"]
 dt_long[, value := "Yes"]
 
+if("be" %in% unique(dt$country)) {
+  dt_long[variable %like% "^child_0_11", cnt_age := "0-11"]
+  dt_long[variable %like% "^child_12_17", cnt_age := "12-17"]
+  
+  cnt_ages <- sort(unique(dt_long$cnt_age))
+  age_grps <- c("0-11", "12-17", "18-64", "65+")
+  if (!all(cnt_ages == age_grps)) stop("Check multiple contact age groups")
+}
+
 # Reshape to wide for merging ---------------------------------------------
 dt_long[, cnt_id := 1:.N, by = .(country, panel, wave, part_id)]
 dt_cnts <- dcast(dt_long, country+panel+wave+part_id+cnt_age+cnt_id ~ setting, value.var = "value", fill = "No")
@@ -57,10 +66,11 @@ dt_cnts$cnt_mass <- "mass"
 dt_cnts$cnt_id <- NULL
 
 
-# Add in precautions and duration------------------------------------------------------
+# Add in precautions ------------------------------------------------------
 
 multi_prec <- grep("multiple_cont", names(dt), value =TRUE)
-multi <- grep("precautions|duration", multi, value =TRUE)
+multi_prec <- grep("precaution|duration", names(dt), value =TRUE)
+
 multi_prec <- c("country", "part_id", "panel", "wave", multi_prec)
 dt_prec <- dt[row_id == 0, ..multi_prec]
 dt_prec <- dt_prec[
@@ -71,7 +81,7 @@ dt_prec <- dt_prec[
 
 dt_cnts <- merge(dt_cnts, dt_prec, all.x = TRUE, by = c("country", "panel", "wave", "part_id"))
 
-# Combine into one precaution and duration--------------------------------------------
+# Combine into one precaution --------------------------------------------
 
 dt_cnts[,cnt_prec := fifelse(cnt_other == "Yes",
                              multiple_contacts_other_precautions, NA_character_)]
@@ -83,14 +93,16 @@ dt_cnts[is.na(cnt_prec),cnt_prec := fifelse(cnt_school == "Yes",
                                             multiple_contacts_school_precautions, NA_character_)]
 
 
-dt_cnts[,cnt_total_time  := fifelse(cnt_other == "Yes",
-                             multiple_contacts_other_duration, NA_character_)]
-
-dt_cnts[is.na(cnt_total_time), cnt_total_time := fifelse(cnt_work == "Yes",
-                                            multiple_contacts_work_duration, NA_character_)]
-
-dt_cnts[is.na(cnt_total_time), cnt_total_time := fifelse(cnt_school == "Yes",
-                                            multiple_contacts_school_duration, NA_character_)]
+if("mutiple_contacts_other_duration" %in% names(dt)){  
+  dt_cnts[,cnt_total_time  := fifelse(cnt_other == "Yes",
+                                      multiple_contacts_other_duration, NA_character_)]
+  
+  dt_cnts[is.na(cnt_total_time), cnt_total_time := fifelse(cnt_work == "Yes",
+                                                           multiple_contacts_work_duration, NA_character_)]
+  
+  dt_cnts[is.na(cnt_total_time), cnt_total_time := fifelse(cnt_school == "Yes",
+                                                           multiple_contacts_school_duration, NA_character_)]
+}
 
 
 dt[(!is.na(cnt_age) | hhm_contact == "Yes"), cnt_mass := "individual"]
@@ -101,4 +113,3 @@ dt <- rbindlist(list(dt, dt_cnts), use.names = TRUE, fill = TRUE)
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)
 print(paste0('Saved:' , output_name))
-
