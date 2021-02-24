@@ -1,6 +1,6 @@
 ## Name: dm01_resave_spss_as_qs_v4
 ## Description: Load all the remote spss files and save them as QS files locally
-##              For version 3 of the survey. 
+##              For version 4 of the survey. 
 ## Input file: Various spss files.sav
 ## Functions: save_spss_qs
 ## Output file: cnty_wkN_yyyymmdd_pN_wvN_1.qs

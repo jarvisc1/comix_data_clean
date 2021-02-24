@@ -270,8 +270,10 @@ dt[, part_furloughed := map_fm_yn[part_furloughed]]
 # dt[, part_high_risk_v2 := map_fm_yn[part_high_risk_v2]]
 dt[, part_isolation_quarantine := map_fm_yn[part_isolation_quarantine]]
 dt[, part_pregnant := map_fm_yn[part_pregnant]]
+if (!is.null(dt$nleducate)) {
   dt[country == "nl", part_education := nleducate]
   dt[country == "nl", part_social_group := nl01sg]
+}
 if (!is.null(dt$part_social_group_be)) {
   dt[!is.na(part_social_group_be), part_social_group := part_social_group_be]
 } 
