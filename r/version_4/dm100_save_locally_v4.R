@@ -1,6 +1,6 @@
 ## Name: dm100_save_locally.R
 ## Description: Save the comix data to my local area on my machine
-## Input file: "part.qs", "part_min.qs", "households.qs", "contacts.qs"
+## Input file: "part_v4_*.qs", "part_min_v4_*.qs", "households_v4_*.qs", "contacts_v4_*.qs"
 ## Functions:
 ## Output file: Same but also an archive file.
 
@@ -10,9 +10,9 @@
 # in case running for certain countries only
 args <- commandArgs(trailingOnly=TRUE)
 print(args)
-if (!exists("country")) country <- "BE"
-if (length(args) == 1) country <- args
-print(paste0("Start: ", country))
+if (!exists("group")) group <- "Group1"
+if (length(args) == 1) group <- args
+print(paste0("Start: ", group))
 
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
@@ -21,21 +21,21 @@ source('r/00_setup_filepaths.r')
 
 clean_dta <- c("part_v4", "part_min_v4", "households_v4", "contacts_v4")
 input_clean_dta <- paste0(clean_dta, ".qs")
-output_clean_dta <- paste0(clean_dta, "_", tolower(country), ".qs")
+output_clean_dta <- paste0(clean_dta, "_", tolower(group), ".qs")
 
 for(i in 1:length(clean_dta)){
   input <- file.path("data/clean", input_clean_dta[i])
   file <- qs::qread(input)
   print(paste0("Opened: ", input_clean_dta[i])) 
   
-
+  
   # Save to local area ------------------------------------------------------
   output <- file.path(dir_data_local, output_clean_dta[i])
   
   qs::qsave(file, output)
   print(paste0("Copied to: ", output)) 
   
-
+  
   # Save an archive ---------------------------------------------------------
   current_date <- Sys.Date()
   output_arc <- paste(current_date, output_clean_dta[i], sep = "_")

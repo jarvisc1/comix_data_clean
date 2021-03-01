@@ -1,4 +1,4 @@
-## Name: dm01_resave_spss_as_qs_v5
+## Name: dm01_resave_spss_as_qs_v6
 ## Description: Load all the remote spss files and save them as QS files locally
 ##              For version 4 of the survey. 
 ## Input file: Various spss files.sav
@@ -9,10 +9,10 @@
 
 # Source user written scripts ---------------------------------------------
 source('./r/00_setup_filepaths.r')
-source('./r/version_5/functions/save_spss_qs_v5.R')
+source('./r/version_6/functions/save_spss_qs_v6.R')
 
 # Countries ---------------------------------------------------------------
-country <- "BE"
+country <- "NL"
 
 # Open SPSS and save as QS ------------------------------------------------
 
@@ -20,7 +20,7 @@ country <- "BE"
 print(paste0("Start: ", country))
 filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
-                         filenames$survey_version == 5,]
+                         filenames$survey_version == 6,]
 
 spss_names <- paste0(filenames$spss_name, ".sav")
 r_names <- paste0(filenames$r_name, "_1.qs")

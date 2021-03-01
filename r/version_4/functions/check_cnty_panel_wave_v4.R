@@ -3,11 +3,11 @@
 ## and if not present then add them.
 
 
-country_checker = function(dta, country){
+country_checker = function(dta, country, force_ = FALSE){
   
   dta = data.table::as.data.table(dta)
   # Check if variable is in data
-  var = names(dta)[stringr::str_detect(names(dta), "country")]
+  var = names(dta)[stringr::str_detect(names(dta), "^country")]
   if(length(var) > 1) var = var[var == "country"]
   # If so create a check of the values
   if(length(var) > 0) check = tolower(unique(dta[[var]]))

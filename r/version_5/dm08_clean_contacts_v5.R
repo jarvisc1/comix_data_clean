@@ -29,7 +29,6 @@ output_data_cnts_date <- file.path("data/clean/archive", output_cnts_date)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
-print(paste(unique(dt$country), collapse = ","))
 
 
 # Remove variables not needed ---------------------------------------------
@@ -53,11 +52,10 @@ setkey(dt, country, panel, wave,part_id)
 # Remove data that is just for tracking household members -----------------
 
 ## Remove household members that are just being tracked.
-# vars <- c("country", "part_id", "panel", "wave", "row_id", "sample_type", "child_id")
-vars <- c("country", "part_id", "panel", "wave", "row_id")
+vars <- c("country", "part_id", "panel", "wave", "row_id", "sample_type", "child_id")
 hhcomp <- grep("hhcomp", names(dt), value = TRUE)
 vars <- c(vars, hhcomp)
-vars <- vars
+
 rows_start <- nrow(dt)
 missing <- rowSums(!is.na(dt[,.SD, .SDcols = !vars]))==0
 
@@ -248,8 +246,6 @@ dt[is.na(contact_flag), contact_flag := FALSE]
 dt[grepl("Physical contact \\(any sort|Yes", cnt_phys), cnt_phys := "Yes" ]
 dt[grepl("Non-physical contact|No", cnt_phys), cnt_phys := "No"]
 dt[grepl("Prefer not to answer", cnt_phys), cnt_phys := "No"]
-
-
 ## Mass contact are treated as non-physical
 dt[cnt_mass == "mass", cnt_phys := "No"]
 
@@ -432,26 +428,32 @@ dt[, cnt_sport := YesNoNA_Ind(cnt_sport)]
 dt[, cnt_supermarket := YesNoNA_Ind(cnt_supermarket)]
 dt[, cnt_worship := YesNoNA_Ind(cnt_worship)]
 dt[, cnt_bar_rest := YesNoNA_Ind(cnt_bar_rest)]
-# dt[, cnt_public_market := YesNoNA_Ind(cnt_public_market)] ## BE only
 dt[, cnt_other_place := YesNoNA_Ind(cnt_other_place)]
-dt[, cnt_inside := YesNoNA_Ind(cnt_inside)]
-dt[, cnt_outside := YesNoNA_Ind(cnt_outside)]
 dt[, cnt_other := YesNoNA_Ind(cnt_other)]
 
 
 dt[, cnt_prec_none := YesNoNA_Ind(cnt_prec_none)]
-if ("Child" %in% unique(dt$sample_type)) {
-   dt[sample_type == "Child", 
-      cnt_prec_dk := YesNoNA_Ind(cnt_prec_dk)] # Child samples only
-}
-dt[, cnt_prec_2m_plus := YesNoNA_Ind(cnt_prec_2m_plus)]
-dt[, cnt_prec_1m_plus := YesNoNA_Ind(cnt_prec_1m_plus)]
-dt[, cnt_prec_within_1m := YesNoNA_Ind(cnt_prec_within_1m)]
+dt[, cnt_prec_dk := YesNoNA_Ind(cnt_prec_dk)]
+dt[, cnt_prec_1_and_half_m_plus := YesNoNA_Ind(cnt_prec_1_and_half_m_plus)]
+dt[, cnt_prec_within_1_and_half_m := YesNoNA_Ind(cnt_prec_within_1_and_half_m)]
 dt[, cnt_prec_mask := YesNoNA_Ind(cnt_prec_mask)]
 dt[, cnt_prec_wash_before := YesNoNA_Ind(cnt_prec_wash_before)]
 dt[, cnt_prec_wash_after := YesNoNA_Ind(cnt_prec_wash_after)]
 dt[, cnt_prec_prefer_not_to_say := YesNoNA_Ind(cnt_prec_prefer_not_to_say)]
 dt[, cnt_household := YesNoNA_Ind(hhm_contact)]
+
+
+both_indoors_outdoors <- "Both indoors and outdoors"
+
+dt[cnt_indoor_outdoor == "Don’t know", cnt_inside_outside_dk := 1]
+dt[cnt_indoor_outdoor != "Don’t know" | is.na(cnt_indoor_outdoor), cnt_inside_outside_dk := 0]
+dt[cnt_indoor_outdoor == "Don’t know", cnt_inside := NA]
+dt[cnt_indoor_outdoor == "Don’t know", cnt_outside := NA]
+dt[, cnt_inside := 
+      ifelse(cnt_indoor_outdoor %in% c("Indoors", both_indoors_outdoors), 1, 0)]
+dt[, cnt_outside := 
+      ifelse(cnt_indoor_outdoor %in% c("Outdoors", both_indoors_outdoors), 1, 0)]
+
 
 
 dt[is.na(cnt_prec), cnt_prec := fifelse(cnt_prec_none == 0, "Yes", "No")]

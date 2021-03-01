@@ -1,4 +1,4 @@
-## Name: dm02_data_standardise_v5.R
+## Name: dm02_data_standardise_v6.R
 ## Description: Check if country, panel, and wave are present, if not add.
 ##              Make the participant id unique across panels but within countries
 ##              Rename child data questions
@@ -13,11 +13,11 @@ library(stringr)
 
 # Source user written scripts ---------------------------------------------
 source('./r/00_setup_filepaths.r')
-source('./r/version_5/functions/check_cnty_panel_wave_v5.R')
-source('./r/version_5/functions/standardise_names_v5.R')
+source('./r/version_6/functions/check_cnty_panel_wave_v6.R')
+source('./r/version_6/functions/standardise_names_v6.R')
 
 # Countries ---------------------------------------------------------------
-country <- "BE"
+country <- "NL"
 
 # Cleaning ----------------------------------------------------------------
 
@@ -25,7 +25,7 @@ print(paste0("Start: ", country))
 # Setup input and output data and filepaths -------------------------------
 filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
-                          filenames$survey_version == 5,]
+                          filenames$survey_version == 6,]
 r_names <- filenames$r_name
 
 ## This script loads _1.qs files and save them as _2.qs files

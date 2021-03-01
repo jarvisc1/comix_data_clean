@@ -30,6 +30,7 @@ output_data_hhms_date <- file.path("data/clean/archive", output_hhms_date)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
+print(paste(unique(dt$country), collapse = ","))
 
 # Map objects for labels --------------------------------------------------
 
@@ -73,6 +74,7 @@ YesNoNA_Ind = function(x)
   ifelse(x == "Yes", 1,
          ifelse(x == "No", 0, NA))
 }
+
 
 # Household types ------------------------------------------------------
 
@@ -174,7 +176,6 @@ hh_type_names <- hh_type_names[hh_type_names != "hh_type"]
 set(dt, j = hh_type_names, value = NULL)
 
 
-
 # Household size ----------------------------------------------------------
 
 ## We are changing string to numeric and it drops NA's switch these warnings off
@@ -211,22 +212,33 @@ print(paste0("Date vars: ", length(date_cols)))
 ## SPSS dates start at "1582-10-14 and are recorded in seconds
 
 ## Will be relevant for vaccination but not for much else
-# spss_date_cols <- c(
-#   
-#   "hhm_work_closure_start_date",
-#   "hhm_work_closure_end_date")
-# 
-# spss_date <- function(x) as.Date(as.numeric(x)/86400, origin = "1582-10-14")
-# dt[, (spss_date_cols) := lapply(.SD, spss_date), .SDcols = spss_date_cols ]
+spss_date_cols <- c(
+  # "hhm_work_closure_start_date",
+  # "hhm_work_closure_end_date",
+  "part_vacc_dose1_date",
+  "part_vacc_dose2_date",
+  "part_vacc_dose3_date",
+  "part_vacc_dose4_date"
+)
+spss_date_cols <- intersect(date_cols, spss_date_cols)
+
+spss_date <- function(x) as.Date(as.numeric(x)/86400, origin = "1582-10-14")
+dt[, (spss_date_cols) := lapply(.SD, spss_date), .SDcols = spss_date_cols ]
+
 
 
 # Symptoms ----------------------------------------------------------------
 
 dt[, hhm_symp_congestion := YesNoNA_Ind(hhm_symp_congestion)]
 dt[, hhm_symp_cough := YesNoNA_Ind(hhm_symp_cough)]
+dt[, hhm_symp_diarrhoea := YesNoNA_Ind(hhm_symp_diarrhoea)]
 dt[, hhm_symp_dk := YesNoNA_Ind(hhm_symp_dk)]
 dt[, hhm_symp_fever := YesNoNA_Ind(hhm_symp_fever)]
-dt[, hhm_symp_no_answer := YesNoNA_Ind(hhm_symp_no_answer)]
+dt[, hhm_symp_fatigue := YesNoNA_Ind(hhm_symp_fatigue)]
+dt[, hhm_symp_bodyaches := YesNoNA_Ind(hhm_symp_bodyaches)]
+dt[, hhm_symp_headache := YesNoNA_Ind(hhm_symp_headache)]
+dt[, hhm_symp_loss_senses := YesNoNA_Ind(hhm_symp_loss_senses)]
+dt[, hhm_symp_nausea := YesNoNA_Ind(hhm_symp_nausea)]
 dt[, hhm_symp_none := YesNoNA_Ind(hhm_symp_none)]
 dt[, hhm_symp_sob := YesNoNA_Ind(hhm_symp_sob)]
 dt[, hhm_symp_sore_throat := YesNoNA_Ind(hhm_symp_sore_throat)]
