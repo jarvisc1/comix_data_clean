@@ -1,8 +1,8 @@
 # Name: dm07_allocate_multiple_contacts.R
 ## Description: Assign each of the multiple contacts to a row
-## Input file: combined_6_v5.qs
+## Input file: combined_6_v6.qs
 ## Functions:
-## Output file: combined_7_v5.qs
+## Output file: combined_7_v6.qs
 
 
 # Packages ----------------------------------------------------------------
@@ -13,8 +13,8 @@ source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("combined_6_v5.qs")
-output_name <- paste0("combined_7_v5.qs")
+input_name <-  paste0("combined_6_v6.qs")
+output_name <- paste0("combined_7_v6.qs")
 input_data <-  file.path(dir_data_process, input_name)
 output_data <- file.path(dir_data_process, output_name)
 
@@ -47,14 +47,6 @@ dt_long[variable %like% "other", setting := "cnt_other"]
 dt_long[variable %like% "school", setting := "cnt_school"]
 dt_long[variable %like% "work", setting := "cnt_work"]
 dt_long[, value := "Yes"]
-
-
-dt_long[variable %like% "^child_0_11", cnt_age := "0-11"]
-dt_long[variable %like% "^child_12_17", cnt_age := "12-17"]
-
-cnt_ages <- sort(unique(dt_long$cnt_age))
-age_grps <- c("0-11", "12-17", "18-64", "65+")
-if (!all(cnt_ages == age_grps)) stop("Check multiple contact age groups")
 
 # Reshape to wide for merging ---------------------------------------------
 dt_long[, cnt_id := 1:.N, by = .(country, panel, wave, part_id)]
@@ -92,14 +84,16 @@ dt_cnts[is.na(cnt_prec),cnt_prec := fifelse(cnt_school == "Yes",
                                             multiple_contacts_school_precautions, NA_character_)]
 
 
-dt_cnts[,cnt_total_time  := fifelse(cnt_other == "Yes",
-                                    multiple_contacts_other_duration, NA_character_)]
-
-dt_cnts[is.na(cnt_total_time), cnt_total_time := fifelse(cnt_work == "Yes",
-                                                         multiple_contacts_work_duration, NA_character_)]
-
-dt_cnts[is.na(cnt_total_time), cnt_total_time := fifelse(cnt_school == "Yes",
-                                                         multiple_contacts_school_duration, NA_character_)]
+if("mutiple_contacts_other_duration" %in% names(dt)){  
+  dt_cnts[,cnt_total_time  := fifelse(cnt_other == "Yes",
+                                      multiple_contacts_other_duration, NA_character_)]
+  
+  dt_cnts[is.na(cnt_total_time), cnt_total_time := fifelse(cnt_work == "Yes",
+                                                           multiple_contacts_work_duration, NA_character_)]
+  
+  dt_cnts[is.na(cnt_total_time), cnt_total_time := fifelse(cnt_school == "Yes",
+                                                           multiple_contacts_school_duration, NA_character_)]
+}
 
 
 dt[(!is.na(cnt_age) | hhm_contact == "Yes"), cnt_mass := "individual"]

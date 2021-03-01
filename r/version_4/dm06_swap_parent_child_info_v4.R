@@ -11,7 +11,7 @@
 #    child's row_id (hhm_gender, hhm_age_group)
 # 2. Reference to the chosen child's id is stored in child_hhm_select_raw
 # 3. The parent's demographics and contact with the chosen child data 
-#    are stored with row_id == 0
+#    are stored with row_id == 0 
 #    (part_age, part_gender, part_gender_nb, part_social_group, part_occupation, part_income, etc)
 # 4. Some child's information is stored in row_id == 0 (uk_region1, etc)
 
@@ -37,22 +37,18 @@ library(data.table)
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
 
+
 # I/O Data ----------------------------------------------------------------
 
 input_name <-  paste0("combined_5_v4.qs")
 output_name <- paste0("combined_6_v4.qs")
+
 input_data <-  file.path(dir_data_process, input_name)
 output_data <- file.path(dir_data_process, output_name)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
-print(paste(unique(dt$country), collapse = ", "))
 
-# Standardize child age groups for Belgium
-
-dt[, hhm_age_group_be := hhm_age_group]
-dt[hhm_age_group == "5-6", hhm_age_group := "5-11"]
-dt[hhm_age_group == "7-11", hhm_age_group := "5-11"]
 
 
 # Step 1: Identify the adult and children samples -------------------------------------------------------------
@@ -61,12 +57,14 @@ map_sample_type <- c(
   "Sampletype=2 Parent sample" = "child"
 )
 dt[,sample_type := map_sample_type[sample_type]]
-table(dt$sample_type, dt$wave)
+#table(dt$sample_type)
 
+if (nrow(dt[sample_type == "child"]) > 1 ) {
+  
 dt[, sample_type := first(sample_type), by = .(country, panel, wave, part_id)]
-original_child_nrow <- nrow(dt)
+original_child_nrow <- nrow(dt[ sample_type == "child" &  row_id == 0])
+#table(dt$sample_type, dt$row_id)
 
-table(dt$sample_type, dt$row_id)
 # Step 2: Identify chosen child's id and selected child------------------------
 hhm_id_pattern <- "^.*\\{_\\s*|\\s*\\}.*$"
 dt[ , child_id := as.numeric(gsub(hhm_id_pattern, "", child_hhm_select_raw))]
@@ -96,7 +94,7 @@ for(fill_col in child_emptycols_na) {
 }
 
 # Step 5. Rename relevant child hhm data to part data columns ----
-hhm_cols <- c("hhm_gender","hhm_gender", "hhm_age_group", "hhm_age_group_be")
+hhm_cols <- c("hhm_gender","hhm_gender", "hhm_age_group")
 for(hhm_col in hhm_cols) {
   part_col <- gsub("hhm_", "part_", hhm_col)
   dt[parent_child == "child",
@@ -105,6 +103,12 @@ for(hhm_col in hhm_cols) {
 }
 
 # Step 6. Move relevant parent part data to hhm data columns ----
+
+# note to add social group (sg), occupation (oc), & income (inc) if anyincome_cols <- grep("inc", names(dt), value = T)
+# inc_cols <- grep("inc", names(dt), value = T)
+# sg_cols <- grep("sg", names(dt), value = T)
+# oc_cols <- grep("oc", names(dt), value = T)
+# reg_cols <- grep("reg", names(dt), value = T)
 part_cols <- c("part_gender", "part_age")
 for(part_col in part_cols) {
   hhm_col <- gsub("part_", "hhm_", part_col)
@@ -113,7 +117,7 @@ for(part_col in part_cols) {
      by = .(part_id, panel, wave, country)]
   dt[parent_child == "child", (hhm_col) := NA]
 }
-table(dt[parent_child == "parent"]$hhm_gender)
+#table(dt[parent_child == "parent"]$hhm_gender)
 
 # Step 7. Add adult age group--------------------------------------------------
 dt[between(hhm_age, 18, 19) & parent_child == "parent", hhm_age_group := "18-19"]
@@ -130,37 +134,39 @@ dt[between(hhm_age, 65, 69) & parent_child == "parent", hhm_age_group := "65-69"
 dt[between(hhm_age, 70, 120) & parent_child == "parent", hhm_age_group := "70+"]
 
 
-## STEP 8. Remove now-reduntant child hhm row and assign mixed_data row (row_id == 0) to child 
+## Step 8. Remove now-reduntant child hhm row and assign mixed_data row (row_id == 0) to child -----
 dt[parent_child == "parent", row_id := 999]
 dt[parent_child == "child", row_id := 0]
+
 
 dt[parent_child == "child", hhm_contact := "No"]
 
 
+## Step 9. Remove part_age (adult's age) from child part
+dt[parent_child == "child", part_age := NA_character_]
+
 # For visual testing
-table(dt$parent_child, dt$wave, dt$panel, useNA = "always")
+table(dt$parent_child, dt$panel, useNA = "always")
 table(dt[sample_type == "child"]$part_public_transport_bus, useNA = "always")
 table(dt[parent_child == "child"]$part_age_group, dt[parent_child == "child"]$wave)
-table(dt[parent_child == "child"]$part_age_group_be, dt[parent_child == "child"]$wave)
-
-
 table(dt[mixed_data == T]$part_age_group, dt[mixed_data == T]$wave)
-original_child_nrow  == nrow(dt[panel %in% c("B")])
-
+original_child_nrow  == nrow(dt[row_id == 0 & panel %in% c("C")])
 table(dt[row_id == 999]$hhm_gender, useNA = "always")
 table(dt[row_id == 0]$part_gender, useNA = "always")
-table(dt[parent_child == "parent"]$hhm_age_group, 
+table(dt[parent_child == "parent"]$hhm_age_group,
       dt[parent_child == "parent"]$wave, useNA = "always")
 table(dt[parent_child == "parent"]$hhm_symp_fever)
 table(dt[parent_child == "parent"]$hhm_contact,
       dt[parent_child == "parent"]$panel, useNA = "always")
 table(dt[parent_child == "parent"]$row_id)
-# table(dt[parent_child == "child"]$multiple_contacts_child_school,
-      # dt[parent_child == "child"]$wave, useNA = "always")
-table(dt[]$part_age_group, 
-      dt[]$wave, useNA = "always")
+table(dt[parent_child == "child"]$multiple_contacts_child_school,
+      dt[parent_child == "child"]$wave, useNA = "always")
+
 
 # Save data ---------------------------------------------------------------
+} else {
+  message("Note: No parent's panel data found")
+}
 qs::qsave(dt, file = output_data)
 print(paste0('Saved:' , output_name))
 

@@ -1,8 +1,8 @@
-## Name: dm09_clean_household_v5.R
+## Name: dm09_clean_household_v6.R
 ## Description: Clean variables related to household members.
-## Input file: combined_9_v5.qs
+## Input file: combined_9_v6.qs
 ## Functions:
-## Output file: combined_10_v5.qs, households_v5
+## Output file: combined_10_v6.qs, households_v6
 
 
 
@@ -16,10 +16,10 @@ source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("combined_9_v5.qs")
+input_name <-  paste0("combined_9_v6.qs")
 input_data <-  file.path(dir_data_process, input_name)
-output_name <- paste0("combined_10_v5.qs")
-output_hhms <- paste0("households_v5.qs")
+output_name <- paste0("combined_10_v6.qs")
+output_hhms <- paste0("households_v6.qs")
 
 ## Save household data.
 current_date <- Sys.Date()

@@ -7,14 +7,14 @@
 
 
 # Countries ---------------------------------------------------------------
-# in case running for certain countries only
-country <- "BE"
+country <- "NL"
+
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 
-clean_dta <- c("part_v5", "part_min_v5", "households_v5", "contacts_v5")
+clean_dta <- c("part_v6", "part_min_v6", "households_v6", "contacts_v6")
 input_clean_dta <- paste0(clean_dta, ".qs")
 output_clean_dta <- paste0(clean_dta, "_", tolower(country), ".qs")
 

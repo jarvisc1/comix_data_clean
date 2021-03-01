@@ -1,37 +1,35 @@
 
-
 if [ -z $1 ]
   then
-  echo "Running local code run 'sh run_version_4_mac.sh BEdownload' to download data for BE NL for NL."
-elif [ $1 == 'BEdownload' ]
+  echo "Running local code run 'sh run_version_4_mac.sh G1download' to download G1 data or Group1 or Group3."
+elif [ $1 == 'G1download' ]
   then
-  country="BE"
+  group="G1"
   echo "Convert from SPSS to QS files"
-  Rscript "r/version_4/dm01_resave_spss_as_qs_v4.R" $country
+  Rscript "r/version_4/dm01_resave_spss_as_qs_v4.R" $group
   pwd
-elif [ $1 == 'NLdownload' ]
+elif [ $1 == 'G2download' ]
   then
-  country="NL"
+  group="G2"
   echo "Convert from SPSS to QS files"
-  Rscript "r/version_4/dm01_resave_spss_as_qs_v4.R" $country
+  Rscript "r/version_4/dm01_resave_spss_as_qs_v4.R" $group
   pwd
 else
-  country=$1
+  group=$1
 fi
 
 
-
 echo "Check and add country panel and wave variables"
-Rscript "r/version_4/dm02_data_standardise_v4.R" $country
+Rscript "r/version_4/dm02_data_standardise_v4.R" $group
 
 echo "Turn from wide data to long data.table"
-Rscript "r/version_4/dm03_create_datatable_v4.R" $country
+Rscript "r/version_4/dm03_create_datatable_v4.R" $group
 
 echo "Rename the variables"
-Rscript "r/version_4/dm04_rename_vars_v4.R" $country
+Rscript "r/version_4/dm04_rename_vars_v4.R" $group
 
 echo "Combine all countries and waves together"
-Rscript "r/version_4/dm05_combine_data_v4.R" $country
+Rscript "r/version_4/dm05_combine_data_v4.R" $group
 
 echo "Add adult survey variable"
 Rscript "r/version_4/dm06_swap_parent_child_info_v4.R"
@@ -51,11 +49,7 @@ Rscript "r/version_4/dm10_clean_household_v4.R"
 echo "Clean Participants"
 Rscript "r/version_4/dm11_clean_participant_v4.R"
 
-echo "Save data locally"
-Rscript "r/version_4/dm100_save_locally_v4.R" $country
-
 echo "Save data on LSHTM server"
-Rscript "r/version_4/dm101_save_remote_v4.R" $country
-
+Rscript "r/version_4/dm101_save_remote_v4.R" $group
 
 

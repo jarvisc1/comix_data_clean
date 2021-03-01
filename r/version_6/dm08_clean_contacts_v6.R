@@ -1,8 +1,8 @@
-## Name: dm07_clean_contact_vars_v4.R
+## Name: dm07_clean_contact_vars_v6.R
 ## Description: Clean the variables relating to the contact data.
-## Input file: combined_7_v4.qs
+## Input file: combined_7_v6.qs
 ## Functions:
-## Output file: combined_8_v4.qs clean/contacts_v4.qs
+## Output file: combined_8_v6.qs clean/contacts_v6.qs
 
 
 # Packages ----------------------------------------------------------------
@@ -15,21 +15,20 @@ source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("combined_7_v4.qs")
+input_name <-  paste0("combined_7_v6.qs")
 input_data <-  file.path(dir_data_process, input_name)
-output_name <- paste0("combined_8_v4.qs")
+output_name <- paste0("combined_8_v6.qs")
 output_data <- file.path(dir_data_process, output_name)
 
 ## Save contact data
 current_date <- Sys.Date()
-output_cnts <- paste0("contacts_v4.qs")
+output_cnts <- paste0("contacts_v6.qs")
 output_cnts_date <- paste(current_date, output_cnts, sep = "_")
 output_data_cnts <- file.path("data/clean", output_cnts)
 output_data_cnts_date <- file.path("data/clean/archive", output_cnts_date)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
-print(paste(unique(dt$country), collapse = ","))
 
 
 # Remove variables not needed ---------------------------------------------
@@ -53,11 +52,10 @@ setkey(dt, country, panel, wave,part_id)
 # Remove data that is just for tracking household members -----------------
 
 ## Remove household members that are just being tracked.
-# vars <- c("country", "part_id", "panel", "wave", "row_id", "sample_type", "child_id")
-vars <- c("country", "part_id", "panel", "wave", "row_id")
+vars <- c("country", "part_id", "panel", "wave", "row_id", "sample_type", "child_id")
 hhcomp <- grep("hhcomp", names(dt), value = TRUE)
 vars <- c(vars, hhcomp)
-vars <- vars
+
 rows_start <- nrow(dt)
 missing <- rowSums(!is.na(dt[,.SD, .SDcols = !vars]))==0
 
@@ -248,8 +246,6 @@ dt[is.na(contact_flag), contact_flag := FALSE]
 dt[grepl("Physical contact \\(any sort|Yes", cnt_phys), cnt_phys := "Yes" ]
 dt[grepl("Non-physical contact|No", cnt_phys), cnt_phys := "No"]
 dt[grepl("Prefer not to answer", cnt_phys), cnt_phys := "No"]
-
-
 ## Mass contact are treated as non-physical
 dt[cnt_mass == "mass", cnt_phys := "No"]
 
@@ -340,7 +336,6 @@ dt[hhm_contact == "Yes", cnt_gender := hhm_gender]
 ## Base on text from IPSOS
 dt[, contact := map_contacts_error[contact]]
 dt <- dt[!contact %in% c("sus multi", "sus non-contact", "poten hhm")]
-#dt[, contact := NULL]
 
 ## Based on inaccurate age
 ## Remove the repeat contact's that are present in the ages.
@@ -432,26 +427,23 @@ dt[, cnt_sport := YesNoNA_Ind(cnt_sport)]
 dt[, cnt_supermarket := YesNoNA_Ind(cnt_supermarket)]
 dt[, cnt_worship := YesNoNA_Ind(cnt_worship)]
 dt[, cnt_bar_rest := YesNoNA_Ind(cnt_bar_rest)]
-# dt[, cnt_public_market := YesNoNA_Ind(cnt_public_market)] ## BE only
 dt[, cnt_other_place := YesNoNA_Ind(cnt_other_place)]
-dt[, cnt_inside := YesNoNA_Ind(cnt_inside)]
-dt[, cnt_outside := YesNoNA_Ind(cnt_outside)]
 dt[, cnt_other := YesNoNA_Ind(cnt_other)]
 
 
 dt[, cnt_prec_none := YesNoNA_Ind(cnt_prec_none)]
-if ("Child" %in% unique(dt$sample_type)) {
-   dt[sample_type == "Child", 
-      cnt_prec_dk := YesNoNA_Ind(cnt_prec_dk)] # Child samples only
-}
-dt[, cnt_prec_2m_plus := YesNoNA_Ind(cnt_prec_2m_plus)]
-dt[, cnt_prec_1m_plus := YesNoNA_Ind(cnt_prec_1m_plus)]
-dt[, cnt_prec_within_1m := YesNoNA_Ind(cnt_prec_within_1m)]
+dt[, cnt_prec_dk := YesNoNA_Ind(cnt_prec_dk)]
+dt[, cnt_prec_1_and_half_m_plus := YesNoNA_Ind(cnt_prec_1_and_half_m_plus)]
 dt[, cnt_prec_mask := YesNoNA_Ind(cnt_prec_mask)]
 dt[, cnt_prec_wash_before := YesNoNA_Ind(cnt_prec_wash_before)]
 dt[, cnt_prec_wash_after := YesNoNA_Ind(cnt_prec_wash_after)]
 dt[, cnt_prec_prefer_not_to_say := YesNoNA_Ind(cnt_prec_prefer_not_to_say)]
 dt[, cnt_household := YesNoNA_Ind(hhm_contact)]
+
+
+   
+dt[, cnt_inside := YesNoNA_Ind(cnt_inside)]
+dt[, cnt_outside := YesNoNA_Ind(cnt_outside)]
 
 
 dt[is.na(cnt_prec), cnt_prec := fifelse(cnt_prec_none == 0, "Yes", "No")]

@@ -21,26 +21,11 @@ output_data <- file.path(dir_data_process, output_name)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
+print(paste(unique(dt$country), collapse = "\n"))
 
 # Maps for locations ---------------------------------------------------------------
 
 locations <- as.data.table(readxl::read_excel('codebook/var_names.xlsx', sheet = "locations"))
-# 
-# map_uk_nations <- c(
-#   "Northern Ireland" = "Northern Ireland",
-#   "Scotland" = "Scotland",
-#   "Wales" = "Wales",
-#   "East of England" = "England",
-#   "East Midlands" = "England",
-#   "Greater London" = "England",
-#   "North East" = "England",
-#   "North West" = "England",
-#   "South East" = "England",
-#   "South West" = "England",
-#   "West Midlands" = "England",
-#   "Yorkshire and The Humber" = "England"
-# )
-
 
 
 ## area_3_name 
@@ -55,7 +40,7 @@ dt[, area_2_name := first(area_2_name), by = .(country, panel, wave, part_id)]
 dt[, area_2_name := map_area_2_name[area_2_name]]
 dt[, area_3_name := first(area_3_name), by = .(country, panel, wave, part_id)]
 dt[, area_3_name := map_area_3_name[area_3_name]]
-# dt[country == "uk", uk_nations := map_uk_nations[area_3_name]]
+
 
    
    
