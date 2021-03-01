@@ -7,12 +7,7 @@
 
 
 # Countries ---------------------------------------------------------------
-# in case running for certain countries only
-args <- commandArgs(trailingOnly=TRUE)
-print(args)
-if (!exists("country")) country <- "BE"
-if (length(args) == 1) country <- args
-print(paste0("Start: ", country))
+country <- "NL"
 
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')

@@ -12,12 +12,7 @@ source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 # Countries ---------------------------------------------------------------
-# in case running for certain countries only
-args <- commandArgs(trailingOnly=TRUE)
-print(args)
-if (!exists("country")) country <- "BE"
-if (length(args) == 1) country <- args
-print(paste0("Start: ", country))
+country <- "NL"
 
 clean_dta <- c("part_v6", "part_min_v6", "households_v6", "contacts_v6")
 input_clean_dta <- paste0(clean_dta, ".qs")

@@ -270,15 +270,11 @@ dt[, part_furloughed := map_fm_yn[part_furloughed]]
 # dt[, part_high_risk_v2 := map_fm_yn[part_high_risk_v2]]
 dt[, part_isolation_quarantine := map_fm_yn[part_isolation_quarantine]]
 dt[, part_pregnant := map_fm_yn[part_pregnant]]
-if (!is.null(dt$nleducate)) {
-  dt[country == "nl", part_education := nleducate]
-  dt[country == "nl", part_social_group := nl01sg]
-}
-if (!is.null(dt$part_social_group_be)) {
-  dt[!is.na(part_social_group_be), part_social_group := part_social_group_be]
-} 
-if (is.null(dt$part_income)) dt$part_income <- NA_character_
-dt[is.na(part_income), part_income := income3]
+
+dt[!is.na(part_social_group_be), part_social_group := part_social_group_be]
+
+# if (is.null(dt$part_income)) dt$part_income <- NA_character_
+# dt[is.na(part_income), part_income := income3]
 dt[, part_income := tolower(part_income)]
 dt[, part_no_contacts := tolower(part_no_contacts)]
 dt[, part_reported_all_contacts := map_report_contacts[part_reported_all_contacts]]

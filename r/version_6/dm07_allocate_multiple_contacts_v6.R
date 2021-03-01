@@ -48,15 +48,6 @@ dt_long[variable %like% "school", setting := "cnt_school"]
 dt_long[variable %like% "work", setting := "cnt_work"]
 dt_long[, value := "Yes"]
 
-if("be" %in% unique(dt$country)) {
-  dt_long[variable %like% "^child_0_11", cnt_age := "0-11"]
-  dt_long[variable %like% "^child_12_17", cnt_age := "12-17"]
-  
-  cnt_ages <- sort(unique(dt_long$cnt_age))
-  age_grps <- c("0-11", "12-17", "18-64", "65+")
-  if (!all(cnt_ages == age_grps)) stop("Check multiple contact age groups")
-}
-
 # Reshape to wide for merging ---------------------------------------------
 dt_long[, cnt_id := 1:.N, by = .(country, panel, wave, part_id)]
 dt_cnts <- dcast(dt_long, country+panel+wave+part_id+cnt_age+cnt_id ~ setting, value.var = "value", fill = "No")

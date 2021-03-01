@@ -14,14 +14,7 @@ source('./r/00_setup_filepaths.r')
 source('./r/version_5/functions/survey_to_datatable_v5.R')
 
 # Countries ---------------------------------------------------------------
-# in case running for certain countries only
-args <- commandArgs(trailingOnly=TRUE)
-print(args)
-if (!exists("country")) country <- "BE"
-if(length(args) == 1) country <- args
-
-print(paste0("Start: ", country))
-
+country <- "BE"
 # Setup input and output data and filepaths -------------------------------
 filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
