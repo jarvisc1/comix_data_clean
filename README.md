@@ -2,6 +2,70 @@
 
 Code for cleaning the data recieved for the CoMix contact survey.
 
+# Folder structure
+
+Folders
+
+* `r` - for R scripts
+* `r/functions` - store user written functions for the cleaning
+* `r/version_N` - code for running version N of the data cleaning
+* `r/validation` - code for running validation updates on the data
+* `data` - for the datasets
+* `data/processing` - for interim cleaning datasets
+* `data/clean` - for cleaned datasets
+* `codebooks` - Codebooks used for data cleaning
+* `admin` - For information about the cleaning
+
+# Code versions
+
+The survey has changed since it started in the UK on the 23rd of March and there have been slight differences in the questions that have been asked and the structure of the data. This has led to code being duplicated in the `r` folder. Each version has a seperate folder titled version_N and will work for the following data.
+
+version_1 = Panel A for Norway, Belguim, Netherlands, and the UK. Panel B for the UK
+version_2 = Panel C and D (Parents panels) for the UK
+version_3 = Panels E and F for the UK
+version_4 = Group 1, 2, and 3 EU countries
+version_5 = Panel B for Belguim survey (includes parents)
+version_6 = Panel B for Netherlands (includes parents)
+
+# Running the data cleaning
+
+In the main folder `comix_data_clean` there are shell scripts which can be run from the terminal within RStudio. These script run the analysis for a specific version from begining to end. 
+
+For example to run version 1 you type `sh run_version_1.sh` into the **terminal** (not the R console) and it will run each R script in sequence.
+
+**Note:** Using shell scripts like this mean that each R script must be self contained and be able to run from start to finish in a fresh session. Therefore, loading packages, call to other scripts and loading and saving data must all happen within that single script. 
+
+**Options:** For some of the shell scripts we add options such as download the data or just run on the data already present. The shell scripts can be updated so that you're not running everything from scratch from the very beggining. 
+
+
+# Cleaning process
+
+There are 11 steps of cleaning in each version followed by two steps of saving the data (locally and potentially remotely)
+
+Each step loads and saves a new dataset (qs file). Steps 1-4 are run on the weekly data seperately. Step 5 combines all data within a version, then 6-11 are run on all of the data.
+
+1. dm01_resave_spss_as_qs: This script will read in the raw spss file and rename it according to the filenaming convention and save the file locally
+2. dm02_data_standardise: Ensures that country, panel, wave, and survey round are found in the data. It also renames looop and scale variables
+3. dm03_create_datatable: The data we recieve is wide with one column per contact, we reshape this so that the each row is either a participant, household member, or contact.
+4. dm04_rename_vars: Based on a spreadsheet the variables are renamed to more human readble names
+5. dm05_combine_data: Combine all the data within a version into a single dataset.
+6. dm06_swap_parent_child_info: We swap parent and child information so that the child information is in the same place as an adult participant.
+7. dm07_allocate_multiple_contacts: Participants can report mass contacts, we allocate them to one contact per row.
+8. dm08_clean_contacts: Code relating to cleaning contacts should go here, and this saves a version of the contact dataset.
+9. dm09_clean_locations: This uses a spreadsheet to clean misspelling of location names
+10. dm10_clean_household: Code relating to households goes here, and it save a household dataset
+11. dm11_clean_participant: Code relating to cleaning the participant data goes here and it save the participant dataset.
+
+
+**Saving data**
+dm100_save_locally: This will take the participant, contact, and household data and save a version locally as well as an archive of the version (per day)
+dm101_save_remote: This will save the data to a remote file location. If everything if being run locally this script could be ignored. 
+
+# Validation process
+
+
+
+
 # Run all data cleaning. 
 
 ## For Mac
@@ -38,17 +102,7 @@ Check this has worked by going to powershell and typing `R.exe` a session of R s
 1. Parrallelise code.
 2. Remove overall cleaning and allow for a single dataset to be updated. 
 
-# Folder structure
 
-Folders
-
-* `r` - for R scripts
-* `r/functions` - store user written functions for the cleaning
-* `data` - for the datasets
-* `data/processing` - for interim cleaning datasets
-* `data/clean` - for cleaned datasets
-* `codebooks` - Codebooks used for data cleaning
-* `admin` - For information about the cleaning
 
 # Cleaning steps
  
