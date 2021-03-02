@@ -391,7 +391,13 @@ dt[between(cnt_age_est_max,  50,59)  , age_max :=  59]
 dt[between(cnt_age_est_max,  60,69)  , age_max :=  69]
 dt[between(cnt_age_est_max,  70,120) , age_max :=  120]
 
-dt[!is.na(age_min), cnt_age_group := paste0(age_min, "-", age_max)]
+# Set ages for individually reported contacts
+dt[!is.na(age_min) & cnt_mass == "individual", 
+   cnt_age_group := paste0(age_min, "-", age_max)]
+# Set ages for mass contacts
+dt[!is.na(age_min) & cnt_mass == "mass", 
+   cnt_age_group := paste0(cnt_age_est_min, "-", cnt_age_est_max)]
+
 dt[,age_min := NULL]
 dt[,age_max := NULL]
 
