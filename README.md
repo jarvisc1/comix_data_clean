@@ -4,8 +4,6 @@ Code for cleaning the data recieved for the CoMix contact survey.
 
 # Folder structure
 
-Folders
-
 * `r` - for R scripts
 * `r/functions` - store user written functions for the cleaning
 * `r/version_N` - code for running version N of the data cleaning
