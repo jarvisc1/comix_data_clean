@@ -7,10 +7,10 @@
 
 clear_processing_files <- function(file_index, processing_dir) {
   if(!grepl("[a-z]", tolower(file_index))) stop("file_index too vague, specify version (eg 'v6') or country")
-  processing_files <- list.files(dir_data_process)
+  processing_files <- list.files(processing_dir)
   rm_files <- grep(file_index, processing_files, value = T)
   # rm_files <- grep("")
   message(paste(c("Removing files:", rm_files), collapse = "\n"))
-  file.remove(file.path(dir_data_process, rm_files))
+  file.remove(file.path(processing_dir, rm_files))
 }
 
