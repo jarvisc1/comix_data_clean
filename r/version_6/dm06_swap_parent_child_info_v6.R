@@ -140,6 +140,7 @@ dt[parent_child == "child", hhm_contact := "No"]
 # table(dt[sample_type == "child"]$part_public_transport_bus, useNA = "always")
 # table(dt[parent_child == "child"]$part_age_group, dt[parent_child == "child"]$wave)
 # 
+
 # 
 # table(dt[mixed_data == T]$part_age_group, dt[mixed_data == T]$wave)
 # original_child_nrow  == nrow(dt[panel %in% c("B")])
