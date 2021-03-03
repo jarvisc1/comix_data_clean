@@ -249,8 +249,8 @@ print(paste0("Date vars: ", length(date_cols)))
 
 spss_date_cols <- grep("part_vacc_.*_date$", names(dt), value = TRUE)
 
-#spss_date <- function(x) as.Date(as.numeric(x)/86400, origin = "1582-10-14")
-dt[, (spss_date_cols) := lapply(.SD, as.Date), .SDcols = spss_date_cols ]
+spss_date <- function(x) as.Date(as.numeric(x)/86400, origin = "1582-10-14")
+dt[, (spss_date_cols) := lapply(.SD, spss_date), .SDcols = spss_date_cols ]
 
 
 

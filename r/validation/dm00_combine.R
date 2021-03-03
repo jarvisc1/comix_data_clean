@@ -46,7 +46,6 @@ for(i in seq_along(households_files)){
   households_list[[i]] <- qs::qread(households_files[i])
 }
 
-
 pa <- rbindlist(part_list , use.names = TRUE, fill = TRUE)
 pm <- rbindlist(part_min_list , use.names = TRUE, fill = TRUE)
 ca <- rbindlist(contacts_list , use.names = TRUE, fill = TRUE)
