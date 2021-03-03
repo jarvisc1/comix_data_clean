@@ -94,7 +94,7 @@ for(fill_col in child_emptycols_na) {
 }
 
 # Step 5. Rename relevant child hhm data to part data columns ----
-hhm_cols <- c("hhm_gender","hhm_gender", "hhm_age_group", "hhm_age_group_be")
+hhm_cols <- c("hhm_gender","hhm_gender", "hhm_age_group")
 for(hhm_col in hhm_cols) {
   part_col <- gsub("hhm_", "part_", hhm_col)
   dt[parent_child == "child",
@@ -139,7 +139,6 @@ dt[parent_child == "child", hhm_contact := "No"]
 # table(dt$parent_child, dt$wave, dt$panel, useNA = "always")
 # table(dt[sample_type == "child"]$part_public_transport_bus, useNA = "always")
 # table(dt[parent_child == "child"]$part_age_group, dt[parent_child == "child"]$wave)
-# table(dt[parent_child == "child"]$part_age_group_be, dt[parent_child == "child"]$wave)
 # 
 # 
 # table(dt[mixed_data == T]$part_age_group, dt[mixed_data == T]$wave)
