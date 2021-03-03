@@ -18,12 +18,12 @@ Code for cleaning the data recieved for the CoMix contact survey.
 
 The survey has changed since it started in the UK on the 23rd of March and there have been slight differences in the questions that have been asked and the structure of the data. This has led to code being duplicated in the `r` folder. Each version has a seperate folder titled version_N and will work for the following data.
 
-version_1 = Panel A for Norway, Belguim, Netherlands, and the UK. Panel B for the UK
-version_2 = Panel C and D (Parents panels) for the UK
-version_3 = Panels E and F for the UK
-version_4 = Group 1, 2, and 3 EU countries
-version_5 = Panel B for Belguim survey (includes parents)
-version_6 = Panel B for Netherlands (includes parents)
+* version_1 = Panel A for Norway, Belguim, Netherlands, and the UK. Panel B for the UK
+* version_2 = Panel C and D (Parents panels) for the UK
+* version_3 = Panels E and F for the UK
+* version_4 = Group 1, 2, and 3 EU countries
+* version_5 = Panel B for Belguim survey (includes parents)
+* version_6 = Panel B for Netherlands (includes parents)
 
 # Running the data cleaning
 
