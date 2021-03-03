@@ -53,6 +53,7 @@ if(Sys.info()["nodename"] == "DESKTOP-R36S69R"){
   dir_data_valid_archive <- file.path(parent_path, 'data/validated/archive')
   ## Filepaths for temp processing files
   dir_data_process <- "data/processing"
+  dir_data_local <- file.path('data/')
 }
 
 ## PC
@@ -66,6 +67,7 @@ if(Sys.info()["nodename"] == "pietro-XPS-15-9550"){
   dir_data_valid_archive <- file.path(parent_path, 'data/validated/archive')
   ## Filepaths for temp processing files
   dir_data_process <- "data/processing"
+  dir_data_local <- file.path('data/')
 }
 
 ## JW
@@ -79,6 +81,7 @@ if(Sys.info()["nodename"] == "LP10494-01"){
   dir_data_valid_archive <- file.path(parent_path, 'data/validated/archive')
   ## Filepaths for temp processing files
   dir_data_process <- "data/processing"
+  dir_data_local <- file.path('data/')
 }
 
 
@@ -93,4 +96,5 @@ if(Sys.info()["nodename"] == "RIVM-SF1-0196"){
   dir_data_valid_archive <- file.path(parent_path, 'data/validated/archive')
   ## Filepaths for temp processing files
   dir_data_process <- "data/processing"
+  dir_data_local <- file.path('data/')
 }
