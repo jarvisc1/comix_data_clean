@@ -21,10 +21,10 @@ filenames <- filenames[!is.na(filenames$spss_name) &
 r_names <- filenames$r_name
 
 # Load dataname spreadsheet -----------------------------------------------
-survey4 <- as.data.table(
+survey5 <- as.data.table(
   readxl::read_excel("codebook/var_names_v5.xlsx", 
-                     sheet = paste("survey_5", tolower(country), sep = "_")))
-survey4 <- survey4[!is.na(newname)]
+                     sheet = "survey_5"))
+survey5 <- survey5[!is.na(newname)]
   
   for(r_name in r_names){
     input_name <-  paste0(r_name, "_3.qs")
@@ -37,7 +37,7 @@ survey4 <- survey4[!is.na(newname)]
     
     if (is.null(dt$q20)) dt$q20 <- dt$q20_new
     
-    setnames(dt, survey4$oldname, survey4$newname, skip_absent = TRUE)
+    setnames(dt, survey5$oldname, survey5$newname, skip_absent = TRUE)
     
     missing_colnames <- sort(grep("q[0-9]", names(dt), value = T))
     message(paste(c(r_name,missing_colnames), collapse = "\n"))    
