@@ -24,7 +24,7 @@ print(paste0("Opened: ", input_name))
 
 # Maps for locations ---------------------------------------------------------------
 
-locations <- as.data.table(readxl::read_excel('codebook/var_names.xlsx', sheet = "locations"))
+locations <- as.data.table(readxl::read_excel('codebook/var_names_v5.xlsx', sheet = "locations"))
 
 
 

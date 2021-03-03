@@ -21,7 +21,7 @@ dt_list <- list()
 print(paste0("Start: ", country))
 
 # Setup input and output data and filepaths -------------------------------
-filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
+filenames <- readxl::read_excel('data/spss_files_nl.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
                          filenames$survey_version == 6,]
 r_names <- filenames$r_name

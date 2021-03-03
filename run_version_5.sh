@@ -43,8 +43,8 @@ Rscript.exe "./r/version_5/dm11_clean_participant_v5.R"
 echo "Save data locally"
 Rscript.exe "./r/version_5/dm100_save_locally_v5.R" $country
 
-echo "Save data on LSHTM server"
-Rscript.exe "./r/version_5/dm101_save_remote_v5.R" $country
+# echo "Save data on LSHTM server"
+# Rscript.exe "./r/version_5/dm101_save_remote_v5.R" $country
 
 
  

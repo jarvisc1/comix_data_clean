@@ -46,8 +46,8 @@ Rscript "r/version_6/dm11_clean_participant_v6.R"
 echo "Save data locally"
 Rscript "r/version_6/dm100_save_locally_v6.R" $country
 
-echo "Save data on LSHTM server"
-Rscript "r/version_6/dm101_save_remote_v6.R" $country
+# echo "Save data on LSHTM server"
+# Rscript "r/version_6/dm101_save_remote_v6.R" $country
 
 
 

@@ -1,5 +1,8 @@
 # Netherlands Panel B data cleaning
 
+country="NL"
+
+
 if [ -z $1 ]
   then
   echo "Running local code run 'sh run_version_6.sh download' to download data."
@@ -43,8 +46,8 @@ Rscript.exe "./r/version_6/dm11_clean_participant_v6.R"
 echo "Save data locally"
 Rscript.exe "./r/version_6/dm100_save_locally_v6.R" $country
 
-echo "Save data on LSHTM server"
-Rscript.exe "./r/version_6/dm101_save_remote_v6.R" $country
+# echo "Save data on LSHTM server"
+# Rscript.exe "./r/version_6/dm101_save_remote_v6.R" $country
 
 
 

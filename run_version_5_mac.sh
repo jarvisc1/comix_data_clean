@@ -1,5 +1,8 @@
 # Belgian Panel B data cleaning
 
+country="BE"
+
+
 if [ -z $1 ]
   then
   echo "Running local code run 'sh run_version_5_mac.sh download' to download data."
@@ -45,8 +48,8 @@ Rscript "r/version_5/dm11_clean_participant_v5.R"
 echo "Save data locally"
 Rscript "r/version_5/dm100_save_locally_v5.R" 
 
-echo "Save data on LSHTM server"
-Rscript "r/version_5/dm101_save_remote_v5.R" 
+# echo "Save data on LSHTM server"
+# Rscript "r/version_5/dm101_save_remote_v5.R" 
 
 
 

@@ -15,15 +15,15 @@ source('r/00_setup_filepaths.r')
 country <- "BE"
 
 # Setup input and output data and filepaths -------------------------------
-filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
+filenames <- readxl::read_excel('data/spss_files_be.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
                          filenames$survey_version == 5,]
 r_names <- filenames$r_name
 
 # Load dataname spreadsheet -----------------------------------------------
 survey4 <- as.data.table(
-  readxl::read_excel("codebook/var_names.xlsx", 
-                     sheet = paste("survey_4", tolower(country), sep = "_")))
+  readxl::read_excel("codebook/var_names_v5.xlsx", 
+                     sheet = paste("survey_5", tolower(country), sep = "_")))
 survey4 <- survey4[!is.na(newname)]
   
   for(r_name in r_names){
