@@ -48,9 +48,7 @@ dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
 print(paste(unique(dt$country), collapse = ", "))
 
-# Standardize child age groups for Belgium
 
-dt[, hhm_age_group_be := hhm_age_group]
 dt[hhm_age_group == "5-6", hhm_age_group := "5-11"]
 dt[hhm_age_group == "7-11", hhm_age_group := "5-11"]
 

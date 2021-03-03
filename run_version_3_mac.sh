@@ -2,24 +2,24 @@
 # Define whether to run for all or just the latest.
 new_only=0
 
-# if [ -z $1 ]
-#   then
-#   echo "Running local code run 'sh run_version_3.sh download' to download data."
-# elif [ $1 == 'download' ]
-#   then
-#   echo "Downloading all data"
-#   echo "Convert from SPSS to QS files"
-#   Rscript "r/version_3/dm01_resave_spss_as_qs_v3.R" 0
-#   pwd
-# elif [ $1 == 'latest' ]
-#   then
-#   new_only=1
-#   echo "Downloading latest data"
-#   echo "Convert from SPSS to QS for most recent file"
-#   Rscript "r/version_3/dm01_resave_spss_as_qs_v3.R" $new_only
-#   pwd
-# fi
-# 
+if [ -z $1 ]
+  then
+  echo "Running local code run 'sh run_version_3.sh download' to download data."
+elif [ $1 == 'download' ]
+  then
+  echo "Downloading all data"
+  echo "Convert from SPSS to QS files"
+  Rscript "r/version_3/dm01_resave_spss_as_qs_v3.R" $new_only
+  pwd
+elif [ $1 == 'latest' ]
+  then
+  new_only=1
+  echo "Downloading latest data"
+  echo "Convert from SPSS to QS for most recent file"
+  Rscript "r/version_3/dm01_resave_spss_as_qs_v3.R" $new_only
+  pwd
+fi
+
 
 echo "Check and add country panel and wave variables"
 Rscript "r/version_3/dm02_data_standardise_v3.R" $new_only

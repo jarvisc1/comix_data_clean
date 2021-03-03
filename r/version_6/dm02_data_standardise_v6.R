@@ -56,6 +56,7 @@ for(r_name in r_names){
    dt <- country_checker(dt, country)
    
    # Panel -------------------------------------------------------------------
+   if (!is.null(dt$panel)) dt[panel == "Panel NL", panel := "B"]
    dt <- panel_checker(  dt, panel)
    
    # Wave --------------------------------------------------------------------
