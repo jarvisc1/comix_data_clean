@@ -18,16 +18,32 @@ Code for cleaning the data recieved for the CoMix contact survey.
 
 The survey has changed since it started in the UK on the 23rd of March and there have been slight differences in the questions that have been asked and the structure of the data. This has led to code being duplicated in the `r` folder. Each version has a seperate folder titled version_N and will work for the following data.
 
-* version_1 = Panel A for Norway, Belguim, Netherlands, and the UK. Panel B for the UK
+* version_1 = Panel A for Norway, Belgium, Netherlands, and the UK. Panel B for the UK
 * version_2 = Panel C and D (Parents panels) for the UK
 * version_3 = Panels E and F for the UK
 * version_4 = Group 1, 2, and 3 EU countries
-* version_5 = Panel B for Belguim survey (includes parents)
+* version_5 = Panel B for Belgium survey (includes parents)
 * version_6 = Panel B for Netherlands (includes parents)
 
 # Running the data cleaning
 
 In the main folder `comix_data_clean` there are shell scripts which can be run from the terminal within RStudio. These script run the analysis for a specific version from begining to end. 
+
+## For Mac
+1. Open Rstudio
+2. Go to the terminal in Rstudio
+3. Type `sh run_version_1.sh`
+
+Change version_1 to be the relevant version for you.
+
+## For Windows
+
+0. [Add R to your path variable (see below)](#Add-R-to-your-path-variable)
+1. Open Rstudio
+2. Go to the terminal in R studio
+3. Type `sh run_version_1.sh`
+
+Change version_1 to be the relevant version for you.
 
 For example to run version 1 you type `sh run_version_1.sh` into the **terminal** (not the R console) and it will run each R script in sequence.
 
@@ -39,6 +55,8 @@ For example to run version 1 you type `sh run_version_1.sh` into the **terminal*
 # Cleaning process
 
 There are 11 steps of cleaning in each version followed by two steps of saving the data (locally and potentially remotely)
+
+![alt text](./admin/folder_structure.png)
 
 Each step loads and saves a new dataset (qs file). Steps 1-4 are run on the weekly data seperately. Step 5 combines all data within a version, then 6-11 are run on all of the data.
 
@@ -54,31 +72,35 @@ Each step loads and saves a new dataset (qs file). Steps 1-4 are run on the week
 10. dm10_clean_household: Code relating to households goes here, and it save a household dataset
 11. dm11_clean_participant: Code relating to cleaning the participant data goes here and it save the participant dataset.
 
-
 **Saving data**
-dm100_save_locally: This will take the participant, contact, and household data and save a version locally as well as an archive of the version (per day)
-dm101_save_remote: This will save the data to a remote file location. If everything if being run locally this script could be ignored. 
+
+100. dm100_save_locally: This will take the participant, contact, and household data and save a version locally as well as an archive of the version (per day)
+101. dm101_save_remote: This will save the data to a remote file location. If everything if being run locally this script could be ignored. 
 
 # Validation process
 
+Once all of the cleaning scripts have been run, then we go to the validation folder.
+
+The scripts are 
+
+1. dm00_combine: Combine all the cleaned data.
+2. dm01_update_values: This will update values in the data based on a spreadsheet 
+3. dm02_identify_change: This script is used to find issues with the data to be updated via the spreadsheet validation_list
+4. dm100_save_locally: Save validated data and save locally
+5. dm101_save_remote: Save validated data remotely
+
+The process is to run dm00 to combine the files and then loop between dm01 and dm02 to validate the data. The spreadsheet validation_list is not kept on github as this contains identifiable information.
+
+# Getting a final dataset
+
+Once validation is complete or a best dataset is required, run dm100 and then dm101 if a local and remote dataset is required.
 
 
 
-# Run all data cleaning. 
 
-## For Mac
-1. Open Rstudio
-2. Go to the terminal in Rstudio
-3. Type `sh run_cleaning.sh`
+# Setting up a new user or machine
 
-## For Windows
-
-0. Add R to your path variable (see below)
-1. Open Rstudio
-2. Go to the terminal in R studio
-3. Type `sh run_cleaning.sh`
-
-### Add R to your path variable
+## Add R to your path variable
 
 This only needs to be done once. Note for step 8 you need to put the path to your R\bin file. 
 
@@ -96,23 +118,10 @@ This only needs to be done once. Note for step 8 you need to put the path to you
 
 Check this has worked by going to powershell and typing `R.exe` a session of R should start. 
 
-## To do:
-1. Parrallelise code.
-2. Remove overall cleaning and allow for a single dataset to be updated. 
+## Add filepaths for new user to 
 
+`./r/00_setup_filepaths.r`
 
-
-# Cleaning steps
- 
-1. Download all SPSS files from shared drive and save them as QS file locally.
-2. Check if country, wave, and panel variables are present.
-3. Reshape the data from wide to long.
-4. Rename variables.
-5. Combine data
-6. Clean existing variables
-7. Add new variables
-8. Split and serve data
- 
 
 # Actions
 
