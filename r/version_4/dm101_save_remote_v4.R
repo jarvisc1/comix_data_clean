@@ -15,7 +15,7 @@ source('r/00_setup_filepaths.r')
 # in case running for certain countries only
 args <- commandArgs(trailingOnly=TRUE)
 print(args)
-if (!exists("group")) group <- "Group1"
+if (!exists("group")) group <- "G1"
 if (length(args) == 1) group <- args
 print(paste0("Start: ", group))
 

@@ -12,8 +12,8 @@ dir.create(dir_data_local, showWarnings = F)
 groups <- c("g1", "g2")
 
 for (group in groups) {
-  part <- as.data.table(qs::qread(file.path(dir_data_clean, paste0("part_v5_", group,".qs"))))
-  contacts <- as.data.table(qs::qread(file.path(dir_data_clean, paste0("contacts_v5_", group,".qs"))))
+  part <- as.data.table(qs::qread(file.path(dir_data_clean, paste0("part_v4_", group,".qs"))))
+  contacts <- as.data.table(qs::qread(file.path(dir_data_clean, paste0("contacts_v4_", group,".qs"))))
   # hh <- qs::qread(file.path(dir_data_clean, "contacts_v5.qs"))
   
   part_cols <- read.csv("codebook/part_names.csv")$cols
