@@ -14,3 +14,10 @@ clear_processing_files <- function(file_index, processing_dir) {
   file.remove(file.path(processing_dir, rm_files))
 }
 
+
+
+# Common calls
+# clear_processing_files("be|v5", dir_data_process)
+# clear_processing_files("nl|v6", dir_data_process)
+# clear_processing_files("g1|v4_g1", dir_data_process)
+# clear_processing_files("g2|v4_g2", dir_data_process)
