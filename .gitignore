@@ -9,6 +9,7 @@ data/processing/*
 data/clean/*
 data/sharing/*
 codebook/*
+!codebook/var_names*
 reports/*
 *DS_Store
 
