@@ -280,9 +280,9 @@ dt[, part_reported_all_contacts := map_report_contacts[part_reported_all_contact
 risk_names <- grep("part_.*_risk", names(dt), value = TRUE)
 
 if(length(risk_names)>0){
-  dt[, part_med_risk_v2 := map_fm_yn[part_med_risk_v2]]	 
+  #dt[, part_med_risk_v2 := map_fm_yn[part_med_risk_v2]]	 
   dt[, part_med_risk_v2_temp := map_fm_yn[part_med_risk_v2]]
-  dt[, part_high_risk_v2 := map_fm_yn[part_high_risk_v2]]	
+  #dt[, part_high_risk_v2 := map_fm_yn[part_high_risk_v2]]	
   dt[, part_high_risk_v2_temp := map_fm_yn[part_high_risk_v2]]
   dt[, part_high_risk_v2 := NULL]
   dt[, part_med_risk_v2 := NULL]
