@@ -117,6 +117,7 @@ for(r_name in r_names){
 
    # Subset data
    dt_adult <- dt_adult[, -child_cols, with = F]
+   adult_cols <- grep("q28", adult_cols, value = T, invert = T)
    dt_child <- dt_child[, -adult_cols, with = F]
 
    ## First should return a value second should be null
