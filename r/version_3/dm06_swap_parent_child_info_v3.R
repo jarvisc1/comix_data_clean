@@ -109,14 +109,24 @@ for(fill_col in child_emptycols_na) {
      by = .(part_id, panel, wave, country)]
 }
 
+# Step pre-5
+dt[sample_type=="adult" & row_id == 0, part_med_risk_v2 := hhm_med_risk_v2]
+dt[sample_type=="adult" & row_id == 0, hhm_med_risk_v2 := NA]
+dt[sample_type=="adult" & row_id == 0, part_high_risk_v2 := hhm_high_risk_v2]
+dt[sample_type=="adult" & row_id == 0, hhm_high_risk_v2 := NA]
+
 # Step 5. Rename relevant child hhm data to part data columns ----
-hhm_cols <- c("hhm_gender","hhm_gender", "hhm_age_group")
+hhm_cols <- c("hhm_gender","hhm_gender", "hhm_age_group", "hhm_med_risk_v2", "hhm_high_risk_v2")
 for(hhm_col in hhm_cols) {
   part_col <- gsub("hhm_", "part_", hhm_col)
   dt[parent_child == "child",
      (part_col) := (get(hhm_col)),
      by = .(part_id, panel, wave, country)]
 }
+
+# Step pre-6
+dt[parent_child=="child", hhm_med_risk_v2 := NA]
+dt[parent_child=="child", hhm_high_risk_v2 := NA]
 
 # Step 6. Move relevant parent part data to hhm data columns ----
 part_cols <- c("part_gender", "part_age", "part_social_group", "part_income")
@@ -126,6 +136,7 @@ for(part_col in part_cols) {
      (hhm_col) := first(get(part_col)),
      by = .(part_id, panel, wave, country)]
   dt[parent_child == "child", (hhm_col) := NA]
+  dt[parent_child == "parent", (part_col) := NA]
 }
 #table(dt[parent_child == "parent"]$hhm_gender)
 
