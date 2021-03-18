@@ -167,6 +167,12 @@ table(dt[parent_child == "child"]$multiple_contacts_child_school,
 } else {
   message("Note: No parent's panel data found")
 }
+
+#retain values in hhm_elevated_risk for part, child and hhm
+dt[sample_type=="adult" & row_id==0, part_elevated_risk := hhm_elevated_risk ]
+dt[parent_child =="child", part_elevated_risk := hhm_elevated_risk ]
+
+# Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)
 print(paste0('Saved:' , output_name))
 

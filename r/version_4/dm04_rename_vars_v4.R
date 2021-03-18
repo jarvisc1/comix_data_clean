@@ -25,9 +25,9 @@ filenames <- filenames[!is.na(filenames$spss_name) &
 r_names <- filenames$r_name
 
 # Load dataname spreadsheet -----------------------------------------------
-survey5 <- as.data.table(readxl::read_excel("codebook/var_names.xlsx", sheet = "survey_5"))
-survey5 <- survey5[!is.na(newname)]
-  
+survey4 <- as.data.table(readxl::read_excel("codebook/var_names_v4.xlsx", sheet = "survey_4"))
+survey4 <- survey4[!is.na(newname)]
+
   for(r_name in r_names){
     input_name <-  paste0(r_name, "_3.qs")
     output_name <- paste0(r_name, "_4.qs")
@@ -38,7 +38,7 @@ survey5 <- survey5[!is.na(newname)]
     print(paste0("Opened: ", input_name)) 
     if (is.null(dt$q20)) dt$q20 <- dt$q20_new
     
-    setnames(dt, survey5$oldname, survey5$newname, skip_absent = TRUE)
+    setnames(dt, survey4$oldname, survey4$newname, skip_absent = TRUE)
     
     # Save temp data ----------------------------------------------------------
     qs::qsave(dt, file = output_data)
