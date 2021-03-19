@@ -1,8 +1,8 @@
-## Name: dm09_clean_other_vars_v3.R
+## Name: dm09_clean_other_vars_v7.R
 ## Description: Clean variables not need for the contacts - less important for R.
-## Input file: combined_8_v6.qs
+## Input file: combined_8_v7.qs
 ## Functions:
-## Output file: combined_9_v6.qs
+## Output file: combined_9_v7.qs
 
 
 
@@ -14,8 +14,8 @@ source('r/00_setup_filepaths.r')
 
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("combined_8_v6.qs")
-output_name <- paste0("combined_9_v6.qs")
+input_name <-  paste0("combined_8_v7.qs")
+output_name <- paste0("combined_9_v7.qs")
 input_data <-  file.path(dir_data_process, input_name)
 output_data <- file.path(dir_data_process, output_name)
 
@@ -25,25 +25,25 @@ print(paste0("Opened: ", input_name))
 # Maps for locations ---------------------------------------------------------------
 
 locations <- as.data.table(readxl::read_excel('codebook/var_names.xlsx', sheet = "locations"))
-# 
-# map_uk_nations <- c(
-#   "Northern Ireland" = "Northern Ireland",
-#   "Scotland" = "Scotland",
-#   "Wales" = "Wales",
-#   "East of England" = "England",
-#   "East Midlands" = "England",
-#   "Greater London" = "England",
-#   "North East" = "England",
-#   "North West" = "England",
-#   "South East" = "England",
-#   "South West" = "England",
-#   "West Midlands" = "England",
-#   "Yorkshire and The Humber" = "England"
-# )
+
+map_uk_nations <- c(
+  "Northern Ireland" = "Northern Ireland",
+  "Scotland" = "Scotland",
+  "Wales" = "Wales",
+  "East of England" = "England",
+  "East Midlands" = "England",
+  "Greater London" = "England",
+  "North East" = "England",
+  "North West" = "England",
+  "South East" = "England",
+  "South West" = "England",
+  "West Midlands" = "England",
+  "Yorkshire and The Humber" = "England"
+)
 
 
 
-## area_3_name 
+## area_3_name - England regions
 map_area_2_name <- locations[variable == "area_2_name",]$newname
 names(map_area_2_name) <- locations[variable == "area_2_name",]$oldname
 map_area_3_name <- locations[variable == "area_3_name",]$newname
@@ -55,7 +55,7 @@ dt[, area_2_name := first(area_2_name), by = .(country, panel, wave, part_id)]
 dt[, area_2_name := map_area_2_name[area_2_name]]
 dt[, area_3_name := first(area_3_name), by = .(country, panel, wave, part_id)]
 dt[, area_3_name := map_area_3_name[area_3_name]]
-# dt[country == "uk", uk_nations := map_uk_nations[area_3_name]]
+dt[country == "uk", uk_nations := map_uk_nations[area_3_name]]
 
    
    

@@ -21,7 +21,7 @@ if (!exists("group")) group <- "G1"
 if(length(args) == 1) group <- args
 
 # Setup input and output data and filepaths -------------------------------
-filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = group)
+filenames <- readxl::read_excel('data/spss_files_eu.xlsx', sheet = group)
 filenames <- filenames[!is.na(filenames$spss_name) & 
                          filenames$survey_version == 4,]
 r_names <- filenames$r_name
