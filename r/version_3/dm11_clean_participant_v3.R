@@ -115,6 +115,8 @@ map_status <- c(
   "No, but it was open for my child" = "no but open for my child",
   "Not applicable as it was a weekend/holiday/day off" = "closed - holiday", 
   "Not applicable as it was closed" = "closed", 
+  "Not open to any members of staff" = "closed",
+  "Not open to any children, pupils, or students" = "closed",
   "Yes" = "yes"
 )
 
