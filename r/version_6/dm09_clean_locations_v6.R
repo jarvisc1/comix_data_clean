@@ -24,24 +24,7 @@ print(paste0("Opened: ", input_name))
 
 # Maps for locations ---------------------------------------------------------------
 
-locations <- as.data.table(readxl::read_excel('codebook/var_names.xlsx', sheet = "locations"))
-# 
-# map_uk_nations <- c(
-#   "Northern Ireland" = "Northern Ireland",
-#   "Scotland" = "Scotland",
-#   "Wales" = "Wales",
-#   "East of England" = "England",
-#   "East Midlands" = "England",
-#   "Greater London" = "England",
-#   "North East" = "England",
-#   "North West" = "England",
-#   "South East" = "England",
-#   "South West" = "England",
-#   "West Midlands" = "England",
-#   "Yorkshire and The Humber" = "England"
-# )
-
-
+locations <- as.data.table(readxl::read_excel('codebook/var_names_v6.xlsx', sheet = "locations"))
 
 ## area_3_name 
 map_area_2_name <- locations[variable == "area_2_name",]$newname

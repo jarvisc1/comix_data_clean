@@ -34,7 +34,6 @@ r_names <- filenames$r_name
 
 ## This script loads _1.qs files and save them as _2.qs files
 for(r_name in r_names){
-   # if (paste0(r_name, "_1.qs") == "fi_sr04_20210316_pA_wv03_1.qs") browser()
    input_name <-  paste0(r_name, "_1.qs")
    output_name <- paste0(r_name, "_2.qs")
    input_data <-  file.path(dir_data_process, input_name)
