@@ -278,17 +278,12 @@ dt[, part_no_contacts := tolower(part_no_contacts)]
 dt[, part_reported_all_contacts := map_report_contacts[part_reported_all_contacts]]
 
 
-## Risk change from personal to all household from survey round 44
-risk_names <- grep("part_.*_risk", names(dt), value = TRUE)
+## Standardise workplace open or closed
+dt[part_workplace_status =="Open", part_work_closed := "no"]
+dt[part_workplace_status =="partially open", part_work_closed := "no"]
+dt[part_workplace_status =="no workplace", part_work_closed := "yes"]
+dt[part_workplace_status =="closed", part_work_closed := "yes"]
 
-if(length(risk_names)>0){
-  #dt[, part_med_risk_v2 := map_fm_yn[part_med_risk_v2]]	 
-  dt[, part_med_risk_v2_temp := map_fm_yn[part_med_risk_v2]]
-  #dt[, part_high_risk_v2 := map_fm_yn[part_high_risk_v2]]	
-  dt[, part_high_risk_v2_temp := map_fm_yn[part_high_risk_v2]]
-  dt[, part_high_risk_v2 := NULL]
-  dt[, part_med_risk_v2 := NULL]
-}
 
 
 # Clean dates -------------------------------------------------------------
@@ -335,15 +330,12 @@ hhmvars_new <- hhmvars_new[!hhmvars_new %in% names(dt)]
 
 setnames(dt, old = hhmvars_old, new = hhmvars_new, skip_absent = TRUE)
 
-if(length(risk_names)>0){
-  dt[is.na(part_high_risk_v2), part_high_risk_v2 := part_high_risk_v2_temp ]
-  dt[is.na(part_med_risk_v2), part_med_risk_v2 := part_med_risk_v2_temp ]
-  dt[, part_high_risk_v2_temp := NULL]
-  dt[, part_med_risk_v2_temp := NULL]
-}
+## Risk change from personal to all household from survey round 44
+risk_names <- grep("part_.*_risk", names(dt), value = TRUE)
 
 # Create a consistent risk category
 dt[, part_high_risk := ifelse(part_high_risk_v2 == "yes" | part_med_risk_v2 == "yes", "yes", "no")]
+
 
 
 # Remove variables --------------------------------------------------------

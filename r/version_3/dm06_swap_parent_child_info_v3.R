@@ -110,13 +110,13 @@ for(fill_col in child_emptycols_na) {
 }
 
 # Step pre-5
-dt[sample_type=="adult" & row_id == 0, part_med_risk_v2 := hhm_med_risk_v2]
-dt[sample_type=="adult" & row_id == 0, hhm_med_risk_v2 := NA]
-dt[sample_type=="adult" & row_id == 0, part_high_risk_v2 := hhm_high_risk_v2]
-dt[sample_type=="adult" & row_id == 0, hhm_high_risk_v2 := NA]
+# dt[sample_type=="adult" & row_id == 0, part_med_risk_v2 := hhm_med_risk_v2]
+# dt[sample_type=="adult" & row_id == 0, hhm_med_risk_v2 := NA]
+# dt[sample_type=="adult" & row_id == 0, part_high_risk_v2 := hhm_high_risk_v2]
+# dt[sample_type=="adult" & row_id == 0, hhm_high_risk_v2 := NA]
 
 # Step 5. Rename relevant child hhm data to part data columns ----
-hhm_cols <- c("hhm_gender","hhm_gender", "hhm_age_group", "hhm_med_risk_v2", "hhm_high_risk_v2")
+hhm_cols <- c("hhm_gender","hhm_gender", "hhm_age_group")
 for(hhm_col in hhm_cols) {
   part_col <- gsub("hhm_", "part_", hhm_col)
   dt[parent_child == "child",
@@ -125,8 +125,8 @@ for(hhm_col in hhm_cols) {
 }
 
 # Step pre-6
-dt[parent_child=="child", hhm_med_risk_v2 := NA]
-dt[parent_child=="child", hhm_high_risk_v2 := NA]
+# dt[parent_child=="child", hhm_med_risk_v2 := NA]
+# dt[parent_child=="child", hhm_high_risk_v2 := NA]
 
 # Step 6. Move relevant parent part data to hhm data columns ----
 part_cols <- c("part_gender", "part_age", "part_social_group", "part_income")
@@ -155,7 +155,7 @@ dt[between(hhm_age, 65, 69) & parent_child == "parent", hhm_age_group := "65-69"
 dt[between(hhm_age, 70, 120) & parent_child == "parent", hhm_age_group := "70+"]
 
 
-## STEP 8. Remove now-reduntant child hhm row and assign mixed_data row (row_id == 0) to child 
+## STEP 8. Remove now-redundant child hhm row and assign mixed_data row (row_id == 0) to child 
 dt[parent_child == "parent", row_id := 999]
 dt[parent_child == "child", row_id := 0]
 
