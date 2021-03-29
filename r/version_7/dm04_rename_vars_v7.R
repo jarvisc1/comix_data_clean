@@ -1,4 +1,4 @@
-## Name: dm04_rename_vars_v3.R
+## Name: dm04_rename_vars_v7.R
 ## Description: Rename the variables using a csv file
 ## Input file: cnty_wkN_yyyymmdd_pN_wvN_3.qs
 ## Functions: 
@@ -12,19 +12,25 @@ library(data.table)
 source('r/00_setup_filepaths.r')
 
 # Countries ---------------------------------------------------------------
-country <- "NL"
+# in case running for certain countries only
+args <- commandArgs(trailingOnly=TRUE)
+print(args)
+if (!exists("country_codes") ) country_codes <- "NL"
+if(length(args) == 1) country_codes <- args
 
-# Setup input and output data and filepaths -------------------------------
-filenames <- readxl::read_excel('data/spss_files_nl.xlsx', sheet = country)
-filenames <- filenames[!is.na(filenames$spss_name) & 
-                         filenames$survey_version == 6,]
-r_names <- filenames$r_name
+for(country in country_codes){
+  print(paste0("Start: ", country))
+  
+  # Setup input and output data and filepaths -------------------------------
+  filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = country)
+  # Although the cleaning is version 7, the survey version is 1
+  filenames <- filenames[!is.na(filenames$spss_name) & 
+                           filenames$survey_version == 1,]
+  r_names <- filenames$r_name
 
-# Load dataname spreadsheet -----------------------------------------------
-survey6 <- as.data.table(
-  readxl::read_excel("codebook/var_names.xlsx", 
-                     sheet = "survey_6"))
-survey6 <- survey6[!is.na(newname)]
+  # Load dataname spreadsheet -----------------------------------------------
+  survey1 <- as.data.table(readxl::read_excel("codebook/var_names.xlsx", sheet = "survey_2"))
+  survey1 <- survey1[!is.na(newname)]
   
   for(r_name in r_names){
     input_name <-  paste0(r_name, "_3.qs")
@@ -35,22 +41,15 @@ survey6 <- survey6[!is.na(newname)]
     dt <- qs::qread(input_data)
     print(paste0("Opened: ", input_name)) 
     
-    if (is.null(dt$q20)) dt$q20 <- dt$q20_new
-    
-    setnames(dt, survey6$oldname, survey6$newname, skip_absent = TRUE)
-    
-    missing_colnames <- sort(grep("q[0-9]", names(dt), value = T))
-    message(paste(c(r_name,missing_colnames), collapse = "\n"))    
-    mult_cols <- "q79|q80|q81"
-    if (any(grepl(mult_cols, names(dt)))) {
-      stop(paste("Check multiple contact colnames:", r_name))
-    }
-    
+    setnames(dt, survey1$oldname, survey1$newname, skip_absent = TRUE)
+      
+    if (is.null(dt$q20)) dt$q20 <- dt$q20_new 
     
     # Save temp data ----------------------------------------------------------
     qs::qsave(dt, file = output_data)
     print(paste0('Saved:' , output_name))
   }
+}
 
 
 

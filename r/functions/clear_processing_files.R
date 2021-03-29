@@ -14,8 +14,6 @@ clear_processing_files <- function(file_index, processing_dir) {
   file.remove(file.path(processing_dir, rm_files))
 }
 
-
-
 # Common calls
 # clear_processing_files("be|v5", dir_data_process)
 # clear_processing_files("nl|v6", dir_data_process)
