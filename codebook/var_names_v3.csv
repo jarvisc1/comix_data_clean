@@ -74,8 +74,8 @@ q26_filter_1,hhm_student_nursery
 q26_filter_2,hhm_student_school
 q26_filter_3,hhm_student_college
 q26_filter_4,hhm_student_university
-q28a,part_high_risk_v2
-q28b,part_med_risk_v2
+q28a,hhm_high_risk_v2
+q28b,hhm_med_risk_v2
 q28anew_scale_1,hhm_high_risk_v2
 q28bnew_scale_1,hhm_med_risk_v2
 q29_1,hhm_symp_fever
