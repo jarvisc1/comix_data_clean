@@ -1,17 +1,26 @@
 # Netherlands Panel A data cleaning
 
 if [ -z $1 ]
-then
-echo "Running local code run 'sh run_version_7.sh download' to download data."
-elif [ $1 == 'download' ]
-then
-echo "Convert from SPSS to QS files"
-Rscript.exe "./r/version_7/dm01_resave_spss_as_qs_v7.R" $country
-pwd
+  then
+  echo "Running local code run 'sh run_version_7.sh NLdownload OR sh run_version_7.sh BEdownload' to download G1 data or country_codes1 or country_codes3."
+elif [ $1 == 'BEdownload' ]
+  then
+  country_codes="BE"
+  echo "Convert from SPSS to QS files"
+  Rscript "./r/version_7/dm01_resave_spss_as_qs_v7.R" $country_codes
+  pwd
+elif [ $1 == 'NLdownload' ]
+  then
+  country_codes="NL"
+  echo "Convert from SPSS to QS files"
+  Rscript "./r/version_7/dm01_resave_spss_as_qs_v7.R" $country_codes
+  pwd
+else
+  country_codes=$1
 fi
 
 echo "Check and add country panel and wave variables"
-Rscript.exe "r/version_7/dm02_data_standardise_v7.R" $country
+Rscript.exe "./r/version_7/dm02_data_standardise_v7.R" $country
 
 echo "Turn from wide data to long data.table"
 Rscript.exe "./r/version_7/dm03_create_datatable_v7.R" $country
