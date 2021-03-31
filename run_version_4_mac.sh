@@ -52,4 +52,3 @@ Rscript "r/version_4/dm11_clean_participant_v4.R"
 echo "Save data on LSHTM server"
 Rscript "r/version_4/dm101_save_remote_v4.R" $group
 
-

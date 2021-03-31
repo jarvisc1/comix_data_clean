@@ -4,7 +4,7 @@ country="NL"
 if [ -z $1 ]
   then
   echo "Running local code run 'sh run_version_6_mac.sh download' to download data."
-elif [ $1 == 'NLdownload' ]
+elif [ $1 == 'download' ]
   then
   echo "Convert from SPSS to QS files"
   Rscript "r/version_6/dm01_resave_spss_as_qs_v6.R" $country

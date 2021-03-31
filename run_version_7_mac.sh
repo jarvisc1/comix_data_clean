@@ -1,7 +1,7 @@
 
 if [ -z $1 ]
   then
-  echo "Running local code run 'sh run_version_7_mac.sh G1download' to download G1 data or country_codes1 or country_codes3."
+  echo "Running local code run 'sh run_version_7_mac.sh NLdownload OR sh run_version_7_mac.sh BEdownload' to download G1 data or country_codes1 or country_codes3."
 elif [ $1 == 'BEdownload' ]
   then
   country_codes="BE"
@@ -52,7 +52,7 @@ Rscript "r/version_7/dm11_clean_participant_v7.R"
 echo "Save data on ;ocally"
 Rscript "r/version_7/dm100_save_locally_v7.R" $country_codes
 
-echo "Save data on LSHTM server"
-Rscript "r/version_7/dm101_save_remote_v7.R" $country_codes
+# echo "Save data on LSHTM server"
+# Rscript "r/version_7/dm101_save_remote_v7.R" $country_codes
 
 
