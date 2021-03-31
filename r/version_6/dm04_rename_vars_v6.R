@@ -22,7 +22,7 @@ r_names <- filenames$r_name
 
 # Load dataname spreadsheet -----------------------------------------------
 survey6 <- as.data.table(
-  readxl::read_excel("codebook/var_names.xlsx", 
+  readxl::read_excel("codebook/var_names_v6.xlsx", 
                      sheet = "survey_6"))
 survey6 <- survey6[!is.na(newname)]
   

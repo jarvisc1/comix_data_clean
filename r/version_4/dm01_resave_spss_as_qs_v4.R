@@ -5,6 +5,7 @@
 ## Output file: cnty_wkN_yyyymmdd_pN_wvN_1.qs
 
 # Packages ----------------------------------------------------------------
+library(data.table)
 
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
@@ -21,9 +22,10 @@ if(length(args) == 1) groups <- args
 
 for(group in groups){
   print(paste0("Start: ", group))
-  filenames <- readxl::read_excel('data/spss_files.xlsx', sheet = group)
-  filenames <- filenames[!is.na(filenames$spss_name),]
+  filenames <- as.data.table(readxl::read_excel('data/spss_files_eu.xlsx', sheet = group))
   
+  filenames <- filenames[!is.na(spss_name) & download == 1,]
+
   spss_names <- paste0(filenames$spss_name, ".sav")
   r_names <- paste0(filenames$r_name, "_1.qs")
   current_country <- filenames$country

@@ -25,8 +25,7 @@ for (group in groups) {
 
   countries <- unique(part$country)
   message(paste(countries, collapse = ", "))
-  countries <- "sl"
-  browser()
+
   for (country_name in countries) {
     part_country <- part[country == country_name]
     part_country <- part_country[, ..part_cols]
@@ -59,6 +58,7 @@ for (group in groups) {
     dir.create(file.path(dir_data_clean, country_name), showWarnings = F)
     qsave(x = as.data.frame(part_country),
           file = file.path(dir_data_clean, country_name, paste0(country_name, "_participants.qs")))
+    message(paste("Part dt saved to:", file.path(dir_data_clean, country_name, paste0(country_name, "_participants.qs"))))
 
     qsave(x = as.data.frame(contacts_country),
           file = file.path(dir_data_clean, country_name, paste0(country_name, "_contacts.qs")))

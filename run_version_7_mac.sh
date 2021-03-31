@@ -1,7 +1,7 @@
 
 if [ -z $1 ]
   then
-  echo "Running local code run 'sh run_version_7_mac.sh G1download' to download G1 data or country_codes1 or country_codes3."
+  echo "Running local code run 'sh run_version_7_mac.sh NLdownload OR sh run_version_7_mac.sh BEdownload' to download G1 data or country_codes1 or country_codes3."
 elif [ $1 == 'BEdownload' ]
   then
   country_codes="BE"
