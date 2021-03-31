@@ -52,7 +52,7 @@ Rscript "r/version_7/dm11_clean_participant_v7.R"
 echo "Save data on ;ocally"
 Rscript "r/version_7/dm100_save_locally_v7.R" $country_codes
 
-echo "Save data on LSHTM server"
-Rscript "r/version_7/dm101_save_remote_v7.R" $country_codes
+# echo "Save data on LSHTM server"
+# Rscript "r/version_7/dm101_save_remote_v7.R" $country_codes
 
 
