@@ -196,9 +196,6 @@ dt[, hhm_gender := map_gender[hhm_gender]]
 dt[, part_report_ind_contacts := map_report_ind_contacts[part_reported_all_contacts]]
 
 ## Fill in participant information
-dt[, part_gender := first(part_gender), by = .(part_wave_uid)]
-dt[, part_gender_nb := first(part_gender_nb), by = .(part_wave_uid)]
-dt[, part_age := first(part_age), by = .(part_wave_uid)]
 dt[, currentday := first(currentday), by = .(part_wave_uid)]
 dt[, currentmonth := first(currentmonth), by = .(part_wave_uid)]
 dt[, currentyear := first(currentyear), by = .(part_wave_uid)]
