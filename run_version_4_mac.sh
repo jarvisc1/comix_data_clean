@@ -18,7 +18,6 @@ else
   group=$1
 fi
 
-
 echo "Check and add country panel and wave variables"
 Rscript "r/version_4/dm02_data_standardise_v4.R" $group
 

@@ -8,7 +8,7 @@ source("r/00_setup_filepaths.r")
 dir.create(dir_data_local, showWarnings = F)
 
 
-groups <- c("g1", "g2")
+groups <- c("g1")
 
 for (group in groups) {
   part <- as.data.table(qs::qread(file.path(dir_data_clean, paste0("part_v4_", group,".qs"))))
