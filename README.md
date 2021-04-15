@@ -41,7 +41,8 @@ Change version_1 to be the relevant version for you.
 0. [Add R to your path variable (see below)](#Add-R-to-your-path-variable)
 1. Open Rstudio
 2. Go to the terminal in R studio
-3. Type `sh run_version_1.sh`
+3. Type `sh run_version_1.sh`, see version sh scripts for argument options
+4. For EU partner data (all countries except UK, BE, NL), run the script "r/save_country_data.R" to create individual country folders and data prepared for sharing
 
 Change version_1 to be the relevant version for you.
 
