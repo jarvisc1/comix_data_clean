@@ -8,7 +8,7 @@ source("r/00_setup_filepaths.r")
 dir.create(dir_data_local, showWarnings = F)
 
 
-groups <- c("g1")
+groups <- c("g1", "g2")
 
 for (group in groups) {
   part <- as.data.table(qs::qread(file.path(dir_data_clean, paste0("part_v4_", group,".qs"))))
@@ -29,7 +29,7 @@ for (group in groups) {
   for (country_name in countries) {
     part_country <- part[country == country_name]
     part_country <- part_country[, ..part_cols]
-
+    table(part_country$wave, part_country$panel, part_country$country)
     if (unique(part_country$country) != country_name) stop("ERROR: CHECK PART COUNTRY NAME")
 
     contacts_country <- contacts[as.character(country) == country_name]
@@ -48,25 +48,26 @@ for (group in groups) {
     write.csv(x = as.data.frame(part_country),
               file = file.path(dir_data_local, country_name, paste0(country_name, "_participants.csv")),
               row.names = F)
-
+    
     write.csv(x = as.data.frame(contacts_country),
               file = file.path(dir_data_local, country_name, paste0(country_name, "_contacts.csv")),
               row.names = F)
-
+    
+    
     # Save files to filr ---------------
-
+    
     dir.create(file.path(dir_data_clean, country_name), showWarnings = F)
     qsave(x = as.data.frame(part_country),
           file = file.path(dir_data_clean, country_name, paste0(country_name, "_participants.qs")))
     message(paste("Part dt saved to:", file.path(dir_data_clean, country_name, paste0(country_name, "_participants.qs"))))
-
+    
     qsave(x = as.data.frame(contacts_country),
           file = file.path(dir_data_clean, country_name, paste0(country_name, "_contacts.qs")))
-
+    
     write.csv(x = as.data.frame(part_country),
               file = file.path(dir_data_clean, country_name, paste0(country_name, "_participants.csv")),
               row.names = F)
-
+    
     write.csv(x = as.data.frame(contacts_country),
               file = file.path(dir_data_clean, country_name, paste0(country_name, "_contacts.csv")),
               row.names = F)
