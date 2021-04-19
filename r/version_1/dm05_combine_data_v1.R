@@ -13,7 +13,7 @@ source('r/00_setup_filepaths.r')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
-country_codes <- c("UK", "NL", "BE", "NO")
+country_codes <- c("UK", "BE", "NO")
 
 # Cleaning ----------------------------------------------------------------
 dt_list <- list()

@@ -18,7 +18,7 @@ source('./r/version_1/functions/standardise_names_v1.R')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
-country_codes <- c("UK", "NL", "BE", "NO")
+country_codes <- c("UK", "BE", "NO")
 
 # Cleaning ----------------------------------------------------------------
 
