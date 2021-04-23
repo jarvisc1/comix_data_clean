@@ -12,7 +12,7 @@ library(data.table)
 source('r/00_setup_filepaths.r')
 
 # Countries ---------------------------------------------------------------
-country_codes <- c("UK", "NL", "BE", "NO")
+country_codes <- c("UK", "BE", "NO")
 
 for(country in country_codes){
   print(paste0("Start: ", country))
