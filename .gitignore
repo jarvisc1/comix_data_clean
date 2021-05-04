@@ -10,6 +10,8 @@ data/clean/*
 data/sharing/*
 codebook/*
 !codebook/var_names*
+!codebook/part_names.csv
+!codebook/contact_names.csv
 reports/*
 *DS_Store
 
