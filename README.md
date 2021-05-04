@@ -33,6 +33,8 @@ In the main folder `comix_data_clean` there are shell scripts which can be run f
 1. Open Rstudio
 2. Go to the terminal in Rstudio
 3. Type `sh run_version_1.sh`
+4. For EU partner data (all countries except UK, BE, NL), run the script "r/save_country_data.R" to create individual country folders and data prepared for sharing
+
 
 Change version_1 to be the relevant version for you.
 
@@ -43,6 +45,8 @@ Change version_1 to be the relevant version for you.
 2. Go to the terminal in R studio
 3. Type `sh run_version_1.sh`, see version sh scripts for argument options
 4. For EU partner data (all countries except UK, BE, NL), run the script "r/save_country_data.R" to create individual country folders and data prepared for sharing
+
+## All
 
 Change version_1 to be the relevant version for you.
 
