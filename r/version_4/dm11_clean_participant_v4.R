@@ -67,7 +67,9 @@ map_test <- c(
   "Yes, and {#im_are.response.label} still waiting to hear the result" = "waiting for result",
   "Tested and the test showed {#i_they.response.label} did have Coronavirus at the time" = "positive", 
   "Tested, and the test showed {#i_they.response.label} did not have Coronavirus" = "negative", 
-  "Yes, and {#im_are.response.label} still waiting to hear the result" = "waiting for result"
+  "Yes, and {#im_are.response.label} still waiting to hear the result" = "waiting for result",
+  "{#i_they.response.label} have been tested, and all the tests showed I {#i_they.response.label} did not have Coronavirus" = "negative",
+  "{#i_they.response.label} have been tested and at least one test showed I {#i_they.response.label} did have Coronavirus a" = "positive"
 )
 
 map_attend_work_educ <- c(
