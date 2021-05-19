@@ -14,6 +14,12 @@ elif [ $1 == 'G2download' ]
   echo "Convert from SPSS to QS files"
   Rscript.exe "./r/version_4/dm01_resave_spss_as_qs_v4.R" $group
   pwd
+elif [ $1 == 'G3download' ]
+  then
+  group="G3"
+  echo "Convert from SPSS to QS files"
+  Rscript.exe "./r/version_4/dm01_resave_spss_as_qs_v4.R" $group
+  pwd
 else
   group=$1
 fi
