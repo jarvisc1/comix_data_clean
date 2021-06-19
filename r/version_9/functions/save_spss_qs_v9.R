@@ -4,8 +4,8 @@
 ## Rename spss files
 save_spss_qs <- function(spss_file, qs_file, country){
   ## Read in spss file
-  browser()
   spss_path <- file.path(dir_data_spss, country, spss_file)
+
   df_ <- foreign::read.spss(spss_path)
   ## Convert to data.table
   dt_ <- data.table::as.data.table(df_)
