@@ -10,6 +10,9 @@ save_spss_qs <- function(spss_file, qs_file, country, keep){
   dt_ <- data.table::as.data.table(df_)
   ## Save as an rds file
   names(dt_) <- tolower(names(dt_))
+  
+  dt_[, cultureinfo := gsub("CZ","mt", cultureinfo)]
+  
   dt_ <- dt_[substr(cultureinfo,4,5)==keep]
   if (nrow(dt_) == 0) stop(paste("Empty data table: ", spss_file, group, keep))
   qs_path <- file.path(dir_data_process, qs_file)
