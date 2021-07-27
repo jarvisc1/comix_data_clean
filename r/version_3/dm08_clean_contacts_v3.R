@@ -17,7 +17,7 @@ source('r/00_setup_filepaths.r')
 args = commandArgs(trailingOnly=TRUE)
 
 if(length(args) == 0){
-   latest <-  1 ## Change to zero if you to test all interactively
+   latest <-  0 ## Change to zero if you to test all interactively
 } else if(args[1] == 0){
    latest <-  0
 } else if(args[1] == 1){
@@ -52,6 +52,21 @@ output_data_cnts_date <- file.path("data/clean/archive", output_cnts_date)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
+
+
+
+# Correct data issue no household contacts --------------------------------
+
+## For a number of wave some ids were not asked about their household contacts
+## These are record in a separate file here we check and make them contacts
+## The assumption is that they are more likely to be a contact than not.
+
+input_file <- file.path(dir_data_spss, "uk/20210627_home_contact_error_f18toe23.csv")
+
+update_file <- fread(input_file)
+
+## Have created a variable called Ipsos_id but I need information on the household members. 
+
 
 
 # Remove variables not needed ---------------------------------------------

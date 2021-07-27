@@ -87,7 +87,8 @@ for(r_name in r_names){
    ## Start at 10,000 and add 10,000 for each panel.
    ## B starts from 20,000
    ## C starts from 30,000
-   dt[respondent_id < 10000, respondent_id := respondent_id + 10000*as.numeric(factor(panel, LETTERS))]
+   dt[, ipsos_id := respondent_id]
+   dt[, respondent_id := respondent_id + 100000*as.numeric(factor(panel, LETTERS))]
 
 
    # Parent - Child questions ------------------------------------------------
@@ -112,7 +113,7 @@ for(r_name in r_names){
    adult_vac_qs <- grep("^qxx|qzz", names(dt), value = T)
    adult_cs <- grep("^contact[0-9]+", names(dt), value = T)
    ## Needed in both
-   adult_qs <- grep("^q23|q20", adult_qs, value = T, invert = T)
+   adult_qs <- grep("^q23|q20|q39", adult_qs, value = T, invert = T)
    adult_cols <- c(adult_qs, adult_cs, adult_vac_qs)
 
    # Subset data
