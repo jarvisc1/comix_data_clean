@@ -43,10 +43,6 @@ for(r_name in r_names){
 
 dt_combined <- rbindlist(dt_list, use.names = TRUE, fill = TRUE)
 
-## switzerland additional waves
-dt_combined[panel=="B", wave := wave+7]
-dt_combined[panel=="B", panel := "A"]
-
 ## Save combined file
 qs::qsave(dt_combined, file = output_data)
 print(paste0('Saved:' , output_name))
