@@ -25,4 +25,5 @@ Rscript.exe r/validation/dm00_combine.r
 Rscript.exe r/validation/dm01_update_values.r
 Rscript.exe r/validation/dm100_save_locally.r
 Rscript.exe r/validation/dm101_save_remote.r
+Rscript.exe r/validation/dm_count_contacts.r
  
