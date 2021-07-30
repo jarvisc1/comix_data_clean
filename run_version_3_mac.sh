@@ -20,19 +20,19 @@ elif [ $1 == 'latest' ]
   pwd
 fi
 
-# 
-# echo "Check and add country panel and wave variables"
-# Rscript "r/version_3/dm02_data_standardise_v3.R" $new_only
-# 
-# echo "Turn from wide data to long data.table"
-# Rscript "r/version_3/dm03_create_datatable_v3.R" $new_only
-# 
-# echo "Rename the variables"
-# Rscript "r/version_3/dm04_rename_vars_v3.R" $new_only
-# 
-# echo "Combine all countries and waves together"
-# Rscript "r/version_3/dm05_combine_data_v3.R" $new_only
-# # 
+
+echo "Check and add country panel and wave variables"
+Rscript "r/version_3/dm02_data_standardise_v3.R" $new_only
+
+echo "Turn from wide data to long data.table"
+Rscript "r/version_3/dm03_create_datatable_v3.R" $new_only
+
+echo "Rename the variables"
+Rscript "r/version_3/dm04_rename_vars_v3.R" $new_only
+
+echo "Combine all countries and waves together"
+Rscript "r/version_3/dm05_combine_data_v3.R" $new_only
+
 echo "Add adult survey variable"
 Rscript "r/version_3/dm06_swap_parent_child_info_v3.R" $new_only
 
@@ -47,7 +47,7 @@ Rscript "r/version_3/dm09_clean_locations_v3.R" $new_only
 
 echo "Clean Households"
 Rscript "r/version_3/dm10_clean_household_v3.R" $new_only
-#
+
 echo "Clean Participants"
 Rscript "r/version_3/dm11_clean_participant_v3.R" $new_only
 
@@ -57,5 +57,3 @@ Rscript "r/version_3/dm100_save_locally_v3.R" $new_only
 echo "Save data on LSHTM server"
 Rscript "r/version_3/dm101_save_remote_v3.R" $new_only
 
-
-# 
