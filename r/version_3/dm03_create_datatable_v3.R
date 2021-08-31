@@ -40,8 +40,6 @@ if(latest == 1){
   filenames <- tail(filenames, 1)
 }
 
-
-
 r_names <- filenames$r_name
 
 for(r_name in r_names){
