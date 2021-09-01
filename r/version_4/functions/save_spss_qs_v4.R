@@ -12,6 +12,7 @@ save_spss_qs <- function(spss_file, qs_file, country, keep){
   names(dt_) <- tolower(names(dt_))
   
   dt_[, cultureinfo := gsub("CZ","mt", cultureinfo)]
+  dt_[, cultureinfo := gsub("CB","mt", cultureinfo)]
   
   dt_ <- dt_[substr(cultureinfo,4,5)==keep]
   if (nrow(dt_) == 0) stop(paste("Empty data table: ", spss_file, group, keep))
