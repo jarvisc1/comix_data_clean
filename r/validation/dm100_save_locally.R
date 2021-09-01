@@ -16,7 +16,7 @@ input_valid_dta <- c("part_valid.qs", "part_min_valid.qs", "households_valid.qs"
 
 output_valid_dta <- c("part.qs", "part_min.qs", "households.qs", "contacts.qs")
 
-
+dir_data_local <- "../comix/data"
 
 for(i in seq_along(input_valid_dta)){
   input <- file.path("data/validated", input_valid_dta[i])
@@ -28,11 +28,11 @@ for(i in seq_along(input_valid_dta)){
   qs::qsave(file, output)
   print(paste0("Copied to: ", output)) 
   
-  # Save an archive ---------------------------------------------------------
-  current_date <- Sys.Date()
-  output_arc <- paste(current_date, output_valid_dta[i], sep = "_")
-  output_arc_file <- file.path(dir_data_local, "archive", output_arc)
-  qs::qsave(file, output_arc_file)
-  print(paste0("Saved: ", output_arc_file)) 
+  # # Save an archive ---------------------------------------------------------
+  # current_date <- Sys.Date()
+  # output_arc <- paste(current_date, output_valid_dta[i], sep = "_")
+  # output_arc_file <- file.path(dir_data_local, "archive", output_arc)
+  # qs::qsave(file, output_arc_file)
+  # print(paste0("Saved: ", output_arc_file)) 
 }
 
