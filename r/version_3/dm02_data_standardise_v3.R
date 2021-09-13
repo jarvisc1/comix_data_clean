@@ -76,6 +76,7 @@ for(r_name in r_names){
    dt <- country_checker(dt, country)
 
    # Panel -------------------------------------------------------------------
+   # browser()
    dt <- panel_checker(  dt, panel)
 
    # Wave --------------------------------------------------------------------

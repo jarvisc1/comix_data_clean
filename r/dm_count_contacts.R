@@ -16,9 +16,9 @@ source('r/00_setup_filepaths.r')
 
   
 ## Save participant data
-
-pt <- qs::qread("../comix/data/part_min.qs")
-ct <- qs::qread("../comix/data/contacts.qs")
+dir_data_validate
+pt <- qs::qread(file.path(dir_data_validate, "part_min.qs"))
+ct <- qs::qread(file.path(dir_data_validate, "contacts.qs"))
 
 
 # Map objects for labels --------------------------------------------------
