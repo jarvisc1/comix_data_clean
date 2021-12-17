@@ -5,7 +5,7 @@
 ## Output file: combined_9.qs
 
 
-
+# in r/validation/
 # Packages ----------------------------------------------------------------
 library(data.table)
 
@@ -48,7 +48,7 @@ cnt_other_vars <- c(
   "cnt_bar_rest",
   "cnt_health_facility", 
   "cnt_salon",
-  "cnt_public_market",
+  # "cnt_public_market",
   "cnt_household"
 )
 
@@ -98,3 +98,7 @@ cnt_names <- c("part_wave_uid", cnt_names)
 pt_cnt <- pt_cnt[, ..cnt_names]
 
 qs::qsave(pt_cnt, "../comix/data/part_cnts.qs")
+
+message(paste("Latest round:", max(pt$survey_round)))
+
+        
