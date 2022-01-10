@@ -1,8 +1,8 @@
 # Name: dm07_allocate_multiple_contacts.R
 ## Description: Assign each of the multiple contacts to a row
-## Input file: combined_6_v3.qs
+## Input file: combined_6_v8.qs
 ## Functions:
-## Output file: combined_7_v3.qs
+## Output file: combined_7_v8.qs
 
 
 # Packages ----------------------------------------------------------------
@@ -15,7 +15,7 @@ source('r/00_setup_filepaths.r')
 args = commandArgs(trailingOnly=TRUE)
 
 if(length(args) == 0){
-  latest <-  0 ## Change to zero if you to test all interactively
+  latest <-  1 ## Change to zero if you to test all interactively
 } else if(args[1] == 0){
   latest <-  0
 } else if(args[1] == 1){
@@ -27,11 +27,11 @@ print(paste0("Updating ", ifelse(latest==0, "All", "Latest")))
 # I/O Data ----------------------------------------------------------------
 
 if(latest == 1){
- input_name <-  paste0("combined_6_v3a.qs")
- output_name <- paste0("combined_7_v3a.qs")
+ input_name <-  paste0("combined_6_v8a.qs")
+ output_name <- paste0("combined_7_v8a.qs")
 } else if(latest ==0){
- input_name <-  paste0("combined_6_v3.qs")
- output_name <- paste0("combined_7_v3.qs")
+ input_name <-  paste0("combined_6_v8.qs")
+ output_name <- paste0("combined_7_v8.qs")
 }
 input_data <-  file.path(dir_data_process, input_name)
 output_data <- file.path(dir_data_process, output_name)

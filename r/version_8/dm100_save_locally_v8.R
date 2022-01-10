@@ -20,7 +20,7 @@ source('r/00_setup_filepaths.r')
 args = commandArgs(trailingOnly=TRUE)
 
 if(length(args) == 0){
-  latest <-  0 ## Change to zero if you to test all interactively
+  latest <-  1 ## Change to zero if you to test all interactively
 } else if(args[1] == 0){
   latest <-  0
 } else if(args[1] == 1){
@@ -32,10 +32,10 @@ print(paste0("Updating ", ifelse(latest==0, "All", "Latest")))
 # I/O Data ----------------------------------------------------------------
 
 if(latest == 1){
-  new_dta <- c("part_v3a.qs", "part_min_v3a.qs", "households_v3a.qs", "contacts_v3a.qs")
-  clean_dta <- c("part_v3.qs", "part_min_v3.qs", "households_v3.qs", "contacts_v3.qs")
+  new_dta <- c("part_v8a.qs", "part_min_v8a.qs", "households_v8a.qs", "contacts_v8a.qs")
+  clean_dta <- c("part_v8.qs", "part_min_v8.qs", "households_v8.qs", "contacts_v8.qs")
 } else if(latest ==0){
-  clean_dta <- c("part_v3.qs", "part_min_v3.qs", "households_v3.qs", "contacts_v3.qs")
+  clean_dta <- c("part_v8.qs", "part_min_v8.qs", "households_v8.qs", "contacts_v8.qs")
 }
 
 
