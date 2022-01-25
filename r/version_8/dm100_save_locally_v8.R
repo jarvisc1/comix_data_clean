@@ -38,18 +38,15 @@ if(latest == 1){
   clean_dta <- c("part_v8.qs", "part_min_v8.qs", "households_v8.qs", "contacts_v8.qs")
 }
 
-
-
 # I/O Data ----------------------------------------------------------------
-
 for(i in seq_along(clean_dta)){
-  input <- file.path("data/clean/", clean_dta[i])
+  input <- file.path("data/clean", clean_dta[i])
   file <- qs::qread(input)
   print(paste0("Opened: ", clean_dta[i])) 
   
   
   if(latest == 1){
-    input_new <- file.path("data/clean/", new_dta[i])
+    input_new <- file.path("data/clean", new_dta[i])
     file_new <- qs::qread(input_new)
 
     ## Replace new data if full data is not ahead of new data
