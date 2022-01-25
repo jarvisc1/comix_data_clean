@@ -28,7 +28,7 @@ print(paste0("Downloading ", ifelse(latest==0, "All", "Latest")))
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
 country <- "UK"
-
+latest <- 0
 # Open SPSS and save as QS ------------------------------------------------
 
 

@@ -16,7 +16,7 @@ clean_dta <- c("part_v8.qs", "part_min_v8.qs", "households_v8.qs", "contacts_v8.
 
 
 for(i in clean_dta){
-  input <- file.path("data/clean/", i)
+  input <- file.path("data/clean", i)
   file <- qs::qread(input)
   print(paste0("Opened: ", i)) 
   
