@@ -66,8 +66,8 @@ for(r_name in r_names){
    wave <- str_extract(r_name, "_wv[0-9]{2}")
    wave <- str_extract(wave, "[0-9]{2}")
    wave <- as.numeric(str_extract(wave, "[0-9]{1,2}"))
-   s_round <- str_extract(r_name, "_sr[0-9]{2}")
-   s_round <- str_extract(s_round, "[0-9]{2}")
+   s_round <- str_extract(r_name, "_sr[0-9]{2,3}")
+   s_round <- str_extract(s_round, "[0-9]{2,3}")
    country <- str_extract(r_name, ".+?(?=_)")
    
    dt[, survey_round := s_round]
