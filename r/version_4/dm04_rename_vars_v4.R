@@ -36,11 +36,12 @@ for(r_name in r_names){
   output_data <- file.path(dir_data_process, output_name)
   
   dt <- qs::qread(input_data)
-  print(paste0("Opened: ", input_name)) 
-  if (is.null(dt$q20)) dt$q20 <- dt$q20_new
   
+  print(paste0("Opened: ", input_name))
+  setnames(dt, "q20_new", "q20", skip_absent = TRUE) #same data but different names in some surveys
+
   setnames(dt, survey4$oldname, survey4$newname, skip_absent = TRUE)
-  
+
   # Save temp data ----------------------------------------------------------
   qs::qsave(dt, file = output_data)
   print(paste0('Saved:' , output_name))
