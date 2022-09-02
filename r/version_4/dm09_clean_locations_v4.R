@@ -63,6 +63,8 @@ ipsos_region <- grep("ipsos_region", names(dt), value = TRUE)
   try(dt[country=="gr", ipsos_region := ipsos_region_gr], silent = T)
   try(dt[country=="lt", ipsos_region := ipsos_region_lt], silent = T)
   #g3 countries did not have a column called region
+  try(dt[country %in% c("ee", "hr", "hu", "mt", "sk"), ipsos_region := NA])
+
   
   dt[, (ipsos_region) := NULL]
   
