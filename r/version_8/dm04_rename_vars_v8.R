@@ -42,7 +42,7 @@ r_names <- filenames$r_name
 
 # Load dataname spreadsheet -----------------------------------------------
 survey <- as.data.table(read.csv("codebook/var_names_v3.csv", col.names = c("oldname", "newname")))
-survey <- survey[!is.na(newname)]
+survey <- survey[!is.na(newname) & newname != ""]
   
 for(r_name in r_names){
   input_name <-  paste0(r_name, "_3.qs")
