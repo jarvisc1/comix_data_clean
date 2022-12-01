@@ -25,7 +25,7 @@ for(country in country_codes){
 
   # Load dataname spreadsheet -----------------------------------------------
   survey1 <- as.data.table(readxl::read_excel("codebook/var_names.xlsx", sheet = "survey_1"))
-  survey1 <- survey1[!is.na(newname & newname != "")]
+  survey1 <- survey1[!is.na(newname) & newname != ""]
   
   for(r_name in r_names){
     input_name <-  paste0(r_name, "_3.qs")
