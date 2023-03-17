@@ -47,7 +47,7 @@ Rscript.exe ".\r\version_3\dm09_clean_locations_v3.R" $new_only
 
 echo "Clean Households"
 Rscript.exe ".\r\version_3\dm10_clean_household_v3.R" $new_only
-# 
+
 echo "Clean Participants"
 Rscript.exe ".\r\version_3\dm11_clean_participant_v3.R" $new_only
 

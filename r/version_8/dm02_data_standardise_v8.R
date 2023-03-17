@@ -1,4 +1,4 @@
-## Name: dm02_data_standardise_v3.R
+## Name: dm02_data_standardise_v8.R
 ## Description: Check if country, panel, and wave are present, if not add.
 ##              Make the participant id unique across panels but within countries
 ##              Rename child data questions
@@ -13,8 +13,8 @@ library(stringr)
 
 # Source user written scripts ---------------------------------------------
 source('./r/00_setup_filepaths.r')
-source('./r/version_3/functions/check_cnty_panel_wave_v3.R')
-source('./r/version_3/functions/standardise_names_v3.R')
+source('./r/version_8/functions/check_cnty_panel_wave_v8.R')
+source('./r/version_8/functions/standardise_names_v8.R')
 
 
 # Get arguments -----------------------------------------------------------
@@ -39,7 +39,7 @@ print(paste0("Start: ", country))
 # Setup input and output data and filepaths -------------------------------
 filenames <- readxl::read_excel('data/spss_uk.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
-                          filenames$survey_version == 3,]
+                          filenames$survey_version == 8,]
 
 if(latest == 1){
    filenames <- tail(filenames, 1)
@@ -66,8 +66,8 @@ for(r_name in r_names){
    wave <- str_extract(r_name, "_wv[0-9]{2}")
    wave <- str_extract(wave, "[0-9]{2}")
    wave <- as.numeric(str_extract(wave, "[0-9]{1,2}"))
-   s_round <- str_extract(r_name, "_sr[0-9]{2}")
-   s_round <- str_extract(s_round, "[0-9]{2}")
+   s_round <- str_extract(r_name, "_sr[0-9]{2,3}")
+   s_round <- str_extract(s_round, "[0-9]{2,3}")
    country <- str_extract(r_name, ".+?(?=_)")
    
    dt[, survey_round := s_round]

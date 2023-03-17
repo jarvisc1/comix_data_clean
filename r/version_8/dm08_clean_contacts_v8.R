@@ -1,8 +1,8 @@
-## Name: dm07_clean_contact_vars_v3.R
+## Name: dm07_clean_contact_vars_v8.R
 ## Description: Clean the variables relating to the contact data.
-## Input file: combined_7_v3.qs
+## Input file: combined_7_v8.qs
 ## Functions:
-## Output file: combined_8_v3.qs clean/contacts_v3.qs
+## Output file: combined_8_v8.qs clean/contacts_v3.qs
 
 
 # Packages ----------------------------------------------------------------
@@ -29,13 +29,13 @@ print(paste0("Updating ", ifelse(latest==0, "All", "Latest")))
 # I/O Data ----------------------------------------------------------------
 
 if(latest == 1){
-   input_name <-  paste0("combined_7_v3a.qs")
-   output_name <- paste0("combined_8_v3a.qs")
-   output_cnts <- paste0("contacts_v3a.qs")
+   input_name <-  paste0("combined_7_v8a.qs")
+   output_name <- paste0("combined_8_v8a.qs")
+   output_cnts <- paste0("contacts_v8a.qs")
 } else if(latest ==0){
-   input_name <-  paste0("combined_7_v3.qs")
-   output_name <- paste0("combined_8_v3.qs")
-   output_cnts <- paste0("contacts_v3.qs")
+   input_name <-  paste0("combined_7_v8.qs")
+   output_name <- paste0("combined_8_v8.qs")
+   output_cnts <- paste0("contacts_v8.qs")
 }
 
 
@@ -72,7 +72,7 @@ update_file <- fread(input_file)
 # Remove variables not needed ---------------------------------------------
 # Such as market sector and extra variables that shouldn't have been added.
 
-v_remove <- readxl::read_excel('codebook/var_names.xlsx', sheet = "remove_vars_contact")
+v_remove <- readxl::read_excel('codebook/var_names.xlsx', sheet = "remove_vars")
 
 vars_remove <- names(dt)[names(dt) %in% v_remove$remove]
 print(paste0("Removed ", length(vars_remove), " columns"))
@@ -226,10 +226,14 @@ dt[, hhld_wave_uid := paste0(country,"_", panel,"_H_", part_id)]
 
 
 ## Gender
-dt[, part_gender    := map_gender[part_gender]]
-dt[, part_gender_nb := map_gender[part_gender_nb]]
-dt[, cnt_gender := map_gender[cnt_gender]]
-dt[, hhm_gender := map_gender[hhm_gender]]
+dt$part_gender    = map_gender[dt$part_gender]
+dt$part_gender_nb = map_gender[dt$part_gender_nb]
+dt$cnt_gender =     map_gender[dt$cnt_gender]
+dt$hhm_gender =     map_gender[dt$hhm_gender]
+# dt[, part_gender    := map_gender[part_gender]]
+# dt[, part_gender_nb := map_gender[part_gender_nb]]
+# dt[, cnt_gender := map_gender[cnt_gender]]
+# dt[, hhm_gender := map_gender[hhm_gender]]
 
 ## Did participant have contacts
 dt[, part_report_ind_contacts := map_report_ind_contacts[part_reported_all_contacts]]

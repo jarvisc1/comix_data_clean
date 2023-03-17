@@ -1,6 +1,6 @@
-## Name: dm01_resave_spss_as_qs_v3
+## Name: dm01_resave_spss_as_qs_v8
 ## Description: Load all the remote spss files and save them as QS files locally
-##              For version 3 of the survey. 
+##              For version 8 of the survey. UK second part
 ## Input file: Various spss files.sav
 ## Functions: save_spss_qs
 ## Output file: cnty_wkN_yyyymmdd_pN_wvN_1.qs
@@ -9,7 +9,7 @@
 
 # Source user written scripts ---------------------------------------------
 source('./r/00_setup_filepaths.r')
-source('./r/version_3/functions/save_spss_qs_v3.R')
+source('./r/version_8/functions/save_spss_qs_v8.R')
 
 
 # Get arguments -----------------------------------------------------------
@@ -28,14 +28,14 @@ print(paste0("Downloading ", ifelse(latest==0, "All", "Latest")))
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
 country <- "UK"
-latest <- 0
+
 # Open SPSS and save as QS ------------------------------------------------
 
 
 print(paste0("Start: ", country))
 filenames <- readxl::read_excel('data/spss_uk.xlsx', sheet = country)
 filenames <- filenames[!is.na(filenames$spss_name) & 
-                         filenames$survey_version == 3,]
+                         filenames$survey_version == 8,]
 
 if(latest == 1){
    filenames <- tail(filenames, 1)

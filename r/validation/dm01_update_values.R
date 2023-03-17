@@ -41,6 +41,9 @@ change_file <- readxl::read_excel(chg_path, sheet = "changes")
 change_file <- as.data.table(change_file)
 
 
+
+
+
 # This can work for changing values ---------------------------------------
 
 puid <- change_file[!is.na(part_uid)]
@@ -137,6 +140,9 @@ households[part_wave_uid %in% puid_w, use_with_care := TRUE]
 households[part_id %in% puid_w, use_with_care := TRUE]
 
 
+
+
+# Correct household data and contacts for UK data -------------------------
 
 
 

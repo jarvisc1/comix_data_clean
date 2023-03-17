@@ -1,8 +1,8 @@
-## Name: dm11_clean_participants_v4.R
+## Name: dm11_clean_participants_v8.R
 ## Description: Clean variables nrelated to particiapants
-## Input file: combined_10_v4.qs
+## Input file: combined_10_v8.qs
 ## Functions:
-## Output file: combined_11_v4.qs, part_v4.qs, part_min_v4.qs
+## Output file: combined_11_v8.qs, part_v8.qs, part_min_v8.qs
 
 
 
@@ -13,17 +13,42 @@ library(stringr)
 # Source user written scripts ---------------------------------------------
 source('r/00_setup_filepaths.r')
 
+
+# Get arguments -----------------------------------------------------------
+args = commandArgs(trailingOnly=TRUE)
+
+if(length(args) == 0){
+  latest <-  1 ## Change to zero if you to test all interactively
+} else if(args[1] == 0){
+  latest <-  0
+} else if(args[1] == 1){
+  latest <- args[1]
+}
+
+print(paste0("Updating ", ifelse(latest==0, "All", "Latest")))
+
 # I/O Data ----------------------------------------------------------------
 
-input_name <-  paste0("combined_10_v4.qs")
+if(latest == 1){
+  input_name <-  paste0("combined_10_v8a.qs")
+  output_name <- paste0("combined_11_v8a.qs")
+  output_parts <- paste0("part_v8a.qs")
+  output_parts_min <- paste0("part_min_v8a.qs")
+} else if(latest ==0){
+  input_name <-  paste0("combined_10_v8.qs")
+  output_name <- paste0("combined_11_v8.qs")
+  output_parts <- paste0("part_v8.qs")
+  output_parts_min <- paste0("part_min_v8.qs")
+}
+
+
+# I/O Data ----------------------------------------------------------------
+
 input_data <-  file.path(dir_data_process, input_name)
-output_name <- paste0("combined_11_v4.qs")
 output_data <- file.path(dir_data_process, output_name)
 
 ## Save participant data
 current_date <- Sys.Date()
-output_parts <- paste0("part_v4.qs")
-output_parts_min <- paste0("part_min_v4.qs")
 output_parts_date <- paste(current_date, output_parts, sep = "_")
 output_data_parts <- file.path("data/clean", output_parts)
 output_data_parts_min <- file.path("data/clean", output_parts_min)
@@ -31,7 +56,6 @@ output_data_parts_date <- file.path("data/clean/archive", output_parts_date)
 
 dt <- qs::qread(input_data)
 print(paste0("Opened: ", input_name)) 
-print(paste(unique(dt$country), collapse = ","))
 
 
 # Map objects for labels --------------------------------------------------
@@ -61,19 +85,11 @@ map_test <- c(
   "Prefer not to answer"  = "no answer",
   "Not tested" = "not tested", 
   "Tested and the test showed {#i_they.response.label} have or had Coronavirus" = "positive", 
-  "Tested and the test showed {#i_they.response.label} have Coronavirus currently" = "positive",
-  "{#i_they.response.label} have been tested and at least one test showed {#i_they.response.label} did have Coronavirus at" = "positive",
-  "{#i_they.response.label} have been tested and at least one test showed I {#i_they.response.label} did have Coronavirus a" = "positive",
-  "Tested, and the test showed {#i_they.response.label} do not have Coronavirus currently" = "negative",
   "Tested, and the test showed {#i_they.response.label} have not had Coronavirus" = "negative", 
-  "{#i_they.response.label} have been tested, and all the tests showed {#i_they.response.label} did not have Coronavirus" = "negative",
-  "{#i_they.response.label} have been tested, and all the tests showed I {#i_they.response.label} did not have Coronavirus" = "negative", 
   "Yes, and {#im_are.response.label} still waiting to hear the result" = "waiting for result",
   "Tested and the test showed {#i_they.response.label} did have Coronavirus at the time" = "positive", 
   "Tested, and the test showed {#i_they.response.label} did not have Coronavirus" = "negative", 
-  "Yes, and {#im_are.response.label} still waiting to hear the result" = "waiting for result",
-  "{#i_they.response.label} have been tested, and all the tests showed I {#i_they.response.label} did not have Coronavirus" = "negative",
-  "{#i_they.response.label} have been tested and at least one test showed I {#i_they.response.label} did have Coronavirus a" = "positive"
+  "Yes, and {#im_are.response.label} still waiting to hear the result" = "waiting for result"
 )
 
 map_attend_work_educ <- c(
@@ -148,28 +164,15 @@ print(paste0("Household vars: ", length(hh_cols)))
 loc_cols <- grep("area|region", names(dt), value = TRUE)
 print(paste0("Location vars: ", length(loc_cols)))
 
-# Country of Origin  ------------------------------------------------------
-# table(dt$country_origin, useNA = "always")
-# dt[is.na(country_origin), country_origin := country_origin_imported]
-# dt[is.na(country_father_origin), country_father_origin := country_father_origin_imported]
-# dt[is.na(country_mother_origin), country_mother_origin := country_mother_origin_imported]
-# table(dt$country_origin, useNA = "always")
-# 
-# dt[is.na(country_origin), country_origin := country_origin_other]
-# dt[is.na(country_father_origin), country_father_origin := country_father_origin_other]
-# dt[is.na(country_mother_origin), country_mother_origin := country_mother_origin_other]
-
-
 # Clean participants ------------------------------------------------------
-
 
 
 
 ## Removing spaces and lower case ---------------------------------------------------------
 
-# dt[, part_ethnicity := tolower(part_ethnicity)]
-# dt[, part_ethnicity2 := tolower(part_ethnicity2)]
-# dt[, part_social_group := gsub("  ", " ", part_social_group)]
+dt[, part_ethnicity := tolower(part_ethnicity)]
+#dt[, part_ethnicity2 := tolower(part_ethnicity2)]
+dt[, part_social_group := gsub("  ", " ", part_social_group)]
 
 # Behaviour and attitudes -------------------------------------------------
 
@@ -187,6 +190,41 @@ dt[, part_att_likely := factor(part_att_likely, levels = att_levels)]
 dt[, part_att_serious := factor(part_att_serious, levels = att_levels)]
 dt[, part_att_spread := factor(part_att_spread, levels = att_levels)]
 
+# Visits ------------------------------------------------------------------
+
+## Map the vars to more readable answers
+
+visit_names_int <- grep("part_visit", names(dt), value = TRUE)
+
+
+if(length(visit_names_int)>0){
+  map_visits_fn <- function(x) map_visits[x]
+  map_visits_yn_fn <- function(x) map_visits_yn[x]
+  
+  dt[ , (visit_names_int) := lapply(.SD, map_visits_fn), .SDcols = visit_names_int]
+  
+  visit_names <- gsub("_int", "", visit_names_int)
+  ## Create yes no versions
+  dt[ , (visit_names) := lapply(.SD, map_visits_yn_fn), .SDcols = visit_names_int]
+}
+
+
+# Could add in don't know to the above ------------------------------------
+# dt[, table(part_visit_cinema_not_attend_times_dk)]
+# dt[, table(part_visit_concert_not_attend_times_dk)]
+# dt[, table(part_visit_pub_not_attend_times_dk)]
+# dt[, table(part_visit_restaurant_not_attend_times_dk)]
+# dt[, table(part_visit_sportevent_attendee_not_attend_times_dk)]
+# dt[, table(part_visit_sportevent_participant_not_attend_times_dk)]
+# dt[, table(part_visit_supermarket_not_attend_times_dk)]
+# dt[, table(part_visit_religious_event_not_attend_times_dk)]
+# 
+# dt[, table(part_visit_indoor_event_not_attend_times_reason_1)]
+# dt[, table(part_visit_indoor_event_not_attend_times_reason_1_dk)]
+# dt[, table(part_visit_indoor_event_not_attend_times_reason_2)]
+# dt[, table(part_visit_outdoor_event_not_attend_times_dk)]
+# dt[, table(part_visit_outdoor_event_not_attend_times_reason_1)]
+# dt[, table(part_visit_outdoor_event_not_attend_times_reason_2)]
 
 # Facemasks --------------------------------------------------------------
 dt[, part_face_mask := map_fm_yn[part_face_mask]]
@@ -207,7 +245,6 @@ dt[, part_face_mask_work_education := map_fm_yn[part_face_mask_work_education]]
 
 dt[, part_antibody_test := map_test[part_antibody_test]]
 dt[, part_covid_test_past := map_test[part_covid_test_past]]
-dt[, part_covid_test_recent := map_test[part_covid_test_recent]]
 
 
 # Travel ------------------------------------------------------------------
@@ -227,20 +264,27 @@ dt[, part_attend_work_week := map_attend_work_educ[part_attend_work_week]]
 
 dt[, part_attend_education_yesterday := map_fm_yn[part_attend_education_yesterday]]
 dt[, part_attend_work_yesterday := map_fm_yn[part_attend_work_yesterday]]
-# dt[, part_attend_school_yesterday := map_status[part_attend_school_yesterday]]
+dt[, part_attend_school_yesterday := map_status[part_attend_school_yesterday]]
 dt[, part_employstatus := tolower(part_employstatus)]
 dt[, part_student_employed := tolower(part_student_employed)]
 dt[, part_employed_attends_education := tolower(part_employed_attends_education)]
 dt[, part_educationplace_status := map_status[part_educationplace_status]]
 dt[, part_workplace_status := map_status[part_workplace_status]]
 dt[, part_furloughed := map_fm_yn[part_furloughed]]
-# dt[, part_elevated_risk := map_fm_yn[part_elevated_risk]]
-# dt[, part_high_risk_v2 := map_fm_yn[part_high_risk_v2]]
 dt[, part_isolation_quarantine := map_fm_yn[part_isolation_quarantine]]
 dt[, part_pregnant := map_fm_yn[part_pregnant]]
-# dt[, part_income := tolower(part_income)]
+dt[, part_income := tolower(part_income)]
 dt[, part_no_contacts := tolower(part_no_contacts)]
 dt[, part_reported_all_contacts := map_report_contacts[part_reported_all_contacts]]
+
+
+## Standardise workplace open or closed
+dt[part_workplace_status =="Open", part_work_closed := "no"]
+dt[part_workplace_status =="partially open", part_work_closed := "no"]
+dt[part_workplace_status =="no workplace", part_work_closed := "yes"]
+dt[part_workplace_status =="closed", part_work_closed := "yes"]
+
+
 
 # Clean dates -------------------------------------------------------------
 ## Clean and defines dates
@@ -260,136 +304,6 @@ spss_date_cols <- grep("part_vacc_.*_date$", names(dt), value = TRUE)
 spss_date <- function(x) as.Date(as.numeric(x)/86400, origin = "1582-10-14")
 dt[, (spss_date_cols) := lapply(.SD, spss_date), .SDcols = spss_date_cols ]
 
-
-# IPSOS edu cols --------------------------------------------------------------
-edu <- grep("ipsos_edu", names(dt), value = TRUE)
-  #g1 countries
-  try(dt[country=="es", ipsos_edu := ipsos_edu_es], silent = T)
-  try(dt[country=="fr", ipsos_edu := ipsos_edu_fr], silent = T)
-  try(dt[country=="it", ipsos_edu := ipsos_edu_it], silent = T)
-  try(dt[country=="pl", ipsos_edu := ipsos_edu_pl], silent = T)
-  try(dt[country=="at", ipsos_edu := ipsos_edu_at], silent = T)
-  try(dt[country=="dk", ipsos_edu := ipsos_edu_dk], silent = T)
-  try(dt[country=="pt", ipsos_edu := ipsos_edu_pt], silent = T)
-
-  try(dt[country=="at", ipsos_edu_recode := ipsos_edu_recode_at], silent = T)
-  try(dt[country=="pl", ipsos_edu_recode := ipsos_edu_recode_pl], silent = T)
-  
-  #g2 countries
-  try(dt[country=="ch", ipsos_edu := ipsos_edu_ch], silent = T)
-  try(dt[country=="fi", ipsos_edu := ipsos_edu_fi], silent = T)
-  try(dt[country=="gr", ipsos_edu := ipsos_edu_gr], silent = T)
-  try(dt[country=="lt", ipsos_edu := ipsos_edu_lt], silent = T)
-  try(dt[country=="si", ipsos_edu := ipsos_edu_si], silent = T)
-  
-  #g3 countries
-  try(dt[country=="hr", ipsos_edu := ipsos_edu_hr], silent = T)
-  try(dt[country=="ee", ipsos_edu := ipsos_edu_ee], silent = T)
-  try(dt[country=="sk", ipsos_edu := ipsos_edu_sk], silent = T)
-  try(dt[country=="mt", ipsos_edu := ipsos_edu_mt], silent = T)
-  try(dt[country=="hu", ipsos_edu := ipsos_edu_hu], silent = T)
-  
-dt[, (edu) := NULL]
-
-# IPSOS inc col
-inc <- grep("ipsos_income_", names(dt), value = TRUE)
-
-  #g1 countries
-  try(dt[country == "dk", ipsos_income := ipsos_income_dk], silent = T)
-  try(dt[country == "es", ipsos_income := ipsos_income_es], silent = T)
-  try(dt[country == "fr", ipsos_income := ipsos_income_fr], silent = T)
-  try(dt[country == "it", ipsos_income := ipsos_income_it], silent = T)
-  try(dt[country == "pl", ipsos_income := ipsos_income_pl], silent = T)
-  try(dt[country == "pt", ipsos_income := ipsos_income_pt], silent = T)
-  
-  #g2 countries
-  try(dt[country == "ch", ipsos_income := ipsos_income_ch], silent = T)
-
-  #g3 countries
-  try(dt[country == "hr", ipsos_income := ipsos_income_hr], silent = T)
-  try(dt[country == "hu", ipsos_income := ipsos_income_hu], silent = T)
-
-dt[, (inc) := NULL]
-
-# IPSOS social grade
-sg <- grep("ipsos_sg_", names(dt), value = TRUE)
-
-  #g1 countries
-  try(dt[country == "dk", ipsos_sg := ipsos_sg_dk], silent = T)
-  try(dt[country == "es", ipsos_sg := ipsos_sg_es], silent = T)
-  try(dt[country == "fr", ipsos_sg := ipsos_sg_fr], silent = T)
-  try(dt[country == "it", ipsos_sg := ipsos_sg_it], silent = T)
-  try(dt[country == "pt", ipsos_sg := ipsos_sg_pt], silent = T)
-
-  #g2 countries
-  try(dt[country == "ch", ipsos_sg := ipsos_sg_ch], silent = T)
-
-  #g3 countries
-  try(dt[country %in% c("ee", "hr", "hu", "mt", "sk"), ipsos_sg := NA])
-
-dt[, (sg) := NULL]
-
-
-# IPSOS occupation cols (occhi - 1)
-occhi1 <- grep("ipsos_occhi1_", names(dt), value = TRUE)
-
-  #g1 countries
-  try(dt[country == "dk", ipsos_occhi1 := ipsos_occhi1_dk], silent = T)
-  try(dt[country == "es", ipsos_occhi1 := ipsos_occhi1_es], silent = T)
-  try(dt[country == "fr", ipsos_occhi1 := ipsos_occhi1_fr], silent = T)
-  try(dt[country == "it", ipsos_occhi1 := ipsos_occhi1_it], silent = T)
-  try(dt[country == "pt", ipsos_occhi1 := ipsos_occhi1_pt], silent = T)
-  try(dt[country == "pl", ipsos_occhi1 := ipsos_occhi1_pl], silent = T)
-
-  #g2 countries
-  try(dt[country == "ch", ipsos_occhi1 := ipsos_occhi1_ch], silent = T)
-
-  #g3 countries
-  try(dt[country == "hu", ipsos_occhi1 := ipsos_occhi1_hu], silent = T)
-  dt[country %in% c("ee", "hr", "mt", "sk"), ipsos_occhi1 := NA]
-  
-dt[, (occhi1) := NULL]
-
-# IPSOS occupation cols (occhi - 2 and 3)
-occhi2 <- grep("ipsos_occhi2_", names(dt), value = TRUE)
-try(dt[country == "fr", ipsos_occhi2 := ipsos_occhi2_fr], silent = T)
-dt[, (occhi2) := NULL]
-
-occhi3 <- grep("ipsos_occhi3_", names(dt), value = TRUE)
-try(dt[country != "fr", ipsos_occhi3 := NA], silent = T)  
-dt[, (occhi3) := NULL]
-
-
-# IPSOS occupation cols (occr)
-occr1 <- grep("ipsos_occr1_", names(dt), value = TRUE)
-  
-  #g1 countries
-  try(dt[country == "dk", ipsos_occr1 := ipsos_occr1_dk], silent = T)
-  try(dt[country == "es", ipsos_occr1 := ipsos_occr1_es], silent = T)
-  try(dt[country == "fr", ipsos_occr1 := ipsos_occr1_fr], silent = T)
-  try(dt[country == "it", ipsos_occr1 := ipsos_occr1_it], silent = T)
-  try(dt[country == "pt", ipsos_occr1 := ipsos_occr1_pt], silent = T)
-  try(dt[country == "pl", ipsos_occr1 := ipsos_occr1_pl], silent = T)
-
-  #g2 countries
-  try(dt[country == "ch", ipsos_occr1 := ipsos_occr1_ch], silent = T)
-
-  #g3 countries
-  try(dt[country == "hu", ipsos_occr1 := ipsos_occr1_hu], silent = T)
-  dt[country %in% c("ee", "hr", "mt", "sk"), ipsos_occr1 := NA]
-  
-  dt[, (occr1) := NULL]
-
-# IPSOS occupation cols (occr - 2 and 3)
-occr2 <- grep("ipsos_occr2_", names(dt), value = TRUE)
-try(dt[country == "fr", ipsos_occr2 := ipsos_occr2_fr], silent = T)
-dt[, (occr2) := NULL]
-
-occr3 <- grep("ipsos_occr3_", names(dt), value = TRUE)
-try(dt[country != "fr", ipsos_occr3 := NA], silent = T)  
-dt[, (occr3) := NULL]
-  
-
 # Class size --------------------------------------------------------------
 
 cut_class <- function(x) {
@@ -397,7 +311,7 @@ cut_class <- function(x) {
 }
 
 
-# dt[, part_school_class_size := cut_class(part_school_class_size)]
+dt[, part_school_class_size := cut_class(part_school_class_size)]
 
 # Hand washing ------------------------------------------------------------
 
@@ -407,7 +321,6 @@ cut_class <- function(x) {
 dt[, hhm_flag := NULL]
 
 hhmvars_old <- grep("hhm", names(dt), value = TRUE)
-hhmvars_old <- grep("child_hhm", hhmvars_old, value = TRUE, inv = TRUE) #exclude child_select var
 
 hhmvars_new <-  gsub("hhm", "part", hhmvars_old)
 
@@ -417,6 +330,12 @@ hhmvars_new <- hhmvars_new[!hhmvars_new %in% names(dt)]
 
 setnames(dt, old = hhmvars_old, new = hhmvars_new, skip_absent = TRUE)
 
+## Risk change from personal to all household from survey round 44
+risk_names <- grep("part_.*_risk", names(dt), value = TRUE)
+
+# Create a consistent risk category
+dt[, part_high_risk := ifelse(part_high_risk_v2 == "yes" | part_med_risk_v2 == "yes", "yes", "no")]
+
 
 
 # Remove variables --------------------------------------------------------
@@ -424,48 +343,21 @@ setnames(dt, old = hhmvars_old, new = hhmvars_new, skip_absent = TRUE)
 q21vars <- grep("q21", names(dt), value = TRUE)
 q23vars <- grep("q23", names(dt), value = TRUE)
 
-vars_remove <- readxl::read_excel('codebook/var_names_v4.xlsx', sheet = "remove_vars")
+vars_remove <- readxl::read_excel('codebook/var_names.xlsx', sheet = "remove_vars")
 remove_vars <- c(q21vars, q23vars, vars_remove$remove)
 remove_vars <- remove_vars[remove_vars %in% names(dt)]
 
 set(dt, j = remove_vars, value = NULL)
 
 
-# Country specific cols ---------------------------------------------------
-
-# social group (sg), occupation (oc), & income (inc) if any
-income_cols <- grep("inc", names(dt), value = T)
-sg_cols <- grep("sg", names(dt), value = T)
-oc_cols <- grep("oc", names(dt), value = T)
-reg_cols <- grep("reg", names(dt), value = T)
-country_specific_cols <- c(income_cols, sg_cols, oc_cols, reg_cols)
-
-
-# Order IPSOS cols last
-non_ipsos <- grep("^ipsos", names(dt), value = T, inv = TRUE)
-setcolorder(dt, non_ipsos)
-
 # Filter to relevant columns -------------------------------------------------------
 
 parts_names <- grep("part", names(dt), value = TRUE)
 parts_names <- parts_names[parts_names != "parts_nickname_masked"]
-additional_part_names <- c("country_mother_origin",
-                           "country_father_origin",
-                           "ecdc_measures_likert",
-                           "ecdc_compliance_reason_fines",
-                           "ecdc_compliance_reason_law",
-                           "ecdc_compliance_reason_moral",
-                           "ecdc_compliance_reason_ff_saftey",
-                           "ecdc_compliance_reason_personal_safety",
-                           "ecdc_compliance_reason_agree_most",
-                           "ecdc_compliance_reason_agree_some",
-                           "ecdc_compliance_none",
-                           "ecdc_compliance_dont_know")
-
 
 id_vars <- c("country",
-             # "area_2_name", 
-             # "area_3_name", 
+             "area_2_name", 
+             "area_3_name", 
              "panel",
              "wave",
              "date",
@@ -489,22 +381,21 @@ vars_names <- c("part_id",
                 "sample_type",
                 "date",
                 "weekday",
-                # "area_2_name", 
-                # "area_3_name", 
-                # "part_age",
-                # "part_ethnicity",
-                # "country_origin",
-                # "part_social_group_be",
+                "area_2_name", 
+                "area_3_name", 
+                "part_age",
+                "part_ethnicity",
+                "part_social_group",
                 "part_age_group", 
-                # "part_age_group_be",
                 "part_age_est_min",
                 "part_age_est_max",
                 "hh_size",
-                "hh_size_group",
-                country_specific_cols 
+                "hh_size_group"
 )
 
 dt_min = dt[, ..vars_names]
+
+
 
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)

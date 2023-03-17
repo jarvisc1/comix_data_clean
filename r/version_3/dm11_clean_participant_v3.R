@@ -171,7 +171,7 @@ print(paste0("Location vars: ", length(loc_cols)))
 ## Removing spaces and lower case ---------------------------------------------------------
 
 dt[, part_ethnicity := tolower(part_ethnicity)]
-dt[, part_ethnicity2 := tolower(part_ethnicity2)]
+#dt[, part_ethnicity2 := tolower(part_ethnicity2)]
 dt[, part_social_group := gsub("  ", " ", part_social_group)]
 
 # Behaviour and attitudes -------------------------------------------------

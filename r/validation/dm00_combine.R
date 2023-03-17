@@ -20,6 +20,9 @@ source('r/00_setup_filepaths.r')
 ## Could make the versions one as temporary
 ## versions_filepaths <- file.path(dir_date_clean, "versions")
 clean_files <- list.files(dir_data_clean, full.names = TRUE)
+# Remove "conflict" files)
+clean_files <- grep("conflict", clean_files, value = TRUE, invert = T)
+
 
 part_files <- grep("part_v.*", clean_files, value = TRUE)
 part_min_files <- grep("part_min_v.*", clean_files, value = TRUE)
@@ -57,15 +60,4 @@ qs::qsave(pa, file.path(dir_data_clean,"part.qs"))
 qs::qsave(ca, file.path(dir_data_clean,"contacts.qs"))
 qs::qsave(ha, file.path(dir_data_clean,"households.qs"))
 
-
-
-
-
-# pa[, table(survey_round, country)]
-# 
-# pm[, start_date := min(date), by = .(country, survey_round)]
-# 
-# pm[, table(paste0(lubridate::year(start_date),"-wk", lubridate::week(start_date)), country)]
-# 
-# class(part_list[[3]][,168]$part_vacc_dose1_date)
-# class(part_list[[4]][,126]$part_vacc_dose1_date)
+message(paste("Latest survey round:",  max(pa$survey_round)))

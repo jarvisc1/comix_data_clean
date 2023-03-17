@@ -21,8 +21,9 @@
 # sh run_version_5.sh 'download'
 # sh run_version_6.sh 'download'
 
-Rscript.exe r/validation/dm00_combine.r
-Rscript.exe r/validation/dm01_update_values.r
-Rscript.exe r/validation/dm100_save_locally.r
-Rscript.exe r/validation/dm101_save_remote.r
+Rscript "r/validation/dm00_combine.r"
+Rscript "r/validation/dm01_update_values.r"
+Rscript "r/validation/dm100_save_locally.r"
+Rscript "r/validation/dm101_save_remote.r"
+Rscript "r/validation/dm_count_contacts.r"
  
