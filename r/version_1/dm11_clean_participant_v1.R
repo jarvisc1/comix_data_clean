@@ -318,7 +318,7 @@ dt[, part_public_transport_train_time := cut_time(part_public_transport_train_ho
 # Work --------------------------------------------------------------------
 
 dt[, part_employstatus := tolower(part_employstatus)]
-dt[, part_education := tolower(part_education)]
+#dt[, part_education := tolower(part_education)]
 dt[, part_pregnant := map_fm_yn[part_pregnant]]
 dt[, part_income := tolower(part_income)]
 dt[, part_no_contacts := tolower(part_no_contacts)]

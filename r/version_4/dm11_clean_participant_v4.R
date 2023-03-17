@@ -62,8 +62,12 @@ map_test <- c(
   "Not tested" = "not tested", 
   "Tested and the test showed {#i_they.response.label} have or had Coronavirus" = "positive", 
   "Tested and the test showed {#i_they.response.label} have Coronavirus currently" = "positive",
+  "{#i_they.response.label} have been tested and at least one test showed {#i_they.response.label} did have Coronavirus at" = "positive",
+  "{#i_they.response.label} have been tested and at least one test showed I {#i_they.response.label} did have Coronavirus a" = "positive",
   "Tested, and the test showed {#i_they.response.label} do not have Coronavirus currently" = "negative",
   "Tested, and the test showed {#i_they.response.label} have not had Coronavirus" = "negative", 
+  "{#i_they.response.label} have been tested, and all the tests showed {#i_they.response.label} did not have Coronavirus" = "negative",
+  "{#i_they.response.label} have been tested, and all the tests showed I {#i_they.response.label} did not have Coronavirus" = "negative", 
   "Yes, and {#im_are.response.label} still waiting to hear the result" = "waiting for result",
   "Tested and the test showed {#i_they.response.label} did have Coronavirus at the time" = "positive", 
   "Tested, and the test showed {#i_they.response.label} did not have Coronavirus" = "negative", 
@@ -257,7 +261,134 @@ spss_date <- function(x) as.Date(as.numeric(x)/86400, origin = "1582-10-14")
 dt[, (spss_date_cols) := lapply(.SD, spss_date), .SDcols = spss_date_cols ]
 
 
+# IPSOS edu cols --------------------------------------------------------------
+edu <- grep("ipsos_edu", names(dt), value = TRUE)
+  #g1 countries
+  try(dt[country=="es", ipsos_edu := ipsos_edu_es], silent = T)
+  try(dt[country=="fr", ipsos_edu := ipsos_edu_fr], silent = T)
+  try(dt[country=="it", ipsos_edu := ipsos_edu_it], silent = T)
+  try(dt[country=="pl", ipsos_edu := ipsos_edu_pl], silent = T)
+  try(dt[country=="at", ipsos_edu := ipsos_edu_at], silent = T)
+  try(dt[country=="dk", ipsos_edu := ipsos_edu_dk], silent = T)
+  try(dt[country=="pt", ipsos_edu := ipsos_edu_pt], silent = T)
 
+  try(dt[country=="at", ipsos_edu_recode := ipsos_edu_recode_at], silent = T)
+  try(dt[country=="pl", ipsos_edu_recode := ipsos_edu_recode_pl], silent = T)
+  
+  #g2 countries
+  try(dt[country=="ch", ipsos_edu := ipsos_edu_ch], silent = T)
+  try(dt[country=="fi", ipsos_edu := ipsos_edu_fi], silent = T)
+  try(dt[country=="gr", ipsos_edu := ipsos_edu_gr], silent = T)
+  try(dt[country=="lt", ipsos_edu := ipsos_edu_lt], silent = T)
+  try(dt[country=="si", ipsos_edu := ipsos_edu_si], silent = T)
+  
+  #g3 countries
+  try(dt[country=="hr", ipsos_edu := ipsos_edu_hr], silent = T)
+  try(dt[country=="ee", ipsos_edu := ipsos_edu_ee], silent = T)
+  try(dt[country=="sk", ipsos_edu := ipsos_edu_sk], silent = T)
+  try(dt[country=="mt", ipsos_edu := ipsos_edu_mt], silent = T)
+  try(dt[country=="hu", ipsos_edu := ipsos_edu_hu], silent = T)
+  
+dt[, (edu) := NULL]
+
+# IPSOS inc col
+inc <- grep("ipsos_income_", names(dt), value = TRUE)
+
+  #g1 countries
+  try(dt[country == "dk", ipsos_income := ipsos_income_dk], silent = T)
+  try(dt[country == "es", ipsos_income := ipsos_income_es], silent = T)
+  try(dt[country == "fr", ipsos_income := ipsos_income_fr], silent = T)
+  try(dt[country == "it", ipsos_income := ipsos_income_it], silent = T)
+  try(dt[country == "pl", ipsos_income := ipsos_income_pl], silent = T)
+  try(dt[country == "pt", ipsos_income := ipsos_income_pt], silent = T)
+  
+  #g2 countries
+  try(dt[country == "ch", ipsos_income := ipsos_income_ch], silent = T)
+
+  #g3 countries
+  try(dt[country == "hr", ipsos_income := ipsos_income_hr], silent = T)
+  try(dt[country == "hu", ipsos_income := ipsos_income_hu], silent = T)
+
+dt[, (inc) := NULL]
+
+# IPSOS social grade
+sg <- grep("ipsos_sg_", names(dt), value = TRUE)
+
+  #g1 countries
+  try(dt[country == "dk", ipsos_sg := ipsos_sg_dk], silent = T)
+  try(dt[country == "es", ipsos_sg := ipsos_sg_es], silent = T)
+  try(dt[country == "fr", ipsos_sg := ipsos_sg_fr], silent = T)
+  try(dt[country == "it", ipsos_sg := ipsos_sg_it], silent = T)
+  try(dt[country == "pt", ipsos_sg := ipsos_sg_pt], silent = T)
+
+  #g2 countries
+  try(dt[country == "ch", ipsos_sg := ipsos_sg_ch], silent = T)
+
+  #g3 countries
+  try(dt[country %in% c("ee", "hr", "hu", "mt", "sk"), ipsos_sg := NA])
+
+dt[, (sg) := NULL]
+
+
+# IPSOS occupation cols (occhi - 1)
+occhi1 <- grep("ipsos_occhi1_", names(dt), value = TRUE)
+
+  #g1 countries
+  try(dt[country == "dk", ipsos_occhi1 := ipsos_occhi1_dk], silent = T)
+  try(dt[country == "es", ipsos_occhi1 := ipsos_occhi1_es], silent = T)
+  try(dt[country == "fr", ipsos_occhi1 := ipsos_occhi1_fr], silent = T)
+  try(dt[country == "it", ipsos_occhi1 := ipsos_occhi1_it], silent = T)
+  try(dt[country == "pt", ipsos_occhi1 := ipsos_occhi1_pt], silent = T)
+  try(dt[country == "pl", ipsos_occhi1 := ipsos_occhi1_pl], silent = T)
+
+  #g2 countries
+  try(dt[country == "ch", ipsos_occhi1 := ipsos_occhi1_ch], silent = T)
+
+  #g3 countries
+  try(dt[country == "hu", ipsos_occhi1 := ipsos_occhi1_hu], silent = T)
+  dt[country %in% c("ee", "hr", "mt", "sk"), ipsos_occhi1 := NA]
+  
+dt[, (occhi1) := NULL]
+
+# IPSOS occupation cols (occhi - 2 and 3)
+occhi2 <- grep("ipsos_occhi2_", names(dt), value = TRUE)
+try(dt[country == "fr", ipsos_occhi2 := ipsos_occhi2_fr], silent = T)
+dt[, (occhi2) := NULL]
+
+occhi3 <- grep("ipsos_occhi3_", names(dt), value = TRUE)
+try(dt[country != "fr", ipsos_occhi3 := NA], silent = T)  
+dt[, (occhi3) := NULL]
+
+
+# IPSOS occupation cols (occr)
+occr1 <- grep("ipsos_occr1_", names(dt), value = TRUE)
+  
+  #g1 countries
+  try(dt[country == "dk", ipsos_occr1 := ipsos_occr1_dk], silent = T)
+  try(dt[country == "es", ipsos_occr1 := ipsos_occr1_es], silent = T)
+  try(dt[country == "fr", ipsos_occr1 := ipsos_occr1_fr], silent = T)
+  try(dt[country == "it", ipsos_occr1 := ipsos_occr1_it], silent = T)
+  try(dt[country == "pt", ipsos_occr1 := ipsos_occr1_pt], silent = T)
+  try(dt[country == "pl", ipsos_occr1 := ipsos_occr1_pl], silent = T)
+
+  #g2 countries
+  try(dt[country == "ch", ipsos_occr1 := ipsos_occr1_ch], silent = T)
+
+  #g3 countries
+  try(dt[country == "hu", ipsos_occr1 := ipsos_occr1_hu], silent = T)
+  dt[country %in% c("ee", "hr", "mt", "sk"), ipsos_occr1 := NA]
+  
+  dt[, (occr1) := NULL]
+
+# IPSOS occupation cols (occr - 2 and 3)
+occr2 <- grep("ipsos_occr2_", names(dt), value = TRUE)
+try(dt[country == "fr", ipsos_occr2 := ipsos_occr2_fr], silent = T)
+dt[, (occr2) := NULL]
+
+occr3 <- grep("ipsos_occr3_", names(dt), value = TRUE)
+try(dt[country != "fr", ipsos_occr3 := NA], silent = T)  
+dt[, (occr3) := NULL]
+  
 
 # Class size --------------------------------------------------------------
 
@@ -276,6 +407,7 @@ cut_class <- function(x) {
 dt[, hhm_flag := NULL]
 
 hhmvars_old <- grep("hhm", names(dt), value = TRUE)
+hhmvars_old <- grep("child_hhm", hhmvars_old, value = TRUE, inv = TRUE) #exclude child_select var
 
 hhmvars_new <-  gsub("hhm", "part", hhmvars_old)
 
@@ -292,7 +424,7 @@ setnames(dt, old = hhmvars_old, new = hhmvars_new, skip_absent = TRUE)
 q21vars <- grep("q21", names(dt), value = TRUE)
 q23vars <- grep("q23", names(dt), value = TRUE)
 
-vars_remove <- readxl::read_excel('codebook/var_names.xlsx', sheet = "remove_vars")
+vars_remove <- readxl::read_excel('codebook/var_names_v4.xlsx', sheet = "remove_vars")
 remove_vars <- c(q21vars, q23vars, vars_remove$remove)
 remove_vars <- remove_vars[remove_vars %in% names(dt)]
 
@@ -308,6 +440,10 @@ oc_cols <- grep("oc", names(dt), value = T)
 reg_cols <- grep("reg", names(dt), value = T)
 country_specific_cols <- c(income_cols, sg_cols, oc_cols, reg_cols)
 
+
+# Order IPSOS cols last
+non_ipsos <- grep("^ipsos", names(dt), value = T, inv = TRUE)
+setcolorder(dt, non_ipsos)
 
 # Filter to relevant columns -------------------------------------------------------
 

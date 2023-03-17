@@ -34,7 +34,7 @@ print(paste0("Opened: ", input_name))
 # Remove variables not needed ---------------------------------------------
 # Such as market sector and extra variables that shouldn't have been added.
 
-v_remove <- readxl::read_excel('codebook/var_names.xlsx', sheet = "remove_vars")
+v_remove <- readxl::read_excel('codebook/var_names.xlsx', sheet = "remove_vars_contact")
 
 vars_remove <- names(dt)[names(dt) %in% v_remove$remove]
 print(paste0("Removed ", length(vars_remove), " columns"))
@@ -447,7 +447,7 @@ dt[, cnt_sport := YesNoNA_Ind(cnt_sport)]
 dt[, cnt_supermarket := YesNoNA_Ind(cnt_supermarket)]
 dt[, cnt_worship := YesNoNA_Ind(cnt_worship)]
 dt[, cnt_bar_rest := YesNoNA_Ind(cnt_bar_rest)]
-dt[, cnt_public_market := YesNoNA_Ind(cnt_public_market)]
+#dt[, cnt_public_market := YesNoNA_Ind(cnt_public_market)]
 dt[, cnt_other_place := YesNoNA_Ind(cnt_other_place)]
 dt[, cnt_inside := YesNoNA_Ind(cnt_inside)]
 dt[, cnt_outside := YesNoNA_Ind(cnt_outside)]

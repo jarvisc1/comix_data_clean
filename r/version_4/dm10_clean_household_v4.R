@@ -271,6 +271,7 @@ id_vars <- c("country",
              "part_flag",
              "contact")
 hhm_vars <- c(id_vars, hhm_names)
+hhm_vars <- unique(hhm_vars)
 #names(dt)[!names(dt) %in% hhm_vars]
 
 hhms <- dt[hhm_flag == TRUE, ..hhm_vars]
@@ -287,8 +288,14 @@ cols_start <- ncol(dt)
 emptycols_na <- colSums(is.na(dt)) == nrow(dt)
 if(sum(emptycols_na) > 0 ){
   emptycols_na <- names(emptycols_na[emptycols_na])
+  emptycols_na <- grep("area", emptycols_na, value = TRUE, inv = TRUE) #keep all area-related variables
   set(dt, j = emptycols_na, value = NULL)
 }  
+
+## Remove misc columns
+remove <- c("hhcompconfirm", "hhcompremove", 
+            "hhcompadd_scale_1", "child_hhm_select_raw_2", "")
+hhms <- hhms[, (remove) := NULL]
 
 print(paste0("Reduced from ", cols_start, " to ", ncol(dt), " columns"))
 

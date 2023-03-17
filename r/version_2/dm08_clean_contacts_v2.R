@@ -34,7 +34,7 @@ print(paste0("Opened: ", input_name))
 # Remove variables not needed ---------------------------------------------
 # Such as market sector and extra variables that shouldn't have been added.
 
-v_remove <- readxl::read_excel('codebook/var_names.xlsx', sheet = "remove_vars")
+v_remove <- readxl::read_excel('codebook/var_names.xlsx', sheet = "remove_vars_contact")
 
 vars_remove <- names(dt)[names(dt) %in% v_remove$remove]
 print(paste0("Removed ", length(vars_remove), " columns"))

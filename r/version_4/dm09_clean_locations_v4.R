@@ -42,7 +42,33 @@ dt[, area_3_name := first(area_3_name), by = .(country, panel, wave, part_id)]
 dt[, area_3_name := map_area_3_name[area_3_name]]
 
 
-   
+## rename ipsos location cols
+qmkt <- grep("qmkt", names(dt), value = TRUE)
+setnames(dt, qmkt, paste0("ipsos_", qmkt))
+
+
+## consolidate region into one column
+ipsos_region <- grep("ipsos_region", names(dt), value = TRUE)
+  #g1
+  try(dt[country=="at", ipsos_region := ipsos_region_at], silent = T)
+  try(dt[country=="dk", ipsos_region := ipsos_region_dk], silent = T)
+  try(dt[country=="es", ipsos_region := ipsos_region_es], silent = T)
+  try(dt[country=="fr", ipsos_region := ipsos_region_fr], silent = T)
+  try(dt[country=="it", ipsos_region := ipsos_region_it], silent = T)
+  try(dt[country=="pl", ipsos_region := ipsos_region_pl], silent = T)
+  try(dt[country=="pt", ipsos_region := ipsos_region_pt], silent = T)
+  #g2
+  try(dt[country=="fi", ipsos_region := ipsos_region_fi], silent = T)
+  try(dt[country=="ch", ipsos_region := ipsos_region_ch], silent = T)
+  try(dt[country=="gr", ipsos_region := ipsos_region_gr], silent = T)
+  try(dt[country=="lt", ipsos_region := ipsos_region_lt], silent = T)
+  #g3 countries did not have a column called region
+  try(dt[country %in% c("ee", "hr", "hu", "mt", "sk"), ipsos_region := NA])
+
+  
+  dt[, (ipsos_region) := NULL]
+  
+
    
 # Save data ---------------------------------------------------------------
 qs::qsave(dt, file = output_data)

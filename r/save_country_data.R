@@ -17,6 +17,15 @@ for (group in groups) {
   contact_cols <- read.csv("codebook/contact_names.csv")$cols
   part_cols <- intersect(names(part), part_cols)
 
+  loc <- grep("qmktsize", names(part), value = TRUE)
+  
+  edu <- grep("edu", names(part), value = TRUE)
+  inc <- grep("inc", names(part), value = TRUE)
+  occ <- grep("occ", names(part), value = TRUE)
+  qxx <- grep("qxx", names(part), value = TRUE)
+  
+  part_cols <- c(loc, edu, inc, occ, qxx, part_cols)
+  
   ncol(part)
   part <- part[, ..part_cols]
   contacts <- contacts[, ..contact_cols]

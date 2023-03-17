@@ -84,6 +84,13 @@ panel_checker = function(dta, panel){
       
     
   } else if(!panel %in% check){
+    
+    #assign additional children waves to Panel D (currently also C, same as original waves)
+    if(panel=="D" & check=="C"){
+      warning(paste("\nPanel changing from", check, "to", panel, "(additional children waves)\n"))
+      dta$panel = panel
+      return(dta)
+    } else if(!(panel=="D" & check=="C")){
   
     checks = paste(check, collapse = " ")
     
@@ -91,6 +98,7 @@ panel_checker = function(dta, panel){
                 "Data panel = ", checks,"\n",
                 "Input panel = ", panel),"\n",
          "Check input data and SPSS spreadsheet.")
+    }
 
   } else if(length(check) > 1 ){
     

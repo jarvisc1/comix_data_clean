@@ -15,7 +15,7 @@ source('./r/version_1/functions/survey_to_datatable_v1.R')
 
 # Countries ---------------------------------------------------------------
 # in case running for certain countries only
-country_codes <- c("UK", "BE", "NO")
+country_codes <- c("UK")
 
 for(country in country_codes){
   print(paste0("Start: ", country))
